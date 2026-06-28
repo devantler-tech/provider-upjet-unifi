@@ -228,7 +228,3 @@ CODE_OF_CONDUCT.md:1 error MD041/first-line-heading/first-line-h1 First line in 
 
 [34m📣 **MegaLinter 9.5.0 is out!** Discover the new features and security recommendations in the [release announcement](https://github.com/oxsecurity/megalinter/issues/7835). (Skip this info by defining `SECURITY_SUGGESTIONS: false`)[0m
 
-[Updated Sources Reporter] copied 2 fixed source files in folder /github/workspace/megalinter-reports/updated_sources.
-[MARKDOWN_SUMMARY Reporter] Generated MARKDOWN_SUMMARY report: /github/workspace/megalinter-reports/megalinter-report.md
-[MARKDOWN_SUMMARY Reporter] Also appended to GITHUB_STEP_SUMMARY: /github/file_commands/step_summary_01e890af-61b2-4f7e-9b27-0366dd593a0e
-[33m⚠️ Successfully linted all files, but with ignored errors[0m
