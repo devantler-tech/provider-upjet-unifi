@@ -1,3 +1,4 @@
+// Package features defines the feature flags supported by the provider.
 package features
 
 import (

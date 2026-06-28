@@ -16,7 +16,10 @@ DISABLE_LINTERS:
   # check already governs).
   - ACTION_ZIZMOR
   - GO_GOLANGCI_LINT # Disabled: MegaLinter container ships an older Go than this provider requires. CI runs golangci-lint separately with the correct Go version.
-  - GO_REVIVE
+  # GO_REVIVE is ENABLED: its only findings were "should have a package comment"
+  # on the hand-maintained packages (the generated tree is excluded); package doc
+  # comments were added to config/, internal/clients, internal/features and the
+  # cmd/* binaries, so revive is green.
   # REPOSITORY_CHECKOV is ENABLED: it caught real workflow-security findings
   # (CKV2_GHA_1 least-privilege permissions), now fixed in the workflows. The
   # one publish-workflow false-gate (CKV_GHA_7 — it legitimately needs a version
@@ -29,7 +32,6 @@ DISABLE_LINTERS:
   - REPOSITORY_OSV_SCANNER
   - REPOSITORY_SECRETLINT
   - REPOSITORY_TRIVY
-  - SPELL_CSPELL
 
 # EXCLUDE FILTERS
 EXCLUDED_DIRECTORIES:

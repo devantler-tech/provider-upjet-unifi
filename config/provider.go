@@ -1,3 +1,5 @@
+// Package config wires the per-group resource configurators into the
+// cluster- and namespaced-scoped Upjet providers.
 package config
 
 import (

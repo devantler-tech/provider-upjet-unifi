@@ -1,3 +1,5 @@
+// Package main implements the Upjet code generator for the provider; it runs
+// the Upjet pipeline to emit the provider's API types, controllers and CRDs.
 package main
 
 import (

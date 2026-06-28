@@ -1,3 +1,5 @@
+// Package main is the entrypoint for the UniFi Crossplane provider binary; it
+// wires up and starts the controller manager for the generated managed resources.
 package main
 
 import (
