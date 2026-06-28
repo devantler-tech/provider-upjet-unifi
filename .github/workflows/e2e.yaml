@@ -1,15 +1,16 @@
+---
 # SPDX-FileCopyrightText: 2025 The Crossplane Authors <https://crossplane.io>
 #
 # SPDX-License-Identifier: CC0-1.0
 
 name: End to End Testing
 
-on:
+"on":
   issue_comment:
     types: [created]
 
 env:
-  GO_VERSION: "1.24"
+  GO_VERSION: "1.25.11"
 
 jobs:
   check-permissions:
@@ -57,28 +58,26 @@ jobs:
           gh pr checkout ${{ github.event.issue.number }}
           git submodule update --init --recursive
           OUTPUT=$(git log -1 --format='%H')
-          echo "commit-sha=$OUTPUT" >> $GITHUB_OUTPUT
-
+          echo "commit-sha=$OUTPUT" >> "$GITHUB_OUTPUT"
 
       - name: Prepare The Example List
         env:
           COMMENT: ${{ github.event.comment.body }}
         id: get-example-list-name
         run: |
-          PATHS=$(echo $COMMENT | sed 's/^.*\/test-examples="//g' | cut -d '"' -f 1 | sed 's/,/ /g')
+          PATHS=$(echo "$COMMENT" | sed 's/^.*\/test-examples="//g' | cut -d '"' -f 1 | sed 's/,/ /g')
           EXAMPLE_LIST=""
-          for P in $PATHS; do EXAMPLE_LIST="${EXAMPLE_LIST},$(find $P -name '*.yaml' | tr '\n' ',')"; done
+          for P in $PATHS; do EXAMPLE_LIST="${EXAMPLE_LIST},$(find "$P" -name '*.yaml' | tr '\n' ',')"; done
 
           sudo apt-get -y install coreutils
-          COUNT=$(echo ${EXAMPLE_LIST:1} | grep -o ".yaml" | wc -l)
-          if [ $COUNT -gt 1 ]; then EXAMPLE_HASH=$(echo ${EXAMPLE_LIST} | md5sum | cut -f1 -d" "); else EXAMPLE_HASH=$(echo ${EXAMPLE_LIST:1} | sed 's/.$//'); fi
+          COUNT=$(echo "${EXAMPLE_LIST:1}" | grep -o ".yaml" | wc -l)
+          if [ "$COUNT" -gt 1 ]; then EXAMPLE_HASH=$(echo "${EXAMPLE_LIST}" | md5sum | cut -f1 -d" "); else EXAMPLE_HASH="${EXAMPLE_LIST:1}"; EXAMPLE_HASH="${EXAMPLE_HASH%?}"; fi
 
           echo "Examples: ${EXAMPLE_LIST:1}"
           echo "Example Hash: ${EXAMPLE_HASH}"
 
-          echo "example-list=${EXAMPLE_LIST:1}" >> $GITHUB_OUTPUT
-          echo "example-hash=${EXAMPLE_HASH}" >> $GITHUB_OUTPUT
-
+          echo "example-list=${EXAMPLE_LIST:1}" >> "$GITHUB_OUTPUT"
+          echo "example-hash=${EXAMPLE_HASH}" >> "$GITHUB_OUTPUT"
 
       - name: Create Pending Status Check
         env:
@@ -130,8 +129,7 @@ jobs:
           gh pr checkout ${{ github.event.issue.number }}
           git submodule update --init --recursive
           OUTPUT=$(git log -1 --format='%H')
-          echo "commit-sha=$OUTPUT" >> $GITHUB_OUTPUT
-
+          echo "commit-sha=$OUTPUT" >> "$GITHUB_OUTPUT"
 
       - name: Vendor Dependencies
         run: make vendor vendor.check
@@ -148,7 +146,6 @@ jobs:
           mkdir -p .work && echo "${{ secrets.UPTEST_DATASOURCE }}" > .work/uptest-datasource.yaml
           make e2e
 
-
       - name: Create Successful Status Check
         env:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
@@ -163,12 +160,10 @@ jobs:
             -f description='Passed' \
             -f context="Uptest-${EXAMPLE_HASH}"
 
-
       - name: Collect Cluster Dump
         if: always()
         run: |
           make controlplane.dump
-
 
       - name: Upload Cluster Dump
         if: always()
@@ -180,9 +175,8 @@ jobs:
       - name: Cleanup
         if: always()
         run: |
-          eval $(make --no-print-directory build.vars)
+          eval "$(make --no-print-directory build.vars)"
           ${KUBECTL} delete managed --all || true
-
 
       - name: Create Unsuccessful Status Check
         if: failure()

@@ -1,6 +1,7 @@
+---
 name: Backport
 
-on:
+"on":
   # NOTE(negz): This is a risky target, but we run this action only when and if
   # a PR is closed, then filter down to specifically merged PRs. We also don't
   # invoke any scripts, etc from within the repo. I believe the fact that we'll

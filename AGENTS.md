@@ -22,17 +22,17 @@ a pure Kubernetes API.
 
 ## Repository layout
 
-| Path | Contents |
-|---|---|
-| `config/external_name.go` | one entry per Terraform resource — **drives coverage** (only configured resources generate) |
-| `config/unifi/config.go` | resource grouping (ShortGroups) + Kind disambiguation |
-| `config/provider.go` | wires the group configurators for both cluster- and namespaced-scoped providers |
-| `internal/clients/unifi.go` | `ProviderConfig` → Terraform provider auth wiring (hand-maintained) |
-| `apis/{cluster,namespaced}/**` | **generated** API types |
-| `internal/controller/**` | **generated** controllers |
-| `package/crds/**` | **generated** CRDs |
-| `examples/**` | example `ProviderConfig` + managed-resource manifests |
-| `Makefile` | `TERRAFORM_PROVIDER_*` pins (source/version) + Upjet build wiring |
+| Path                           | Contents                                                                                    |
+|--------------------------------|---------------------------------------------------------------------------------------------|
+| `config/external_name.go`      | one entry per Terraform resource — **drives coverage** (only configured resources generate) |
+| `config/unifi/config.go`       | resource grouping (ShortGroups) + Kind disambiguation                                       |
+| `config/provider.go`           | wires the group configurators for both cluster- and namespaced-scoped providers             |
+| `internal/clients/unifi.go`    | `ProviderConfig` → Terraform provider auth wiring (hand-maintained)                         |
+| `apis/{cluster,namespaced}/**` | **generated** API types                                                                     |
+| `internal/controller/**`       | **generated** controllers                                                                   |
+| `package/crds/**`              | **generated** CRDs                                                                          |
+| `examples/**`                  | example `ProviderConfig` + managed-resource manifests                                       |
+| `Makefile`                     | `TERRAFORM_PROVIDER_*` pins (source/version) + Upjet build wiring                           |
 
 ## Authentication
 
