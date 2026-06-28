@@ -1,3 +1,6 @@
+// Package config holds the hand-maintained Upjet provider configuration:
+// per-resource external-name configs, resource grouping and Kind overrides, and
+// the wiring of the cluster- and namespaced-scoped providers.
 package config
 
 import (

@@ -1,3 +1,5 @@
+// Package clients wires a Crossplane ProviderConfig's credentials into the
+// Terraform UniFi provider configuration consumed by the generated controllers.
 package clients
 
 import (
