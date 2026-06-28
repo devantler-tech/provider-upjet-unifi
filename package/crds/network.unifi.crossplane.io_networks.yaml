@@ -1,0 +1,1131 @@
+---
+apiVersion: apiextensions.k8s.io/v1
+kind: CustomResourceDefinition
+metadata:
+  annotations:
+    controller-gen.kubebuilder.io/version: v0.20.1
+  name: networks.network.unifi.crossplane.io
+spec:
+  group: network.unifi.crossplane.io
+  names:
+    categories:
+    - crossplane
+    - managed
+    - unifi
+    kind: Network
+    listKind: NetworkList
+    plural: networks
+    singular: network
+  scope: Cluster
+  versions:
+  - additionalPrinterColumns:
+    - jsonPath: .status.conditions[?(@.type=='Synced')].status
+      name: SYNCED
+      type: string
+    - jsonPath: .status.conditions[?(@.type=='Ready')].status
+      name: READY
+      type: string
+    - jsonPath: .metadata.annotations.crossplane\.io/external-name
+      name: EXTERNAL-NAME
+      type: string
+    - jsonPath: .metadata.creationTimestamp
+      name: AGE
+      type: date
+    name: v1alpha1
+    schema:
+      openAPIV3Schema:
+        description: Network is the Schema for the Networks API. <no value>
+        properties:
+          apiVersion:
+            description: |-
+              APIVersion defines the versioned schema of this representation of an object.
+              Servers should convert recognized schemas to the latest internal value, and
+              may reject unrecognized values.
+              More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#resources
+            type: string
+          kind:
+            description: |-
+              Kind is a string value representing the REST resource this object represents.
+              Servers may infer this from the endpoint the client submits requests to.
+              Cannot be updated.
+              In CamelCase.
+              More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#types-kinds
+            type: string
+          metadata:
+            type: object
+          spec:
+            description: NetworkSpec defines the desired state of Network
+            properties:
+              deletionPolicy:
+                default: Delete
+                description: |-
+                  DeletionPolicy specifies what will happen to the underlying external
+                  when this managed resource is deleted - either "Delete" or "Orphan" the
+                  external resource.
+                  This field is planned to be deprecated in favor of the ManagementPolicies
+                  field in a future release. Currently, both could be set independently and
+                  non-default values would be honored if the feature flag is enabled.
+                  See the design doc for more information: https://github.com/crossplane/crossplane/blob/499895a25d1a1a0ba1604944ef98ac7a1a71f197/design/design-doc-observe-only-resources.md?plain=1#L223
+                enum:
+                - Orphan
+                - Delete
+                type: string
+              forProvider:
+                properties:
+                  autoScale:
+                    description: Specifies whether auto-scaling is enabled.
+                    type: boolean
+                  dhcpGuarding:
+                    properties:
+                      enabled:
+                        description: Specifies whether DHCP guarding is enabled.
+                        type: boolean
+                      servers:
+                        description: List of allowed DHCP server IP addresses (maximum
+                          3).
+                        items:
+                          type: string
+                        type: array
+                    type: object
+                  dhcpRelay:
+                    properties:
+                      enabled:
+                        description: Specifies whether DHCP relay is enabled.
+                        type: boolean
+                      servers:
+                        description: List of DHCP relay server addresses.
+                        items:
+                          type: string
+                        type: array
+                    type: object
+                  dhcpServer:
+                    properties:
+                      boot:
+                        properties:
+                          enabled:
+                            description: Toggles DHCP boot options.
+                            type: boolean
+                          filename:
+                            description: Boot filename.
+                            type: string
+                          server:
+                            description: TFTP server for boot options.
+                            type: string
+                        type: object
+                      conflictChecking:
+                        description: Specifies whether DHCP conflict checking is enabled.
+                        type: boolean
+                      dnsEnabled:
+                        description: Specifies whether DHCP DNS is enabled.
+                        type: boolean
+                      dnsServers:
+                        description: List of DNS server addresses for DHCP clients.
+                        items:
+                          type: string
+                        type: array
+                      enabled:
+                        description: Specifies whether DHCP server is enabled.
+                        type: boolean
+                      gatewayEnabled:
+                        description: Specifies whether DHCP gateway is enabled.
+                        type: boolean
+                      leasetime:
+                        description: Specifies the DHCP lease time, as a Go duration
+                          string (e.g. `24h`, `86400s`). Defaults to `24h0m0s`.
+                        type: string
+                      ntpEnabled:
+                        description: Specifies whether DHCP NTP is enabled.
+                        type: boolean
+                      start:
+                        description: The IPv4 address where the DHCP range starts.
+                        type: string
+                      stop:
+                        description: The IPv4 address where the DHCP range stops.
+                        type: string
+                      tftpServer:
+                        description: TFTP server address.
+                        type: string
+                      timeOffsetEnabled:
+                        description: Specifies whether DHCP time offset is enabled.
+                        type: boolean
+                      unifiController:
+                        description: UniFi controller IP address.
+                        type: string
+                      wins:
+                        properties:
+                          addresses:
+                            description: List of WINS server addresses (maximum 2).
+                            items:
+                              type: string
+                            type: array
+                          enabled:
+                            description: Specifies whether DHCP WINS is enabled.
+                            type: boolean
+                        type: object
+                      wpadUrl:
+                        description: WPAD URL for proxy auto-configuration.
+                        type: string
+                    type: object
+                  dhcpV6Server:
+                    properties:
+                      dnsAuto:
+                        description: Specifies whether DNS auto-discovery is enabled
+                          for DHCPv6.
+                        type: boolean
+                      dnsServers:
+                        description: List of DNS server addresses for DHCPv6 clients
+                          (maximum 4).
+                        items:
+                          type: string
+                        type: array
+                      enabled:
+                        description: Specifies whether the DHCPv6 server is enabled.
+                        type: boolean
+                      lease:
+                        description: The lease time for DHCPv6 addresses in seconds.
+                        type: number
+                      start:
+                        description: The start of the DHCPv6 address range.
+                        type: string
+                      stop:
+                        description: The end of the DHCPv6 address range.
+                        type: string
+                    type: object
+                  domainName:
+                    description: The domain name for the network.
+                    type: string
+                  enabled:
+                    description: Specifies whether the network is enabled.
+                    type: boolean
+                  gatewayType:
+                    description: The gateway type. Must be one of `default` or `switch`.
+                    type: string
+                  igmpSnooping:
+                    description: Specifies whether IGMP snooping is enabled.
+                    type: boolean
+                  internetAccess:
+                    description: Specifies whether internet access is enabled.
+                    type: boolean
+                  ipAliases:
+                    description: List of IP aliases for the network.
+                    items:
+                      type: string
+                    type: array
+                  ipv6Aliases:
+                    description: List of IPv6 aliases for the network.
+                    items:
+                      type: string
+                    type: array
+                  ipv6ClientAddressAssignment:
+                    description: 'How clients on this network obtain an IPv6 address
+                      (UI: Networks → IPv6 → Client Address Assignment). One of `slaac`
+                      (SLAAC only), `dhcpv6` (DHCPv6 only), or `slaac-dhcpv6` (both).
+                      Computed from the controller when not set.'
+                    type: string
+                  ipv6InterfaceType:
+                    description: Specifies which type of IPv6 connection to use. Must
+                      be one of `none`, `pd`, or `static`.
+                    type: string
+                  ipv6PdAutoPrefixidEnabled:
+                    description: Specifies whether automatic prefix ID assignment
+                      is enabled for IPv6 Prefix Delegation.
+                    type: boolean
+                  ipv6PdInterface:
+                    description: The IPv6 Prefix Delegation WAN interface (e.g., `wan`,
+                      `wan2`).
+                    type: string
+                  ipv6PdPrefixid:
+                    description: The IPv6 Prefix Delegation prefix ID (hex string,
+                      e.g., `0`, `1a`).
+                    type: string
+                  ipv6PdStart:
+                    description: The start of the IPv6 Prefix Delegation range (e.g.
+                      `::2`). Required together with `ipv6_pd_stop` when `ipv6_interface_type`
+                      is `pd`, otherwise the controller rejects the network with `api.err.InvalidIpv6Addr`.
+                    type: string
+                  ipv6PdStop:
+                    description: The end of the IPv6 Prefix Delegation range (e.g.
+                      `::7d1`). Required together with `ipv6_pd_start` when `ipv6_interface_type`
+                      is `pd`.
+                    type: string
+                  ipv6Ra:
+                    description: Specifies whether IPv6 Router Advertisement (RA)
+                      is enabled.
+                    type: boolean
+                  ipv6RaPreferredLifetime:
+                    description: The IPv6 Router Advertisement preferred lifetime,
+                      as a Go duration string (e.g. `14400s`, `4h`). Must be a whole
+                      number of seconds between `0s` and `31536000s` (1 year).
+                    type: string
+                  ipv6RaPriority:
+                    description: The IPv6 Router Advertisement priority. Must be one
+                      of `high`, `medium`, or `low`.
+                    type: string
+                  ipv6RaValidLifetime:
+                    description: The IPv6 Router Advertisement valid lifetime, as
+                      a Go duration string (e.g. `86400s`, `24h`). Must be a whole
+                      number of seconds between `0s` and `31536000s` (1 year).
+                    type: string
+                  ipv6StaticSubnet:
+                    description: The IPv6 static subnet of the network. Only used
+                      when `ipv6_interface_type` is `static`.
+                    type: string
+                  lteLan:
+                    description: Whether this network/VLAN stays active when the gateway
+                      fails over to a UniFi LTE (cellular) backup WAN. Maps to the
+                      controller's `lte_lan_enabled` flag and only matters when a
+                      UniFi LTE failover device is in use; otherwise it is cosmetic.
+                      Defaults to `true` (network stays available during LTE failover);
+                      set to `false` to disable it while on the LTE backup link. The
+                      controller may set this automatically, which is why existing
+                      networks can show differing values.
+                    type: boolean
+                  multicastDns:
+                    description: 'Specifies whether mDNS is enabled. This is read
+                      back from the controller rather than defaulted: some controllers
+                      (notably UniFi OS gateways) ignore `mdns_enabled` at create/update
+                      time and always store `false`, so forcing a `true` default produced
+                      a "provider produced inconsistent result after apply" error.'
+                    type: boolean
+                  name:
+                    description: The name of the network.
+                    type: string
+                  natOutboundIpAddresses:
+                    items:
+                      properties:
+                        ipAddress:
+                          description: The IP address.
+                          type: string
+                        ipAddressPool:
+                          description: The IP address pool.
+                          items:
+                            type: string
+                          type: array
+                        mode:
+                          description: The mode.
+                          type: string
+                        wanNetworkGroup:
+                          description: The WAN network group.
+                          type: string
+                      type: object
+                    type: array
+                  networkIsolation:
+                    description: Specifies whether network isolation is enabled.
+                    type: boolean
+                  settingPreference:
+                    description: Setting preference. Must be one of `auto` or `manual`.
+                    type: string
+                  site:
+                    description: The name of the site to associate the network with.
+                    type: string
+                  subnet:
+                    description: 'The network''s gateway IP and prefix in CIDR notation.
+                      The host portion is the gateway address the controller assigns
+                      — it need not be the first usable address: `10.0.10.1/24` uses
+                      gateway `10.0.10.1`, while `10.0.10.254/24` uses gateway `10.0.10.254`
+                      on the same subnet. Optional: it is not required for `vlan_only`
+                      networks (`third_party_gateway = true`), where the UniFi controller
+                      does not manage the subnet.'
+                    type: string
+                  thirdPartyGateway:
+                    description: Specifies whether this network uses a third-party
+                      gateway. When enabled, the network purpose is set to `vlan-only`
+                      and only VLAN ID, DHCP guarding, and basic network settings
+                      are configured.
+                    type: boolean
+                  timeouts:
+                    properties:
+                      create:
+                        description: A string that can be [parsed as a duration](https://pkg.go.dev/time#ParseDuration)
+                          consisting of numbers and unit suffixes, such as "30s" or
+                          "2h45m". Valid time units are "s" (seconds), "m" (minutes),
+                          "h" (hours).
+                        type: string
+                      delete:
+                        description: A string that can be [parsed as a duration](https://pkg.go.dev/time#ParseDuration)
+                          consisting of numbers and unit suffixes, such as "30s" or
+                          "2h45m". Valid time units are "s" (seconds), "m" (minutes),
+                          "h" (hours). Setting a timeout for a Delete operation is
+                          only applicable if changes are saved into state before the
+                          destroy operation occurs.
+                        type: string
+                      read:
+                        description: A string that can be [parsed as a duration](https://pkg.go.dev/time#ParseDuration)
+                          consisting of numbers and unit suffixes, such as "30s" or
+                          "2h45m". Valid time units are "s" (seconds), "m" (minutes),
+                          "h" (hours). Read operations occur during any refresh or
+                          planning operation when refresh is enabled.
+                        type: string
+                      update:
+                        description: A string that can be [parsed as a duration](https://pkg.go.dev/time#ParseDuration)
+                          consisting of numbers and unit suffixes, such as "30s" or
+                          "2h45m". Valid time units are "s" (seconds), "m" (minutes),
+                          "h" (hours).
+                        type: string
+                    type: object
+                  vlan:
+                    description: The VLAN ID for the network.
+                    type: number
+                type: object
+              initProvider:
+                description: |-
+                  THIS IS A BETA FIELD. It will be honored
+                  unless the Management Policies feature flag is disabled.
+                  InitProvider holds the same fields as ForProvider, with the exception
+                  of Identifier and other resource reference fields. The fields that are
+                  in InitProvider are merged into ForProvider when the resource is created.
+                  The same fields are also added to the terraform ignore_changes hook, to
+                  avoid updating them after creation. This is useful for fields that are
+                  required on creation, but we do not desire to update them after creation,
+                  for example because of an external controller is managing them, like an
+                  autoscaler.
+                properties:
+                  autoScale:
+                    description: Specifies whether auto-scaling is enabled.
+                    type: boolean
+                  dhcpGuarding:
+                    properties:
+                      enabled:
+                        description: Specifies whether DHCP guarding is enabled.
+                        type: boolean
+                      servers:
+                        description: List of allowed DHCP server IP addresses (maximum
+                          3).
+                        items:
+                          type: string
+                        type: array
+                    type: object
+                  dhcpRelay:
+                    properties:
+                      enabled:
+                        description: Specifies whether DHCP relay is enabled.
+                        type: boolean
+                      servers:
+                        description: List of DHCP relay server addresses.
+                        items:
+                          type: string
+                        type: array
+                    type: object
+                  dhcpServer:
+                    properties:
+                      boot:
+                        properties:
+                          enabled:
+                            description: Toggles DHCP boot options.
+                            type: boolean
+                          filename:
+                            description: Boot filename.
+                            type: string
+                          server:
+                            description: TFTP server for boot options.
+                            type: string
+                        type: object
+                      conflictChecking:
+                        description: Specifies whether DHCP conflict checking is enabled.
+                        type: boolean
+                      dnsEnabled:
+                        description: Specifies whether DHCP DNS is enabled.
+                        type: boolean
+                      dnsServers:
+                        description: List of DNS server addresses for DHCP clients.
+                        items:
+                          type: string
+                        type: array
+                      enabled:
+                        description: Specifies whether DHCP server is enabled.
+                        type: boolean
+                      gatewayEnabled:
+                        description: Specifies whether DHCP gateway is enabled.
+                        type: boolean
+                      leasetime:
+                        description: Specifies the DHCP lease time, as a Go duration
+                          string (e.g. `24h`, `86400s`). Defaults to `24h0m0s`.
+                        type: string
+                      ntpEnabled:
+                        description: Specifies whether DHCP NTP is enabled.
+                        type: boolean
+                      start:
+                        description: The IPv4 address where the DHCP range starts.
+                        type: string
+                      stop:
+                        description: The IPv4 address where the DHCP range stops.
+                        type: string
+                      tftpServer:
+                        description: TFTP server address.
+                        type: string
+                      timeOffsetEnabled:
+                        description: Specifies whether DHCP time offset is enabled.
+                        type: boolean
+                      unifiController:
+                        description: UniFi controller IP address.
+                        type: string
+                      wins:
+                        properties:
+                          addresses:
+                            description: List of WINS server addresses (maximum 2).
+                            items:
+                              type: string
+                            type: array
+                          enabled:
+                            description: Specifies whether DHCP WINS is enabled.
+                            type: boolean
+                        type: object
+                      wpadUrl:
+                        description: WPAD URL for proxy auto-configuration.
+                        type: string
+                    type: object
+                  dhcpV6Server:
+                    properties:
+                      dnsAuto:
+                        description: Specifies whether DNS auto-discovery is enabled
+                          for DHCPv6.
+                        type: boolean
+                      dnsServers:
+                        description: List of DNS server addresses for DHCPv6 clients
+                          (maximum 4).
+                        items:
+                          type: string
+                        type: array
+                      enabled:
+                        description: Specifies whether the DHCPv6 server is enabled.
+                        type: boolean
+                      lease:
+                        description: The lease time for DHCPv6 addresses in seconds.
+                        type: number
+                      start:
+                        description: The start of the DHCPv6 address range.
+                        type: string
+                      stop:
+                        description: The end of the DHCPv6 address range.
+                        type: string
+                    type: object
+                  domainName:
+                    description: The domain name for the network.
+                    type: string
+                  enabled:
+                    description: Specifies whether the network is enabled.
+                    type: boolean
+                  gatewayType:
+                    description: The gateway type. Must be one of `default` or `switch`.
+                    type: string
+                  igmpSnooping:
+                    description: Specifies whether IGMP snooping is enabled.
+                    type: boolean
+                  internetAccess:
+                    description: Specifies whether internet access is enabled.
+                    type: boolean
+                  ipAliases:
+                    description: List of IP aliases for the network.
+                    items:
+                      type: string
+                    type: array
+                  ipv6Aliases:
+                    description: List of IPv6 aliases for the network.
+                    items:
+                      type: string
+                    type: array
+                  ipv6ClientAddressAssignment:
+                    description: 'How clients on this network obtain an IPv6 address
+                      (UI: Networks → IPv6 → Client Address Assignment). One of `slaac`
+                      (SLAAC only), `dhcpv6` (DHCPv6 only), or `slaac-dhcpv6` (both).
+                      Computed from the controller when not set.'
+                    type: string
+                  ipv6InterfaceType:
+                    description: Specifies which type of IPv6 connection to use. Must
+                      be one of `none`, `pd`, or `static`.
+                    type: string
+                  ipv6PdAutoPrefixidEnabled:
+                    description: Specifies whether automatic prefix ID assignment
+                      is enabled for IPv6 Prefix Delegation.
+                    type: boolean
+                  ipv6PdInterface:
+                    description: The IPv6 Prefix Delegation WAN interface (e.g., `wan`,
+                      `wan2`).
+                    type: string
+                  ipv6PdPrefixid:
+                    description: The IPv6 Prefix Delegation prefix ID (hex string,
+                      e.g., `0`, `1a`).
+                    type: string
+                  ipv6PdStart:
+                    description: The start of the IPv6 Prefix Delegation range (e.g.
+                      `::2`). Required together with `ipv6_pd_stop` when `ipv6_interface_type`
+                      is `pd`, otherwise the controller rejects the network with `api.err.InvalidIpv6Addr`.
+                    type: string
+                  ipv6PdStop:
+                    description: The end of the IPv6 Prefix Delegation range (e.g.
+                      `::7d1`). Required together with `ipv6_pd_start` when `ipv6_interface_type`
+                      is `pd`.
+                    type: string
+                  ipv6Ra:
+                    description: Specifies whether IPv6 Router Advertisement (RA)
+                      is enabled.
+                    type: boolean
+                  ipv6RaPreferredLifetime:
+                    description: The IPv6 Router Advertisement preferred lifetime,
+                      as a Go duration string (e.g. `14400s`, `4h`). Must be a whole
+                      number of seconds between `0s` and `31536000s` (1 year).
+                    type: string
+                  ipv6RaPriority:
+                    description: The IPv6 Router Advertisement priority. Must be one
+                      of `high`, `medium`, or `low`.
+                    type: string
+                  ipv6RaValidLifetime:
+                    description: The IPv6 Router Advertisement valid lifetime, as
+                      a Go duration string (e.g. `86400s`, `24h`). Must be a whole
+                      number of seconds between `0s` and `31536000s` (1 year).
+                    type: string
+                  ipv6StaticSubnet:
+                    description: The IPv6 static subnet of the network. Only used
+                      when `ipv6_interface_type` is `static`.
+                    type: string
+                  lteLan:
+                    description: Whether this network/VLAN stays active when the gateway
+                      fails over to a UniFi LTE (cellular) backup WAN. Maps to the
+                      controller's `lte_lan_enabled` flag and only matters when a
+                      UniFi LTE failover device is in use; otherwise it is cosmetic.
+                      Defaults to `true` (network stays available during LTE failover);
+                      set to `false` to disable it while on the LTE backup link. The
+                      controller may set this automatically, which is why existing
+                      networks can show differing values.
+                    type: boolean
+                  multicastDns:
+                    description: 'Specifies whether mDNS is enabled. This is read
+                      back from the controller rather than defaulted: some controllers
+                      (notably UniFi OS gateways) ignore `mdns_enabled` at create/update
+                      time and always store `false`, so forcing a `true` default produced
+                      a "provider produced inconsistent result after apply" error.'
+                    type: boolean
+                  name:
+                    description: The name of the network.
+                    type: string
+                  natOutboundIpAddresses:
+                    items:
+                      properties:
+                        ipAddress:
+                          description: The IP address.
+                          type: string
+                        ipAddressPool:
+                          description: The IP address pool.
+                          items:
+                            type: string
+                          type: array
+                        mode:
+                          description: The mode.
+                          type: string
+                        wanNetworkGroup:
+                          description: The WAN network group.
+                          type: string
+                      type: object
+                    type: array
+                  networkIsolation:
+                    description: Specifies whether network isolation is enabled.
+                    type: boolean
+                  settingPreference:
+                    description: Setting preference. Must be one of `auto` or `manual`.
+                    type: string
+                  site:
+                    description: The name of the site to associate the network with.
+                    type: string
+                  subnet:
+                    description: 'The network''s gateway IP and prefix in CIDR notation.
+                      The host portion is the gateway address the controller assigns
+                      — it need not be the first usable address: `10.0.10.1/24` uses
+                      gateway `10.0.10.1`, while `10.0.10.254/24` uses gateway `10.0.10.254`
+                      on the same subnet. Optional: it is not required for `vlan_only`
+                      networks (`third_party_gateway = true`), where the UniFi controller
+                      does not manage the subnet.'
+                    type: string
+                  thirdPartyGateway:
+                    description: Specifies whether this network uses a third-party
+                      gateway. When enabled, the network purpose is set to `vlan-only`
+                      and only VLAN ID, DHCP guarding, and basic network settings
+                      are configured.
+                    type: boolean
+                  timeouts:
+                    properties:
+                      create:
+                        description: A string that can be [parsed as a duration](https://pkg.go.dev/time#ParseDuration)
+                          consisting of numbers and unit suffixes, such as "30s" or
+                          "2h45m". Valid time units are "s" (seconds), "m" (minutes),
+                          "h" (hours).
+                        type: string
+                      delete:
+                        description: A string that can be [parsed as a duration](https://pkg.go.dev/time#ParseDuration)
+                          consisting of numbers and unit suffixes, such as "30s" or
+                          "2h45m". Valid time units are "s" (seconds), "m" (minutes),
+                          "h" (hours). Setting a timeout for a Delete operation is
+                          only applicable if changes are saved into state before the
+                          destroy operation occurs.
+                        type: string
+                      read:
+                        description: A string that can be [parsed as a duration](https://pkg.go.dev/time#ParseDuration)
+                          consisting of numbers and unit suffixes, such as "30s" or
+                          "2h45m". Valid time units are "s" (seconds), "m" (minutes),
+                          "h" (hours). Read operations occur during any refresh or
+                          planning operation when refresh is enabled.
+                        type: string
+                      update:
+                        description: A string that can be [parsed as a duration](https://pkg.go.dev/time#ParseDuration)
+                          consisting of numbers and unit suffixes, such as "30s" or
+                          "2h45m". Valid time units are "s" (seconds), "m" (minutes),
+                          "h" (hours).
+                        type: string
+                    type: object
+                  vlan:
+                    description: The VLAN ID for the network.
+                    type: number
+                type: object
+              managementPolicies:
+                default:
+                - '*'
+                description: |-
+                  THIS IS A BETA FIELD. It is on by default but can be opted out
+                  through a Crossplane feature flag.
+                  ManagementPolicies specify the array of actions Crossplane is allowed to
+                  take on the managed and external resources.
+                  This field is planned to replace the DeletionPolicy field in a future
+                  release. Currently, both could be set independently and non-default
+                  values would be honored if the feature flag is enabled. If both are
+                  custom, the DeletionPolicy field will be ignored.
+                  See the design doc for more information: https://github.com/crossplane/crossplane/blob/499895a25d1a1a0ba1604944ef98ac7a1a71f197/design/design-doc-observe-only-resources.md?plain=1#L223
+                  and this one: https://github.com/crossplane/crossplane/blob/444267e84783136daa93568b364a5f01228cacbe/design/one-pager-ignore-changes.md
+                items:
+                  description: |-
+                    A ManagementAction represents an action that the Crossplane controllers
+                    can take on an external resource.
+                  enum:
+                  - Observe
+                  - Create
+                  - Update
+                  - Delete
+                  - LateInitialize
+                  - '*'
+                  type: string
+                type: array
+              providerConfigRef:
+                default:
+                  name: default
+                description: |-
+                  ProviderConfigReference specifies how the provider that will be used to
+                  create, observe, update, and delete this managed resource should be
+                  configured.
+                properties:
+                  name:
+                    description: Name of the referenced object.
+                    type: string
+                  policy:
+                    description: Policies for referencing.
+                    properties:
+                      resolution:
+                        default: Required
+                        description: |-
+                          Resolution specifies whether resolution of this reference is required.
+                          The default is 'Required', which means the reconcile will fail if the
+                          reference cannot be resolved. 'Optional' means this reference will be
+                          a no-op if it cannot be resolved.
+                        enum:
+                        - Required
+                        - Optional
+                        type: string
+                      resolve:
+                        description: |-
+                          Resolve specifies when this reference should be resolved. The default
+                          is 'IfNotPresent', which will attempt to resolve the reference only when
+                          the corresponding field is not present. Use 'Always' to resolve the
+                          reference on every reconcile.
+                        enum:
+                        - Always
+                        - IfNotPresent
+                        type: string
+                    type: object
+                required:
+                - name
+                type: object
+              writeConnectionSecretToRef:
+                description: |-
+                  WriteConnectionSecretToReference specifies the namespace and name of a
+                  Secret to which any connection details for this managed resource should
+                  be written. Connection details frequently include the endpoint, username,
+                  and password required to connect to the managed resource.
+                properties:
+                  name:
+                    description: Name of the secret.
+                    type: string
+                  namespace:
+                    description: Namespace of the secret.
+                    type: string
+                required:
+                - name
+                - namespace
+                type: object
+            required:
+            - forProvider
+            type: object
+            x-kubernetes-validations:
+            - message: spec.forProvider.name is a required parameter
+              rule: '!(''*'' in self.managementPolicies || ''Create'' in self.managementPolicies
+                || ''Update'' in self.managementPolicies) || has(self.forProvider.name)
+                || (has(self.initProvider) && has(self.initProvider.name))'
+          status:
+            description: NetworkStatus defines the observed state of Network.
+            properties:
+              atProvider:
+                properties:
+                  autoScale:
+                    description: Specifies whether auto-scaling is enabled.
+                    type: boolean
+                  dhcpGuarding:
+                    properties:
+                      enabled:
+                        description: Specifies whether DHCP guarding is enabled.
+                        type: boolean
+                      servers:
+                        description: List of allowed DHCP server IP addresses (maximum
+                          3).
+                        items:
+                          type: string
+                        type: array
+                    type: object
+                  dhcpRelay:
+                    properties:
+                      enabled:
+                        description: Specifies whether DHCP relay is enabled.
+                        type: boolean
+                      servers:
+                        description: List of DHCP relay server addresses.
+                        items:
+                          type: string
+                        type: array
+                    type: object
+                  dhcpServer:
+                    properties:
+                      boot:
+                        properties:
+                          enabled:
+                            description: Toggles DHCP boot options.
+                            type: boolean
+                          filename:
+                            description: Boot filename.
+                            type: string
+                          server:
+                            description: TFTP server for boot options.
+                            type: string
+                        type: object
+                      conflictChecking:
+                        description: Specifies whether DHCP conflict checking is enabled.
+                        type: boolean
+                      dnsEnabled:
+                        description: Specifies whether DHCP DNS is enabled.
+                        type: boolean
+                      dnsServers:
+                        description: List of DNS server addresses for DHCP clients.
+                        items:
+                          type: string
+                        type: array
+                      enabled:
+                        description: Specifies whether DHCP server is enabled.
+                        type: boolean
+                      gatewayEnabled:
+                        description: Specifies whether DHCP gateway is enabled.
+                        type: boolean
+                      leasetime:
+                        description: Specifies the DHCP lease time, as a Go duration
+                          string (e.g. `24h`, `86400s`). Defaults to `24h0m0s`.
+                        type: string
+                      ntpEnabled:
+                        description: Specifies whether DHCP NTP is enabled.
+                        type: boolean
+                      start:
+                        description: The IPv4 address where the DHCP range starts.
+                        type: string
+                      stop:
+                        description: The IPv4 address where the DHCP range stops.
+                        type: string
+                      tftpServer:
+                        description: TFTP server address.
+                        type: string
+                      timeOffsetEnabled:
+                        description: Specifies whether DHCP time offset is enabled.
+                        type: boolean
+                      unifiController:
+                        description: UniFi controller IP address.
+                        type: string
+                      wins:
+                        properties:
+                          addresses:
+                            description: List of WINS server addresses (maximum 2).
+                            items:
+                              type: string
+                            type: array
+                          enabled:
+                            description: Specifies whether DHCP WINS is enabled.
+                            type: boolean
+                        type: object
+                      wpadUrl:
+                        description: WPAD URL for proxy auto-configuration.
+                        type: string
+                    type: object
+                  dhcpV6Server:
+                    properties:
+                      dnsAuto:
+                        description: Specifies whether DNS auto-discovery is enabled
+                          for DHCPv6.
+                        type: boolean
+                      dnsServers:
+                        description: List of DNS server addresses for DHCPv6 clients
+                          (maximum 4).
+                        items:
+                          type: string
+                        type: array
+                      enabled:
+                        description: Specifies whether the DHCPv6 server is enabled.
+                        type: boolean
+                      lease:
+                        description: The lease time for DHCPv6 addresses in seconds.
+                        type: number
+                      start:
+                        description: The start of the DHCPv6 address range.
+                        type: string
+                      stop:
+                        description: The end of the DHCPv6 address range.
+                        type: string
+                    type: object
+                  domainName:
+                    description: The domain name for the network.
+                    type: string
+                  enabled:
+                    description: Specifies whether the network is enabled.
+                    type: boolean
+                  gatewayType:
+                    description: The gateway type. Must be one of `default` or `switch`.
+                    type: string
+                  id:
+                    type: string
+                  igmpSnooping:
+                    description: Specifies whether IGMP snooping is enabled.
+                    type: boolean
+                  internetAccess:
+                    description: Specifies whether internet access is enabled.
+                    type: boolean
+                  ipAliases:
+                    description: List of IP aliases for the network.
+                    items:
+                      type: string
+                    type: array
+                  ipv6Aliases:
+                    description: List of IPv6 aliases for the network.
+                    items:
+                      type: string
+                    type: array
+                  ipv6ClientAddressAssignment:
+                    description: 'How clients on this network obtain an IPv6 address
+                      (UI: Networks → IPv6 → Client Address Assignment). One of `slaac`
+                      (SLAAC only), `dhcpv6` (DHCPv6 only), or `slaac-dhcpv6` (both).
+                      Computed from the controller when not set.'
+                    type: string
+                  ipv6InterfaceType:
+                    description: Specifies which type of IPv6 connection to use. Must
+                      be one of `none`, `pd`, or `static`.
+                    type: string
+                  ipv6PdAutoPrefixidEnabled:
+                    description: Specifies whether automatic prefix ID assignment
+                      is enabled for IPv6 Prefix Delegation.
+                    type: boolean
+                  ipv6PdInterface:
+                    description: The IPv6 Prefix Delegation WAN interface (e.g., `wan`,
+                      `wan2`).
+                    type: string
+                  ipv6PdPrefixid:
+                    description: The IPv6 Prefix Delegation prefix ID (hex string,
+                      e.g., `0`, `1a`).
+                    type: string
+                  ipv6PdStart:
+                    description: The start of the IPv6 Prefix Delegation range (e.g.
+                      `::2`). Required together with `ipv6_pd_stop` when `ipv6_interface_type`
+                      is `pd`, otherwise the controller rejects the network with `api.err.InvalidIpv6Addr`.
+                    type: string
+                  ipv6PdStop:
+                    description: The end of the IPv6 Prefix Delegation range (e.g.
+                      `::7d1`). Required together with `ipv6_pd_start` when `ipv6_interface_type`
+                      is `pd`.
+                    type: string
+                  ipv6Ra:
+                    description: Specifies whether IPv6 Router Advertisement (RA)
+                      is enabled.
+                    type: boolean
+                  ipv6RaPreferredLifetime:
+                    description: The IPv6 Router Advertisement preferred lifetime,
+                      as a Go duration string (e.g. `14400s`, `4h`). Must be a whole
+                      number of seconds between `0s` and `31536000s` (1 year).
+                    type: string
+                  ipv6RaPriority:
+                    description: The IPv6 Router Advertisement priority. Must be one
+                      of `high`, `medium`, or `low`.
+                    type: string
+                  ipv6RaValidLifetime:
+                    description: The IPv6 Router Advertisement valid lifetime, as
+                      a Go duration string (e.g. `86400s`, `24h`). Must be a whole
+                      number of seconds between `0s` and `31536000s` (1 year).
+                    type: string
+                  ipv6StaticSubnet:
+                    description: The IPv6 static subnet of the network. Only used
+                      when `ipv6_interface_type` is `static`.
+                    type: string
+                  lteLan:
+                    description: Whether this network/VLAN stays active when the gateway
+                      fails over to a UniFi LTE (cellular) backup WAN. Maps to the
+                      controller's `lte_lan_enabled` flag and only matters when a
+                      UniFi LTE failover device is in use; otherwise it is cosmetic.
+                      Defaults to `true` (network stays available during LTE failover);
+                      set to `false` to disable it while on the LTE backup link. The
+                      controller may set this automatically, which is why existing
+                      networks can show differing values.
+                    type: boolean
+                  multicastDns:
+                    description: 'Specifies whether mDNS is enabled. This is read
+                      back from the controller rather than defaulted: some controllers
+                      (notably UniFi OS gateways) ignore `mdns_enabled` at create/update
+                      time and always store `false`, so forcing a `true` default produced
+                      a "provider produced inconsistent result after apply" error.'
+                    type: boolean
+                  name:
+                    description: The name of the network.
+                    type: string
+                  natOutboundIpAddresses:
+                    items:
+                      properties:
+                        ipAddress:
+                          description: The IP address.
+                          type: string
+                        ipAddressPool:
+                          description: The IP address pool.
+                          items:
+                            type: string
+                          type: array
+                        mode:
+                          description: The mode.
+                          type: string
+                        wanNetworkGroup:
+                          description: The WAN network group.
+                          type: string
+                      type: object
+                    type: array
+                  networkIsolation:
+                    description: Specifies whether network isolation is enabled.
+                    type: boolean
+                  settingPreference:
+                    description: Setting preference. Must be one of `auto` or `manual`.
+                    type: string
+                  site:
+                    description: The name of the site to associate the network with.
+                    type: string
+                  subnet:
+                    description: 'The network''s gateway IP and prefix in CIDR notation.
+                      The host portion is the gateway address the controller assigns
+                      — it need not be the first usable address: `10.0.10.1/24` uses
+                      gateway `10.0.10.1`, while `10.0.10.254/24` uses gateway `10.0.10.254`
+                      on the same subnet. Optional: it is not required for `vlan_only`
+                      networks (`third_party_gateway = true`), where the UniFi controller
+                      does not manage the subnet.'
+                    type: string
+                  thirdPartyGateway:
+                    description: Specifies whether this network uses a third-party
+                      gateway. When enabled, the network purpose is set to `vlan-only`
+                      and only VLAN ID, DHCP guarding, and basic network settings
+                      are configured.
+                    type: boolean
+                  timeouts:
+                    properties:
+                      create:
+                        description: A string that can be [parsed as a duration](https://pkg.go.dev/time#ParseDuration)
+                          consisting of numbers and unit suffixes, such as "30s" or
+                          "2h45m". Valid time units are "s" (seconds), "m" (minutes),
+                          "h" (hours).
+                        type: string
+                      delete:
+                        description: A string that can be [parsed as a duration](https://pkg.go.dev/time#ParseDuration)
+                          consisting of numbers and unit suffixes, such as "30s" or
+                          "2h45m". Valid time units are "s" (seconds), "m" (minutes),
+                          "h" (hours). Setting a timeout for a Delete operation is
+                          only applicable if changes are saved into state before the
+                          destroy operation occurs.
+                        type: string
+                      read:
+                        description: A string that can be [parsed as a duration](https://pkg.go.dev/time#ParseDuration)
+                          consisting of numbers and unit suffixes, such as "30s" or
+                          "2h45m". Valid time units are "s" (seconds), "m" (minutes),
+                          "h" (hours). Read operations occur during any refresh or
+                          planning operation when refresh is enabled.
+                        type: string
+                      update:
+                        description: A string that can be [parsed as a duration](https://pkg.go.dev/time#ParseDuration)
+                          consisting of numbers and unit suffixes, such as "30s" or
+                          "2h45m". Valid time units are "s" (seconds), "m" (minutes),
+                          "h" (hours).
+                        type: string
+                    type: object
+                  vlan:
+                    description: The VLAN ID for the network.
+                    type: number
+                type: object
+              conditions:
+                description: Conditions of the resource.
+                items:
+                  description: A Condition that may apply to a resource.
+                  properties:
+                    lastTransitionTime:
+                      description: |-
+                        LastTransitionTime is the last time this condition transitioned from one
+                        status to another.
+                      format: date-time
+                      type: string
+                    message:
+                      description: |-
+                        A Message containing details about this condition's last transition from
+                        one status to another, if any.
+                      type: string
+                    observedGeneration:
+                      description: |-
+                        ObservedGeneration represents the .metadata.generation that the condition was set based upon.
+                        For instance, if .metadata.generation is currently 12, but the .status.conditions[x].observedGeneration is 9, the condition is out of date
+                        with respect to the current state of the instance.
+                      format: int64
+                      type: integer
+                    reason:
+                      description: A Reason for this condition's last transition from
+                        one status to another.
+                      type: string
+                    status:
+                      description: Status of this condition; is it currently True,
+                        False, or Unknown?
+                      type: string
+                    type:
+                      description: |-
+                        Type of this condition. At most one of each condition type may apply to
+                        a resource at any point in time.
+                      type: string
+                  required:
+                  - lastTransitionTime
+                  - reason
+                  - status
+                  - type
+                  type: object
+                type: array
+                x-kubernetes-list-map-keys:
+                - type
+                x-kubernetes-list-type: map
+              observedGeneration:
+                description: |-
+                  ObservedGeneration is the latest metadata.generation
+                  which resulted in either a ready state, or stalled due to error
+                  it can not recover from without human intervention.
+                format: int64
+                type: integer
+            type: object
+        required:
+        - spec
+        type: object
+    served: true
+    storage: true
+    subresources:
+      status: {}

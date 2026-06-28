@@ -1,0 +1,1173 @@
+name: ubiquiti-community/unifi
+resources:
+    Account (Resource):
+        subCategory: ""
+        description: 'Manages a RADIUS user account To authenticate devices based on MAC address, use the MAC address as the username and password under client creation. Convert lowercase letters to uppercase, and also remove colons or periods from the MAC address. ATTENTION: If the user profile does not include a VLAN, the client will fall back to the untagged VLAN. NOTE: MAC-based authentication accounts can only be used for wireless and wired clients. L2TP remote access does not apply.'
+        name: Account (Resource)
+        title: Account (Resource)
+        argumentDocs:
+            create: (String) A string that can be parsed as a duration consisting of numbers and unit suffixes, such as "30s" or "2h45m". Valid time units are "s" (seconds), "m" (minutes), "h" (hours).
+            delete: (String) A string that can be parsed as a duration consisting of numbers and unit suffixes, such as "30s" or "2h45m". Valid time units are "s" (seconds), "m" (minutes), "h" (hours). Setting a timeout for a Delete operation is only applicable if changes are saved into state before the destroy operation occurs.
+            id: (String) The ID of the account.
+            name: (String) The name of the account.
+            network_id: (String) ID of the network for this account. When set and vlan is omitted, the account inherits that network's VLAN (so RADIUS/MAB VLAN assignment is applied).
+            password: (String, Sensitive) The password of the account.
+            read: (String) A string that can be parsed as a duration consisting of numbers and unit suffixes, such as "30s" or "2h45m". Valid time units are "s" (seconds), "m" (minutes), "h" (hours). Read operations occur during any refresh or planning operation when refresh is enabled.
+            site: (String) The name of the site to associate the account with.
+            timeouts: (Attributes) (see below for nested schema)
+            tunnel_config_type: (String) The tunnel configuration type. Can be vpn, 802.1x, or custom.
+            tunnel_medium_type: (Number) See RFC 2868 section 3.2
+            tunnel_type: (Number) See RFC 2868 section 3.1. Valid values are 1-13; 13 (VLAN) is the most common.
+            update: (String) A string that can be parsed as a duration consisting of numbers and unit suffixes, such as "30s" or "2h45m". Valid time units are "s" (seconds), "m" (minutes), "h" (hours).
+            vlan: (Number) VLAN assigned to the account. If omitted but network_id is set, it is derived from that network's VLAN. If neither is set, the client falls back to the untagged VLAN.
+        importStatements: []
+    Bgp (Resource):
+        subCategory: ""
+        description: Manages BGP configuration for the UniFi Controller. Configuration can be provided either as a raw FRR config string via config, or via structured attributes (asn, router_id, peers) which render a config from a template.
+        name: Bgp (Resource)
+        title: Bgp (Resource)
+        argumentDocs:
+            asn: (Number) The BGP Autonomous System Number. Conflicts with config.
+            config: (String) The raw FRRouting BGP daemon configuration. Conflicts with asn, router_id, and peers.
+            create: (String) A string that can be parsed as a duration consisting of numbers and unit suffixes, such as "30s" or "2h45m". Valid time units are "s" (seconds), "m" (minutes), "h" (hours).
+            delete: (String) A string that can be parsed as a duration consisting of numbers and unit suffixes, such as "30s" or "2h45m". Valid time units are "s" (seconds), "m" (minutes), "h" (hours). Setting a timeout for a Delete operation is only applicable if changes are saved into state before the destroy operation occurs.
+            description: (String) Description of the BGP configuration.
+            enabled: (Boolean) Enable BGP routing.
+            id: (String) The ID of the BGP configuration.
+            name: (String) The peer group name.
+            networks: (List of String) List of network CIDR ranges to listen on for this peer group.
+            peers: (Attributes List) List of BGP peer groups. Conflicts with config. (see below for nested schema)
+            read: (String) A string that can be parsed as a duration consisting of numbers and unit suffixes, such as "30s" or "2h45m". Valid time units are "s" (seconds), "m" (minutes), "h" (hours). Read operations occur during any refresh or planning operation when refresh is enabled.
+            remote_as: (Number) The remote Autonomous System Number for this peer group.
+            router_id: (String) The BGP router ID (typically an IP address). Conflicts with config.
+            site: (String) The name of the site to associate the BGP configuration with.
+            timeouts: (Attributes) (see below for nested schema)
+            update: (String) A string that can be parsed as a duration consisting of numbers and unit suffixes, such as "30s" or "2h45m". Valid time units are "s" (seconds), "m" (minutes), "h" (hours).
+            upload_file_name: (String) The name of the uploaded configuration file.
+        importStatements: []
+    Client (Resource):
+        subCategory: ""
+        description: Manages a client of the network, identified by unique MAC addresses. Clients are created in the controller when observed on the network, so the resource defaults to allowing itself to just take over management of a MAC address, but this can be turned off.
+        name: Client (Resource)
+        title: Client (Resource)
+        argumentDocs:
+            allow_existing: (Boolean) Specifies whether this resource should just take over control of an existing client.
+            blocked: (Boolean) Specifies whether this client should be blocked from the network.
+            create: (String) A string that can be parsed as a duration consisting of numbers and unit suffixes, such as "30s" or "2h45m". Valid time units are "s" (seconds), "m" (minutes), "h" (hours).
+            delete: (String) A string that can be parsed as a duration consisting of numbers and unit suffixes, such as "30s" or "2h45m". Valid time units are "s" (seconds), "m" (minutes), "h" (hours). Setting a timeout for a Delete operation is only applicable if changes are saved into state before the destroy operation occurs.
+            display_name: (String) The display name of the client.
+            fixed_ap_mac: (String) The MAC address of the access point to which this client should be fixed.
+            fixed_ip: (String) A fixed IPv4 address for this client.
+            groups: (List of String) List of network members group names for this client.
+            hostname: (String) The hostname of the client.
+            id: (String) The ID of the client.
+            last_ip: (String) The most recent IP address the controller has seen for this client (read-only).
+            local_dns_record: (String) Specifies the local DNS record for this client.
+            mac: (String) The MAC address of the client.
+            max_down: (Number) Maximum download rate in kbps.
+            max_up: (Number) Maximum upload rate in kbps.
+            name: (String) The name of the client.
+            network_id: (String) The network ID for this client.
+            note: (String) A note with additional information for the client.
+            qos_rate: (Attributes) QoS rate limiting configuration. Controls the client group (usergroup) used for bandwidth limits. (see below for nested schema)
+            read: (String) A string that can be parsed as a duration consisting of numbers and unit suffixes, such as "30s" or "2h45m". Valid time units are "s" (seconds), "m" (minutes), "h" (hours). Read operations occur during any refresh or planning operation when refresh is enabled.
+            site: (String) The name of the site to associate the client with.
+            skip_forget_on_destroy: (Boolean) Specifies whether this resource should tell the controller to "forget" the client on destroy.
+            timeouts: (Attributes) (see below for nested schema)
+            update: (String) A string that can be parsed as a duration consisting of numbers and unit suffixes, such as "30s" or "2h45m". Valid time units are "s" (seconds), "m" (minutes), "h" (hours).
+        importStatements: []
+    Client Qos Rate (Resource):
+        subCategory: ""
+        description: Manages a client QOS rate, which can be used to limit bandwidth for groups of clients.
+        name: Client Qos Rate (Resource)
+        title: Client Qos Rate (Resource)
+        argumentDocs:
+            create: (String) A string that can be parsed as a duration consisting of numbers and unit suffixes, such as "30s" or "2h45m". Valid time units are "s" (seconds), "m" (minutes), "h" (hours).
+            delete: (String) A string that can be parsed as a duration consisting of numbers and unit suffixes, such as "30s" or "2h45m". Valid time units are "s" (seconds), "m" (minutes), "h" (hours). Setting a timeout for a Delete operation is only applicable if changes are saved into state before the destroy operation occurs.
+            id: (String) The ID of the client QOS rate.
+            name: (String) The name of the client QOS rate.
+            qos_rate_max_down: (Number) The QOS maximum download rate.
+            qos_rate_max_up: (Number) The QOS maximum upload rate.
+            read: (String) A string that can be parsed as a duration consisting of numbers and unit suffixes, such as "30s" or "2h45m". Valid time units are "s" (seconds), "m" (minutes), "h" (hours). Read operations occur during any refresh or planning operation when refresh is enabled.
+            site: (String) The name of the site to associate the client QOS rate with.
+            timeouts: (Attributes) (see below for nested schema)
+            update: (String) A string that can be parsed as a duration consisting of numbers and unit suffixes, such as "30s" or "2h45m". Valid time units are "s" (seconds), "m" (minutes), "h" (hours).
+        importStatements:
+            - |-
+              # import using the ID
+              terraform import unifi_client_qos_rate.wifi 5fe6261995fe130013456a36
+    Device (Resource):
+        subCategory: ""
+        description: unifi_device manages a device of the network. Devices are adopted by the controller, so it is not possible for this resource to be created through Terraform, the create operation instead will simply start managing the device specified by MAC address. It's safer to start this process with an explicit import of the device.
+        name: Device (Resource)
+        title: Device (Resource)
+        argumentDocs:
+            adopted: (Boolean) Whether the device is adopted.
+            aggregate_members: (List of Number) Port indices that make up this link-aggregation (LAG) group. Only takes effect when op_mode is aggregate on this port.
+            allow_adoption: (Boolean) Specifies whether this resource should tell the controller to adopt the device on create.
+            antenna_gain: (Number) Antenna gain.
+            antenna_id: (Number) Antenna ID.
+            assisted_roaming_enabled: (Boolean) Enable assisted roaming.
+            assisted_roaming_rssi: (Number) Assisted roaming RSSI threshold.
+            autoneg: (Boolean) Enable auto-negotiation for port speed.
+            bandsteering_mode: (String) Band steering mode; valid values are off, equal, and prefer_5g.
+            bonding_enabled: (Boolean) Enable network bonding.
+            channel: (String) Channel number or 'auto'.
+            config_network: (Attributes) Network configuration for the device. (see below for nested schema)
+            create: (String) A string that can be parsed as a duration consisting of numbers and unit suffixes, such as "30s" or "2h45m". Valid time units are "s" (seconds), "m" (minutes), "h" (hours).
+            cycle_enabled: (Boolean) Enable power cycle.
+            delete: (String) A string that can be parsed as a duration consisting of numbers and unit suffixes, such as "30s" or "2h45m". Valid time units are "s" (seconds), "m" (minutes), "h" (hours). Setting a timeout for a Delete operation is only applicable if changes are saved into state before the destroy operation occurs.
+            dfs: (Boolean) Enable DFS (Dynamic Frequency Selection).
+            disabled: (Boolean) Specifies whether this device should be disabled.
+            dns1: (String) Primary DNS server.
+            dns2: (String) Secondary DNS server.
+            dnssuffix: (String) DNS suffix.
+            dot1x_ctrl: (String) 802.1X control mode.
+            dot1x_idle_timeout: (String) 802.1X idle timeout, as a Go duration string (e.g. 5m, 300s).
+            egress_rate_limit_kbps: (Number) Egress rate limit in kbps.
+            egress_rate_limit_kbps_enabled: (Boolean) Enable egress rate limiting.
+            excluded_networkconf_ids: (List of String) List of network IDs to exclude from this port.
+            fec_mode: (String) Forward Error Correction mode.
+            flow_control_enabled: (Boolean) Enable flow control.
+            flowctrl_enabled: (Boolean) Enable flow control.
+            forget_on_destroy: (Boolean) Specifies whether this resource should tell the controller to forget the device on destroy.
+            forward: (String) Forwarding mode.
+            full_duplex: (Boolean) Enable full duplex mode.
+            gateway: (String) Gateway address (for static configuration).
+            hard_noise_floor_enabled: (Boolean) Enable hard noise floor.
+            ht: (Number) Channel width (20, 40, 80, 160).
+            id: (String) The ID of the device.
+            index: (Number) Outlet index.
+            ip: (String) IP address (for static configuration).
+            isolation: (Boolean) Enable port isolation.
+            jumboframe_enabled: (Boolean) Enable jumbo frames.
+            lcm_brightness: (Number) LCM brightness (1-100).
+            lcm_brightness_override: (Boolean) Override LCM brightness.
+            lcm_idle_timeout: (String) LCM idle timeout, as a Go duration string (e.g. 10m, 600s).
+            lcm_idle_timeout_override: (Boolean) Override LCM idle timeout.
+            lcm_night_mode_begins: (String) LCM night mode begin time (HH:MM format).
+            lcm_night_mode_ends: (String) LCM night mode end time (HH:MM format).
+            led_override: (String) LED override setting; valid values are default, on, and off.
+            led_override_color: (String) LED color override (hex color code).
+            led_override_color_brightness: (Number) LED brightness (0-100).
+            lldpmed_enabled: (Boolean) Enable LLDP-MED.
+            lldpmed_notify_enabled: (Boolean) Enable LLDP-MED notifications.
+            loadbalance_enabled: (Boolean) Enable load balancing.
+            locked: (Boolean) Specifies whether the device is locked.
+            mac: (String) The MAC address of the device. This can be specified so that the provider can take control of a device (since devices are created through adoption).
+            maxsta: (Number) Maximum number of stations.
+            mgmt_network_id: '(String) Management network ID. The network this device uses for its own management traffic (the UI''s Network Override). When set, the device tags its management onto this network''s VLAN, so that VLAN must already be tagged on the device''s upstream switch port(s) before this attribute is applied. Otherwise the device loses its management path, drops off, and the apply fails with an inconsistent-result error. Apply in two steps: tag the VLAN on the uplink (a port_override tagged_networkconf_ids entry) first, then set mgmt_network_id. Leave unset to manage on the uplink''s native (untagged) network.'
+            min_rssi: (Number) Minimum RSSI value.
+            min_rssi_enabled: (Boolean) Enable minimum RSSI.
+            mirror_port_idx: (Number) Mirror port index.
+            model: (String) Device model.
+            multicast_router_networkconf_ids: (List of String) List of network IDs for multicast router.
+            name: (String) The name of the device.
+            native_networkconf_id: (String) Native network ID (VLAN).
+            netmask: (String) Network mask (for static configuration).
+            op_mode: '(String) Operating mode of the port: switch (default), mirror, or aggregate. Set aggregate on the lead port of an SFP+/link-aggregation (LAG) group and list the member ports in aggregate_members. Only written when not switch, as gateway devices (UDM) reject op_mode on update.'
+            outdoor_mode_override: (String) Outdoor mode override; valid values are default, on, and off.
+            outlet_enabled: (Boolean) Enable outlet control.
+            outlet_overrides: (Attributes List) Outlet configuration overrides. (see below for nested schema)
+            poe_mode: (String) PoE mode; valid values are auto, pasv24, passthrough, and off.
+            port_keepalive_enabled: (Boolean) Enable port keepalive.
+            port_override: (Block Set) Per-port settings overrides, applied only to the ports you declare. Ports without a port_override block keep their existing controller-side configuration — the provider merges your declared ports (by index) into the device's current overrides rather than replacing the whole set. Removing a block stops managing that port but does not reset it; clear a port by overriding it back to the defaults instead. (see below for nested schema)
+            port_profile_id: (String) ID of the Port Profile used on this port.
+            port_security_enabled: (Boolean) Enable port security.
+            port_security_mac_address: (List of String) List of MAC addresses allowed when port security is enabled.
+            priority_queue1_level: (Number) Priority queue 1 level.
+            priority_queue2_level: (Number) Priority queue 2 level.
+            priority_queue3_level: (Number) Priority queue 3 level.
+            priority_queue4_level: (Number) Priority queue 4 level.
+            radio: (String) Radio band (ng, na, ad, 6e).
+            radio_table: (Attributes List) Radio configuration table. (see below for nested schema)
+            read: (String) A string that can be parsed as a duration consisting of numbers and unit suffixes, such as "30s" or "2h45m". Valid time units are "s" (seconds), "m" (minutes), "h" (hours). Read operations occur during any refresh or planning operation when refresh is enabled.
+            relay_state: (Boolean) Relay state (on/off).
+            sens_level: (Number) Sensitivity level.
+            sens_level_enabled: (Boolean) Enable sensitivity level.
+            setting_preference: (String) Setting preference.
+            site: (String) The name of the site to associate the device with.
+            speed: (Number) Port speed in Mbps.
+            state: (Number) Device state.
+            stormctrl_bcast_enabled: (Boolean) Enable broadcast storm control.
+            stormctrl_bcast_level: (Number) Broadcast storm control level.
+            stormctrl_bcast_rate: (Number) Broadcast storm control rate.
+            stormctrl_mcast_enabled: (Boolean) Enable multicast storm control.
+            stormctrl_mcast_level: (Number) Multicast storm control level.
+            stormctrl_mcast_rate: (Number) Multicast storm control rate.
+            stormctrl_type: (String) Storm control type.
+            stormctrl_ucast_enabled: (Boolean) Enable unicast storm control.
+            stormctrl_ucast_level: (Number) Unicast storm control level.
+            stormctrl_ucast_rate: (Number) Unicast storm control rate.
+            stp_port_mode: (Boolean) STP port mode.
+            stp_priority: (Number) STP priority.
+            stp_version: (String) STP version; valid values are stp, rstp, and disabled.
+            switch_vlan_enabled: (Boolean) Enable VLAN support on the switch.
+            tagged_networkconf_ids: (List of String) List of network IDs to tag on this port.
+            tagged_vlan_mgmt: (String) Tagged VLAN management.
+            timeouts: (Attributes) (see below for nested schema)
+            tx_power: (String) Transmit power or 'auto'.
+            tx_power_mode: (String) Transmit power mode (auto, medium, high, low, custom).
+            type: (String) Device type.
+            update: (String) A string that can be parsed as a duration consisting of numbers and unit suffixes, such as "30s" or "2h45m". Valid time units are "s" (seconds), "m" (minutes), "h" (hours).
+            voice_networkconf_id: (String) Voice network ID.
+            volume: (Number) Volume level (0-100).
+            vwire_enabled: (Boolean) Enable virtual wire.
+            x_baresip_password: (String, Sensitive) Baresip password.
+        importStatements: []
+    Dns Record (Resource):
+        subCategory: ""
+        description: Manages DNS record settings for different providers.
+        name: Dns Record (Resource)
+        title: Dns Record (Resource)
+        argumentDocs:
+            create: (String) A string that can be parsed as a duration consisting of numbers and unit suffixes, such as "30s" or "2h45m". Valid time units are "s" (seconds), "m" (minutes), "h" (hours).
+            delete: (String) A string that can be parsed as a duration consisting of numbers and unit suffixes, such as "30s" or "2h45m". Valid time units are "s" (seconds), "m" (minutes), "h" (hours). Setting a timeout for a Delete operation is only applicable if changes are saved into state before the destroy operation occurs.
+            enabled: (Boolean) Whether the DNS record is enabled.
+            id: (String) The ID of the DNS record.
+            name: (String) The key of the DNS record.
+            port: (Number) The port of the DNS record.
+            priority: (Number) The priority of the DNS record.
+            read: (String) A string that can be parsed as a duration consisting of numbers and unit suffixes, such as "30s" or "2h45m". Valid time units are "s" (seconds), "m" (minutes), "h" (hours). Read operations occur during any refresh or planning operation when refresh is enabled.
+            record_type: (String) The type of the DNS record. One of A, AAAA, CNAME, MX, TXT, SRV, PTR or NS.
+            site: (String) The name of the site to associate the DNS record with.
+            timeouts: (Attributes) (see below for nested schema)
+            ttl: (String) The TTL of the DNS record, as a Go duration string (e.g. 1h, 300s). The controller stores this value as whole seconds in the range 0–65535s (≈18h12m15s).
+            update: (String) A string that can be parsed as a duration consisting of numbers and unit suffixes, such as "30s" or "2h45m". Valid time units are "s" (seconds), "m" (minutes), "h" (hours).
+            value: (String) The value of the DNS record.
+            weight: (Number) The weight of the DNS record.
+        importStatements: []
+    Dynamic Dns (Resource):
+        subCategory: ""
+        description: Manages dynamic DNS settings for different providers.
+        name: Dynamic Dns (Resource)
+        title: Dynamic Dns (Resource)
+        argumentDocs:
+            create: (String) A string that can be parsed as a duration consisting of numbers and unit suffixes, such as "30s" or "2h45m". Valid time units are "s" (seconds), "m" (minutes), "h" (hours).
+            delete: (String) A string that can be parsed as a duration consisting of numbers and unit suffixes, such as "30s" or "2h45m". Valid time units are "s" (seconds), "m" (minutes), "h" (hours). Setting a timeout for a Delete operation is only applicable if changes are saved into state before the destroy operation occurs.
+            host_name: (String) The host name to update in the dynamic DNS service.
+            id: (String) The ID of the dynamic DNS.
+            interface: (String) The interface for the dynamic DNS. Can be wan or wan2.
+            login: (String) The login for the dynamic DNS service.
+            password: (String, Sensitive) The password for the dynamic DNS service.
+            read: (String) A string that can be parsed as a duration consisting of numbers and unit suffixes, such as "30s" or "2h45m". Valid time units are "s" (seconds), "m" (minutes), "h" (hours). Read operations occur during any refresh or planning operation when refresh is enabled.
+            server: (String) The server for the dynamic DNS service.
+            service: (String) The Dynamic DNS service provider, various values are supported (for example dyndns, etc.).
+            site: (String) The name of the site to associate with the dynamic DNS resource.
+            timeouts: (Attributes) (see below for nested schema)
+            update: (String) A string that can be parsed as a duration consisting of numbers and unit suffixes, such as "30s" or "2h45m". Valid time units are "s" (seconds), "m" (minutes), "h" (hours).
+        importStatements: []
+    Firewall Group (Resource):
+        subCategory: ""
+        description: unifi_firewall_group manages groups of addresses or ports for use in firewall rules (unifi_firewall_rule).
+        name: Firewall Group (Resource)
+        title: Firewall Group (Resource)
+        argumentDocs:
+            create: (String) A string that can be parsed as a duration consisting of numbers and unit suffixes, such as "30s" or "2h45m". Valid time units are "s" (seconds), "m" (minutes), "h" (hours).
+            delete: (String) A string that can be parsed as a duration consisting of numbers and unit suffixes, such as "30s" or "2h45m". Valid time units are "s" (seconds), "m" (minutes), "h" (hours). Setting a timeout for a Delete operation is only applicable if changes are saved into state before the destroy operation occurs.
+            id: (String) The ID of the firewall group.
+            members: (Set of String) The members of the firewall group.
+            name: (String) The name of the firewall group.
+            read: (String) A string that can be parsed as a duration consisting of numbers and unit suffixes, such as "30s" or "2h45m". Valid time units are "s" (seconds), "m" (minutes), "h" (hours). Read operations occur during any refresh or planning operation when refresh is enabled.
+            site: (String) The name of the site to associate the firewall group with.
+            timeouts: (Attributes) (see below for nested schema)
+            type: '(String) The type of the firewall group. Must be one of: address-group, port-group, or ipv6-address-group.'
+            update: (String) A string that can be parsed as a duration consisting of numbers and unit suffixes, such as "30s" or "2h45m". Valid time units are "s" (seconds), "m" (minutes), "h" (hours).
+        importStatements: []
+    Firewall Policy (Resource):
+        subCategory: ""
+        description: Manages a UniFi zone-based firewall policy (UniFi Network 8.x+). Zone-based firewall policies replace the legacy firewall rules and are displayed under Settings → Security → Firewall Policies in the UniFi UI.
+        name: Firewall Policy (Resource)
+        title: Firewall Policy (Resource)
+        argumentDocs:
+            action: '(String) The action to take when the policy matches: ALLOW, BLOCK, or REJECT.'
+            client_macs: (List of String) List of client MAC addresses to match. Used when matching_target is CLIENT.
+            connection_state_type: (String) Connection-state matching mode (ALL, RESPOND_ONLY, or CUSTOM). Managed by the UniFi controller; the provider round-trips it so updates are accepted.
+            connection_states: (List of String) Connection states matched when connection_state_type is CUSTOM (e.g. NEW, ESTABLISHED, RELATED, INVALID). Managed by the UniFi controller; the provider round-trips it so a CUSTOM policy's states are not dropped on update (which the firmware rejects with HTTP 400).
+            create: (String) A string that can be parsed as a duration consisting of numbers and unit suffixes, such as "30s" or "2h45m". Valid time units are "s" (seconds), "m" (minutes), "h" (hours).
+            create_allow_respond: (Boolean) When true, UniFi automatically creates a matching rule to allow established/related return traffic. Recommended for ALLOW policies. Defaults to false.
+            delete: (String) A string that can be parsed as a duration consisting of numbers and unit suffixes, such as "30s" or "2h45m". Valid time units are "s" (seconds), "m" (minutes), "h" (hours). Setting a timeout for a Delete operation is only applicable if changes are saved into state before the destroy operation occurs.
+            description: (String) A description for the policy.
+            destination: (Attributes) The destination endpoint of the policy. (see below for nested schema)
+            enabled: (Boolean) Whether the policy is enabled. Defaults to true.
+            icmp_typename: (String) ICMP type matching mode. Managed by the UniFi controller; the provider round-trips it so updates are accepted.
+            icmp_v6_typename: (String) ICMPv6 type matching mode. Managed by the UniFi controller; the provider round-trips it so updates are accepted.
+            id: (String) The ID of the firewall policy.
+            index: (Number) The ordering index of the policy. UniFi auto-assigns this if not set.
+            ip_group_id: (String) ID of a unifi_firewall_group (address-group type) to match. Used when matching_target is IP with matching_target_type = OBJECT.
+            ip_version: '(String) The IP version to match: BOTH, IPV4, or IPV6. Defaults to IPV4.'
+            ips: (List of String) List of IP addresses or CIDR ranges to match. Used when matching_target is IP.
+            logging: (Boolean) Whether to log packets matching this policy. Defaults to false.
+            matching_target: '(String) What to match: ANY, NETWORK, CLIENT, IP, DEVICE, MAC, or WEB (domains/FQDN).'
+            matching_target_type: (String) How the matching target is specified (ANY, SPECIFIC, LIST, OBJECT). Managed by the UniFi controller; the provider round-trips it so updates are accepted.
+            name: (String) The name of the firewall policy.
+            network_ids: (List of String) List of UniFi network IDs to match. Used when matching_target is NETWORK.
+            port: (String) Port(s) to match when port_matching_type is SPECIFIC. A single port (161) or a comma-separated list of ports/ranges (80,443, 8000-8100). Leave unset for no port match.
+            port_group_id: (String) ID of a unifi_firewall_group (port-group type) to match. Used when port_matching_type is OBJECT.
+            port_matching_type: '(String) How to match ports: ANY, SPECIFIC, or OBJECT (port group).'
+            protocol: '(String) The protocol to match: all, tcp, udp, tcp_udp, icmp, or icmpv6. Defaults to all. Note: for icmp/icmpv6 policies the controller rejects create_allow_respond = true (FirewallPolicyCreateRespondTrafficPolicyNotAllowed) — keep it false and add an explicit reverse policy if you need the reply.'
+            read: (String) A string that can be parsed as a duration consisting of numbers and unit suffixes, such as "30s" or "2h45m". Valid time units are "s" (seconds), "m" (minutes), "h" (hours). Read operations occur during any refresh or planning operation when refresh is enabled.
+            site: (String) The name of the UniFi site. Defaults to the site configured in the provider.
+            source: (Attributes) The source endpoint of the policy. (see below for nested schema)
+            timeouts: (Attributes) (see below for nested schema)
+            update: (String) A string that can be parsed as a duration consisting of numbers and unit suffixes, such as "30s" or "2h45m". Valid time units are "s" (seconds), "m" (minutes), "h" (hours).
+            web_domains: (List of String) List of domains/FQDNs to match. Used when matching_target is WEB.
+            zone_id: (String) The ID of the firewall zone this endpoint belongs to. Use the unifi_firewall_zone data source to look up zone IDs by name.
+        importStatements:
+            - |-
+              # Firewall policies can be imported using the policy ID, or site:id for a non-default site.
+              terraform import unifi_firewall_policy.lan_to_dmz_https 6512a1f04ee8cb0f1f4a9876
+
+              # For a non-default site, prefix the ID with the site name and a colon.
+              terraform import unifi_firewall_policy.lan_to_dmz_https default:6512a1f04ee8cb0f1f4a9876
+    Firewall Rule (Resource):
+        subCategory: ""
+        description: Manages an individual firewall rule on the gateway.
+        name: Firewall Rule (Resource)
+        title: Firewall Rule (Resource)
+        argumentDocs:
+            action: (String) The action of the firewall rule. Must be one of drop, accept, or reject.
+            create: (String) A string that can be parsed as a duration consisting of numbers and unit suffixes, such as "30s" or "2h45m". Valid time units are "s" (seconds), "m" (minutes), "h" (hours).
+            delete: (String) A string that can be parsed as a duration consisting of numbers and unit suffixes, such as "30s" or "2h45m". Valid time units are "s" (seconds), "m" (minutes), "h" (hours). Setting a timeout for a Delete operation is only applicable if changes are saved into state before the destroy operation occurs.
+            dst_address: (String) The destination address of the firewall rule.
+            dst_address_ipv6: (String) The IPv6 destination address of the firewall rule.
+            dst_firewall_group_ids: (Set of String) The destination firewall group IDs of the firewall rule.
+            dst_network_id: (String) The destination network ID of the firewall rule.
+            dst_network_type: (String) The destination network type of the firewall rule. Can be one of ADDRv4 or NETv4.
+            dst_port: (String) The destination port of the firewall rule.
+            enabled: (Boolean) Specifies whether the rule should be enabled.
+            icmp_typename: (String) ICMP type name.
+            icmp_v6_typename: (String) ICMPv6 type name.
+            id: (String) The ID of the firewall rule.
+            ip_sec: (String) Specify whether the rule matches on IPsec packets. Can be one of match-ipset or match-none.
+            logging: (Boolean) Enable logging for the firewall rule.
+            name: (String) The name of the firewall rule.
+            protocol: (String) The protocol of the rule.
+            protocol_match_excepted: (Boolean) Match packets that do NOT match the specified protocol (protocol negation).
+            protocol_v6: (String) The IPv6 protocol of the rule.
+            read: (String) A string that can be parsed as a duration consisting of numbers and unit suffixes, such as "30s" or "2h45m". Valid time units are "s" (seconds), "m" (minutes), "h" (hours). Read operations occur during any refresh or planning operation when refresh is enabled.
+            rule_index: '(Number) The index of the rule. Must be in one of the interface-specific blocks: 2000-2999 (LAN), 3000-3999 (WAN), 4000-4999 (GUEST), or their high-range equivalents 20000-29999, 30000-39999, 40000-49999 used by newer UniFi OS versions.'
+            ruleset: (String) The ruleset for the rule. This is from the perspective of the security gateway.
+            setting_preference: (String) Whether the rule is managed automatically by the controller or manually. Can be one of auto or manual.
+            site: (String) The name of the site to associate the firewall rule with.
+            src_address: (String) The source address for the firewall rule.
+            src_address_ipv6: (String) The IPv6 source address for the firewall rule.
+            src_firewall_group_ids: (Set of String) The source firewall group IDs for the firewall rule.
+            src_mac: (String) The source MAC address of the firewall rule.
+            src_network_id: (String) The source network ID for the firewall rule.
+            src_network_type: (String) The source network type of the firewall rule. Can be one of ADDRv4 or NETv4.
+            src_port: (String) The source port of the firewall rule.
+            state_established: (Boolean) Match where the state is established.
+            state_invalid: (Boolean) Match where the state is invalid.
+            state_new: (Boolean) Match where the state is new.
+            state_related: (Boolean) Match where the state is related.
+            timeouts: (Attributes) (see below for nested schema)
+            update: (String) A string that can be parsed as a duration consisting of numbers and unit suffixes, such as "30s" or "2h45m". Valid time units are "s" (seconds), "m" (minutes), "h" (hours).
+        importStatements:
+            - |-
+              # import using the ID from the controller API/UI
+              terraform import unifi_firewall_rule.my_rule 5f7080eb6b8969064f80494f
+    Firewall Zone (Resource):
+        subCategory: ""
+        description: Manages a zone-based firewall zone (UniFi OS 8.x+). Create a zone and attach networks to it, then reference its id from unifi_firewall_policy.
+        name: Firewall Zone (Resource)
+        title: Firewall Zone (Resource)
+        argumentDocs:
+            create: (String) A string that can be parsed as a duration consisting of numbers and unit suffixes, such as "30s" or "2h45m". Valid time units are "s" (seconds), "m" (minutes), "h" (hours).
+            default_zone: (Boolean) Whether this is a controller default zone.
+            delete: (String) A string that can be parsed as a duration consisting of numbers and unit suffixes, such as "30s" or "2h45m". Valid time units are "s" (seconds), "m" (minutes), "h" (hours). Setting a timeout for a Delete operation is only applicable if changes are saved into state before the destroy operation occurs.
+            id: (String) The ID of the firewall zone.
+            name: (String) The name of the firewall zone.
+            network_ids: (List of String) IDs of the networks assigned to this zone.
+            read: (String) A string that can be parsed as a duration consisting of numbers and unit suffixes, such as "30s" or "2h45m". Valid time units are "s" (seconds), "m" (minutes), "h" (hours). Read operations occur during any refresh or planning operation when refresh is enabled.
+            site: (String) The name of the site the zone belongs to.
+            timeouts: (Attributes) (see below for nested schema)
+            update: (String) A string that can be parsed as a duration consisting of numbers and unit suffixes, such as "30s" or "2h45m". Valid time units are "s" (seconds), "m" (minutes), "h" (hours).
+            zone_key: (String) The controller-assigned key of the zone.
+        importStatements:
+            - |-
+              # Firewall zones can be imported using the zone ID, or site:id for a non-default site.
+              terraform import unifi_firewall_zone.dmz 5f3e9b2c4ee8cb0f1f4a1234
+    Network (Resource):
+        subCategory: ""
+        description: unifi_network manages networks (VLANs) in the UniFi controller.
+        name: Network (Resource)
+        title: Network (Resource)
+        argumentDocs:
+            addresses: (List of String) List of WINS server addresses (maximum 2).
+            auto_scale: (Boolean) Specifies whether auto-scaling is enabled.
+            boot: (Attributes) DHCP boot settings. (see below for nested schema)
+            conflict_checking: (Boolean) Specifies whether DHCP conflict checking is enabled.
+            create: (String) A string that can be parsed as a duration consisting of numbers and unit suffixes, such as "30s" or "2h45m". Valid time units are "s" (seconds), "m" (minutes), "h" (hours).
+            delete: (String) A string that can be parsed as a duration consisting of numbers and unit suffixes, such as "30s" or "2h45m". Valid time units are "s" (seconds), "m" (minutes), "h" (hours). Setting a timeout for a Delete operation is only applicable if changes are saved into state before the destroy operation occurs.
+            dhcp_guarding: (Attributes) DHCP guarding configuration. Specifies allowed DHCP server IPs to prevent rogue DHCP servers on the network. (see below for nested schema)
+            dhcp_relay: (Attributes) DHCP relay configuration. (see below for nested schema)
+            dhcp_server: (Attributes) DHCP server configuration. (see below for nested schema)
+            dhcp_v6_server: (Attributes) DHCPv6 server configuration. (see below for nested schema)
+            dns_auto: (Boolean) Specifies whether DNS auto-discovery is enabled for DHCPv6.
+            dns_enabled: (Boolean) Specifies whether DHCP DNS is enabled.
+            dns_servers: (List of String) List of DNS server addresses for DHCP clients.
+            domain_name: (String) The domain name for the network.
+            enabled: (Boolean) Specifies whether the network is enabled.
+            filename: (String) Boot filename.
+            gateway_enabled: (Boolean) Specifies whether DHCP gateway is enabled.
+            gateway_type: (String) The gateway type. Must be one of default or switch.
+            id: (String) The ID of the network.
+            igmp_snooping: (Boolean) Specifies whether IGMP snooping is enabled.
+            internet_access: (Boolean) Specifies whether internet access is enabled.
+            ip_address: (String) The IP address.
+            ip_address_pool: (List of String) The IP address pool.
+            ip_aliases: (List of String) List of IP aliases for the network.
+            ipv6_aliases: (List of String) List of IPv6 aliases for the network.
+            ipv6_client_address_assignment: '(String) How clients on this network obtain an IPv6 address (UI: Networks → IPv6 → Client Address Assignment). One of slaac (SLAAC only), dhcpv6 (DHCPv6 only), or slaac-dhcpv6 (both). Computed from the controller when not set.'
+            ipv6_interface_type: (String) Specifies which type of IPv6 connection to use. Must be one of none, pd, or static.
+            ipv6_pd_auto_prefixid_enabled: (Boolean) Specifies whether automatic prefix ID assignment is enabled for IPv6 Prefix Delegation.
+            ipv6_pd_interface: (String) The IPv6 Prefix Delegation WAN interface (e.g., wan, wan2).
+            ipv6_pd_prefixid: (String) The IPv6 Prefix Delegation prefix ID (hex string, e.g., 0, 1a).
+            ipv6_pd_start: (String) The start of the IPv6 Prefix Delegation range (e.g. ::2). Required together with ipv6_pd_stop when ipv6_interface_type is pd, otherwise the controller rejects the network with api.err.InvalidIpv6Addr.
+            ipv6_pd_stop: (String) The end of the IPv6 Prefix Delegation range (e.g. ::7d1). Required together with ipv6_pd_start when ipv6_interface_type is pd.
+            ipv6_ra: (Boolean) Specifies whether IPv6 Router Advertisement (RA) is enabled.
+            ipv6_ra_preferred_lifetime: (String) The IPv6 Router Advertisement preferred lifetime, as a Go duration string (e.g. 14400s, 4h). Must be a whole number of seconds between 0s and 31536000s (1 year).
+            ipv6_ra_priority: (String) The IPv6 Router Advertisement priority. Must be one of high, medium, or low.
+            ipv6_ra_valid_lifetime: (String) The IPv6 Router Advertisement valid lifetime, as a Go duration string (e.g. 86400s, 24h). Must be a whole number of seconds between 0s and 31536000s (1 year).
+            ipv6_static_subnet: (String) The IPv6 static subnet of the network. Only used when ipv6_interface_type is static.
+            lease: (Number) The lease time for DHCPv6 addresses in seconds.
+            leasetime: (String) Specifies the DHCP lease time, as a Go duration string (e.g. 24h, 86400s). Defaults to 24h0m0s.
+            lte_lan: (Boolean) Whether this network/VLAN stays active when the gateway fails over to a UniFi LTE (cellular) backup WAN. Maps to the controller's lte_lan_enabled flag and only matters when a UniFi LTE failover device is in use; otherwise it is cosmetic. Defaults to true (network stays available during LTE failover); set to false to disable it while on the LTE backup link. The controller may set this automatically, which is why existing networks can show differing values.
+            mode: (String) The mode.
+            multicast_dns: '(Boolean) Specifies whether mDNS is enabled. This is read back from the controller rather than defaulted: some controllers (notably UniFi OS gateways) ignore mdns_enabled at create/update time and always store false, so forcing a true default produced a "provider produced inconsistent result after apply" error.'
+            name: (String) The name of the network.
+            nat_outbound_ip_addresses: (Attributes List) List of NAT outbound IP addresses. (see below for nested schema)
+            network_isolation: (Boolean) Specifies whether network isolation is enabled.
+            ntp_enabled: (Boolean) Specifies whether DHCP NTP is enabled.
+            read: (String) A string that can be parsed as a duration consisting of numbers and unit suffixes, such as "30s" or "2h45m". Valid time units are "s" (seconds), "m" (minutes), "h" (hours). Read operations occur during any refresh or planning operation when refresh is enabled.
+            server: (String) TFTP server for boot options.
+            servers: (List of String) List of allowed DHCP server IP addresses (maximum 3).
+            setting_preference: (String) Setting preference. Must be one of auto or manual.
+            site: (String) The name of the site to associate the network with.
+            start: (String) The IPv4 address where the DHCP range starts.
+            stop: (String) The IPv4 address where the DHCP range stops.
+            subnet: '(String) The network''s gateway IP and prefix in CIDR notation. The host portion is the gateway address the controller assigns — it need not be the first usable address: 10.0.10.1/24 uses gateway 10.0.10.1, while 10.0.10.254/24 uses gateway 10.0.10.254 on the same subnet. Optional: it is not required for vlan_only networks (third_party_gateway = true), where the UniFi controller does not manage the subnet.'
+            tftp_server: (String) TFTP server address.
+            third_party_gateway: (Boolean) Specifies whether this network uses a third-party gateway. When enabled, the network purpose is set to vlan-only and only VLAN ID, DHCP guarding, and basic network settings are configured.
+            time_offset_enabled: (Boolean) Specifies whether DHCP time offset is enabled.
+            timeouts: (Attributes) (see below for nested schema)
+            unifi_controller: (String) UniFi controller IP address.
+            update: (String) A string that can be parsed as a duration consisting of numbers and unit suffixes, such as "30s" or "2h45m". Valid time units are "s" (seconds), "m" (minutes), "h" (hours).
+            vlan: (Number) The VLAN ID for the network.
+            wan_network_group: (String) The WAN network group.
+            wins: (Attributes) WINS server configuration. (see below for nested schema)
+            wpad_url: (String) WPAD URL for proxy auto-configuration.
+        importStatements:
+            - |-
+              # import by ID from provider configured site
+              terraform import unifi_network.mynetwork 5dc28e5e9106d105bdc87217
+
+              # import from another site
+              terraform import unifi_network.mynetwork bfa2l6i7:5dc28e5e9106d105bdc87217
+
+              # import network by name
+              terraform import unifi_network.mynetwork name=LAN
+    Port Forward (Resource):
+        subCategory: ""
+        description: Manages a port forwarding rule on the gateway.
+        name: Port Forward (Resource)
+        title: Port Forward (Resource)
+        argumentDocs:
+            create: (String) A string that can be parsed as a duration consisting of numbers and unit suffixes, such as "30s" or "2h45m". Valid time units are "s" (seconds), "m" (minutes), "h" (hours).
+            delete: (String) A string that can be parsed as a duration consisting of numbers and unit suffixes, such as "30s" or "2h45m". Valid time units are "s" (seconds), "m" (minutes), "h" (hours). Setting a timeout for a Delete operation is only applicable if changes are saved into state before the destroy operation occurs.
+            destination_ip: (String) The destination IPv4 address. Use any for all addresses.
+            destination_ips: (Attributes List) Additional destination IP/interface pairs for the port forwarding rule, used for multi-WAN setups. (see below for nested schema)
+            enabled: (Boolean, Deprecated) Specifies whether the port forwarding rule is enabled or not.
+            firewall_group_id: (String) The ID of the firewall group to use for source limiting.
+            forward: (Attributes) Forward destination configuration. (see below for nested schema)
+            id: (String) The ID of the port forwarding rule.
+            interface: (String) The WAN interface for this destination (e.g. wan, wan2).
+            ip: (String) The forward IPv4 address to send traffic to.
+            ip_address: (String) The WAN IP address for the port forwarding rule. Use any for all addresses.
+            logging: (Boolean) Specifies whether to enable syslog logging for forwarded traffic.
+            name: (String) The name of the port forwarding rule.
+            port: (String) The forward port or port range (e.g. 1-10,11,12).
+            protocol: (String) The protocol for the port forwarding rule. Can be tcp, udp, or tcp_udp.
+            read: (String) A string that can be parsed as a duration consisting of numbers and unit suffixes, such as "30s" or "2h45m". Valid time units are "s" (seconds), "m" (minutes), "h" (hours). Read operations occur during any refresh or planning operation when refresh is enabled.
+            site: (String) The name of the site to associate the port forwarding rule with.
+            source_limiting: (Attributes) Source limiting configuration for the port forwarding rule. (see below for nested schema)
+            timeouts: (Attributes) (see below for nested schema)
+            type: (String) The source limiting type. Can be ip or firewall_group. Inferred automatically when only one of ip or firewall_group_id is set.
+            update: (String) A string that can be parsed as a duration consisting of numbers and unit suffixes, such as "30s" or "2h45m". Valid time units are "s" (seconds), "m" (minutes), "h" (hours).
+            wan: (Attributes) WAN configuration for the port forwarding rule. (see below for nested schema)
+        importStatements:
+            - |-
+              # import from provider configured site
+              terraform import unifi_port_forward.web_server 5dc28e5e9106d105bdc87217
+
+              # import from another site
+              terraform import unifi_port_forward.web_server bfa2l6i7:5dc28e5e9106d105bdc87217
+    Port Profile (Resource):
+        subCategory: ""
+        description: unifi_port_profile manages a port profile for use on network switches.
+        name: Port Profile (Resource)
+        title: Port Profile (Resource)
+        argumentDocs:
+            autoneg: (Boolean) Enable link auto negotiation for the port profile. When set to true this overrides speed.
+            create: (String) A string that can be parsed as a duration consisting of numbers and unit suffixes, such as "30s" or "2h45m". Valid time units are "s" (seconds), "m" (minutes), "h" (hours).
+            delete: (String) A string that can be parsed as a duration consisting of numbers and unit suffixes, such as "30s" or "2h45m". Valid time units are "s" (seconds), "m" (minutes), "h" (hours). Setting a timeout for a Delete operation is only applicable if changes are saved into state before the destroy operation occurs.
+            dot1x_ctrl: (String) The type of 802.1X control to use. Can be auto, force_authorized, force_unauthorized, mac_based or multi_host.
+            dot1x_idle_timeout: (String) The idle timeout to use when using MAC Based 802.1X control, as a Go duration string (e.g. 5m, 300s). Defaults to 5m0s.
+            egress_rate_limit_kbps: (Number) The egress rate limit, in kpbs, for the port profile. Can be between 64 and 9999999.
+            egress_rate_limit_kbps_enabled: (Boolean) Enable egress rate limiting for the port profile.
+            excluded_networkconf_ids: (Set of String) The IDs of networks excluded from the port profile (used when tagged_vlan_mgmt is custom). Computed from the controller when not set.
+            fec_mode: (String) Forward Error Correction mode. Can be rs-fec, fc-fec, default, or disabled.
+            forward: (String) The type forwarding to use for the port profile. Can be all, native, customize or disabled.
+            full_duplex: (Boolean) Enable full duplex for the port profile.
+            id: (String) The ID of the port profile.
+            isolation: (Boolean) Enable port isolation for the port profile.
+            lldpmed_enabled: (Boolean) Enable LLDP-MED for the port profile.
+            lldpmed_notify_enabled: (Boolean) Enable LLDP-MED topology change notifications for the port profile.
+            multicast_router_networkconf_ids: (Set of String) The IDs of networks designated as multicast routers for the port profile.
+            name: (String) The name of the port profile.
+            native_networkconf_id: (String) The ID of network to use as the main (native/untagged) network on the port profile. Assigned by the controller if not set.
+            op_mode: (String) The operation mode for the port profile. Can only be switch
+            poe_mode: (String) The POE mode for the port profile. Can be one of auto, passv24, passthrough or off.
+            port_keepalive_enabled: (Boolean) Enable port keepalive for the port profile.
+            port_security_enabled: (Boolean) Enable port security for the port profile.
+            port_security_mac_address: (Set of String) The MAC addresses associated with the port security for the port profile.
+            priority_queue1_level: (Number) The priority queue 1 level for the port profile. Can be between 0 and 100.
+            priority_queue2_level: (Number) The priority queue 2 level for the port profile. Can be between 0 and 100.
+            priority_queue3_level: (Number) The priority queue 3 level for the port profile. Can be between 0 and 100.
+            priority_queue4_level: (Number) The priority queue 4 level for the port profile. Can be between 0 and 100.
+            read: (String) A string that can be parsed as a duration consisting of numbers and unit suffixes, such as "30s" or "2h45m". Valid time units are "s" (seconds), "m" (minutes), "h" (hours). Read operations occur during any refresh or planning operation when refresh is enabled.
+            setting_preference: (String) Whether the port profile settings are managed automatically or manually. Can be auto or manual.
+            site: (String) The name of the site to associate the port profile with.
+            speed: (Number) The link speed to set for the port profile. Can be one of 10, 100, 1000, 2500, 5000, 10000, 20000, 25000, 40000, 50000 or 100000
+            stormctrl_bcast_enabled: (Boolean) Enable broadcast Storm Control for the port profile.
+            stormctrl_bcast_level: (Number) The broadcast Storm Control level for the port profile. Can be between 0 and 100.
+            stormctrl_bcast_rate: (Number) The broadcast Storm Control rate for the port profile. Can be between 0 and 14880000.
+            stormctrl_mcast_enabled: (Boolean) Enable multicast Storm Control for the port profile.
+            stormctrl_mcast_level: (Number) The multicast Storm Control level for the port profile. Can be between 0 and 100.
+            stormctrl_mcast_rate: (Number) The multicast Storm Control rate for the port profile. Can be between 0 and 14880000.
+            stormctrl_type: (String) The type of Storm Control to use for the port profile. Can be level or rate.
+            stormctrl_ucast_enabled: (Boolean) Enable unknown unicast Storm Control for the port profile.
+            stormctrl_ucast_level: (Number) The unknown unicast Storm Control level for the port profile. Can be between 0 and 100.
+            stormctrl_ucast_rate: (Number) The unknown unicast Storm Control rate for the port profile. Can be between 0 and 14880000.
+            stp_port_mode: (Boolean) Enable Spanning Tree Protocol (STP) for the port profile. Computed from the controller when not set.
+            tagged_networkconf_ids: (Set of String) The IDs of networks to tag traffic with for the port profile.
+            tagged_vlan_mgmt: (String) How tagged VLANs are managed on the port. Can be auto, block_all, or custom.
+            timeouts: (Attributes) (see below for nested schema)
+            update: (String) A string that can be parsed as a duration consisting of numbers and unit suffixes, such as "30s" or "2h45m". Valid time units are "s" (seconds), "m" (minutes), "h" (hours).
+            voice_networkconf_id: (String) The ID of network to use for voice traffic for the port profile.
+        importStatements: []
+    Power Supervisor (Resource):
+        subCategory: ""
+        description: 'Manages a UniFi Device Supervisor (UniFi Network 10.2+): heartbeat monitoring of a device plus automatic power-cycling of its upstream PoE source after a silence threshold. The supervised device is referenced by its MAC; the controller resolves the upstream PoE port automatically.'
+        name: Power Supervisor (Resource)
+        title: Power Supervisor (Resource)
+        argumentDocs:
+            client_psu_index: (Number) Index of the supervised device's PSU.
+            consecutive_failures: (Number) Number of consecutive heartbeat failures observed by the controller (read-only).
+            create: (String) A string that can be parsed as a duration consisting of numbers and unit suffixes, such as "30s" or "2h45m". Valid time units are "s" (seconds), "m" (minutes), "h" (hours).
+            delete: (String) A string that can be parsed as a duration consisting of numbers and unit suffixes, such as "30s" or "2h45m". Valid time units are "s" (seconds), "m" (minutes), "h" (hours). Setting a timeout for a Delete operation is only applicable if changes are saved into state before the destroy operation occurs.
+            device_mac: (String) MAC address of the supervised device (the controller keys supervisors per device). Changing it replaces the supervisor.
+            enabled: (Boolean) Whether supervision is enabled. Defaults to true.
+            heartbeat_interval: (String) How often the controller probes the device, as a Go duration string (e.g. 60s, 1m). Defaults to 1m0s.
+            id: (String) The controller-assigned ID of the power supervisor.
+            power_off_duration: (String) How long the upstream PoE source stays off during a power-cycle, as a Go duration string (e.g. 2m). Defaults to 2m0s.
+            power_source_index: (Number) Port/outlet index on the upstream source.
+            power_source_mac: (String) MAC of the upstream source (e.g. the PoE switch).
+            power_source_type: (String) Type of the upstream source (e.g. poe_port).
+            power_sources: (Attributes List) The upstream power source(s) the controller resolved for the device and will cycle on recovery (read-only). (see below for nested schema)
+            read: (String) A string that can be parsed as a duration consisting of numbers and unit suffixes, such as "30s" or "2h45m". Valid time units are "s" (seconds), "m" (minutes), "h" (hours). Read operations occur during any refresh or planning operation when refresh is enabled.
+            silence_threshold: (String) How long the device may be silent before the controller power-cycles its upstream PoE source, as a Go duration string (e.g. 15m). Defaults to 15m0s.
+            site: (String) The name of the site the supervisor belongs to.
+            timeouts: (Attributes) (see below for nested schema)
+            update: (String) A string that can be parsed as a duration consisting of numbers and unit suffixes, such as "30s" or "2h45m". Valid time units are "s" (seconds), "m" (minutes), "h" (hours).
+        importStatements:
+            - |-
+              # Power supervisors can be imported by the supervised device's MAC address,
+              terraform import unifi_power_supervisor.ap_lobby 94:2a:6f:d6:ce:fd
+
+              # by the controller-assigned id,
+              terraform import unifi_power_supervisor.ap_lobby 5f3e9b2c4ee8cb0f1f4a1234
+
+              # or site:id / site:mac for a non-default site.
+              terraform import unifi_power_supervisor.ap_lobby my-site:94:2a:6f:d6:ce:fd
+    Radius Profile (Resource):
+        subCategory: ""
+        description: Manages RADIUS profiles.
+        name: Radius Profile (Resource)
+        title: Radius Profile (Resource)
+        argumentDocs:
+            accounting_enabled: (Boolean) Specifies whether to use RADIUS accounting.
+            acct_server: (Block List) RADIUS accounting servers. (see below for nested schema)
+            auth_server: (Block List) RADIUS authentication servers. (see below for nested schema)
+            create: (String) A string that can be parsed as a duration consisting of numbers and unit suffixes, such as "30s" or "2h45m". Valid time units are "s" (seconds), "m" (minutes), "h" (hours).
+            delete: (String) A string that can be parsed as a duration consisting of numbers and unit suffixes, such as "30s" or "2h45m". Valid time units are "s" (seconds), "m" (minutes), "h" (hours). Setting a timeout for a Delete operation is only applicable if changes are saved into state before the destroy operation occurs.
+            id: (String) The ID of the settings.
+            interim_update_enabled: (Boolean) Specifies whether to use interim_update.
+            interim_update_interval: (String) Specifies the RADIUS interim update interval, as a Go duration string (e.g. 1h, 3600s). Defaults to 1h0m0s.
+            ip: (String) IP address of accounting service server.
+            name: (String) The name of the profile.
+            port: (Number) Port of accounting service.
+            read: (String) A string that can be parsed as a duration consisting of numbers and unit suffixes, such as "30s" or "2h45m". Valid time units are "s" (seconds), "m" (minutes), "h" (hours). Read operations occur during any refresh or planning operation when refresh is enabled.
+            secret: (String, Sensitive) Shared secret for accounting server.
+            site: (String) The name of the site to associate the settings with.
+            timeouts: (Attributes) (see below for nested schema)
+            update: (String) A string that can be parsed as a duration consisting of numbers and unit suffixes, such as "30s" or "2h45m". Valid time units are "s" (seconds), "m" (minutes), "h" (hours).
+            use_usg_acct_server: (Boolean) Specifies whether to use usg as a RADIUS accounting server.
+            use_usg_auth_server: (Boolean) Specifies whether to use usg as a RADIUS authentication server.
+            vlan_enabled: (Boolean) Specifies whether to use vlan on wired connections.
+            vlan_wlan_mode: (String) Specifies whether to use vlan on wireless connections. Must be one of disabled, optional, or required.
+        importStatements:
+            - |-
+              # RADIUS profiles can be imported using the ID, e.g.
+              terraform import unifi_radius_profile.external 5f8e2a1b3c4d5e6f7a8b9c0d
+
+              # Or with an explicit site using the "site:id" format.
+              terraform import unifi_radius_profile.external default:5f8e2a1b3c4d5e6f7a8b9c0d
+    Radius User (Resource):
+        subCategory: ""
+        description: 'Manages a RADIUS user account To authenticate devices based on MAC address, use the MAC address as the username and password under client creation. Convert lowercase letters to uppercase, and also remove colons or periods from the MAC address. ATTENTION: If the user profile does not include a VLAN, the client will fall back to the untagged VLAN. NOTE: MAC-based authentication accounts can only be used for wireless and wired clients. L2TP remote access does not apply.'
+        name: Radius User (Resource)
+        title: Radius User (Resource)
+        argumentDocs:
+            create: (String) A string that can be parsed as a duration consisting of numbers and unit suffixes, such as "30s" or "2h45m". Valid time units are "s" (seconds), "m" (minutes), "h" (hours).
+            delete: (String) A string that can be parsed as a duration consisting of numbers and unit suffixes, such as "30s" or "2h45m". Valid time units are "s" (seconds), "m" (minutes), "h" (hours). Setting a timeout for a Delete operation is only applicable if changes are saved into state before the destroy operation occurs.
+            id: (String) The ID of the account.
+            name: (String) The name of the account.
+            network_id: (String) ID of the network for this account. When set and vlan is omitted, the account inherits that network's VLAN (so RADIUS/MAB VLAN assignment is applied).
+            password: (String, Sensitive) The password of the account.
+            read: (String) A string that can be parsed as a duration consisting of numbers and unit suffixes, such as "30s" or "2h45m". Valid time units are "s" (seconds), "m" (minutes), "h" (hours). Read operations occur during any refresh or planning operation when refresh is enabled.
+            site: (String) The name of the site to associate the account with.
+            timeouts: (Attributes) (see below for nested schema)
+            tunnel_config_type: (String) The tunnel configuration type. Can be vpn, 802.1x, or custom.
+            tunnel_medium_type: (Number) See RFC 2868 section 3.2
+            tunnel_type: (Number) See RFC 2868 section 3.1. Valid values are 1-13; 13 (VLAN) is the most common.
+            update: (String) A string that can be parsed as a duration consisting of numbers and unit suffixes, such as "30s" or "2h45m". Valid time units are "s" (seconds), "m" (minutes), "h" (hours).
+            vlan: (Number) VLAN assigned to the account. If omitted but network_id is set, it is derived from that network's VLAN. If neither is set, the client falls back to the untagged VLAN.
+        importStatements:
+            - |-
+              # RADIUS users can be imported using the ID, e.g.
+              terraform import unifi_radius_user.basic 5f8e2a1b3c4d5e6f7a8b9c0d
+
+              # Or with an explicit site using the "site:id" format.
+              terraform import unifi_radius_user.basic default:5f8e2a1b3c4d5e6f7a8b9c0d
+    Setting (Resource):
+        subCategory: ""
+        description: Manages settings for a UniFi site. Configure only the settings you need by providing the corresponding nested object.
+        name: Setting (Resource)
+        title: Setting (Resource)
+        argumentDocs:
+            accounting_enabled: (Boolean) Enable RADIUS accounting.
+            acct_port: (Number) RADIUS accounting port.
+            advanced_feature_enabled: (Boolean) Enable advanced features.
+            advanced_filtering_preference: '(String) Advanced filtering mode: manual or disabled.'
+            auth_port: (Number) RADIUS authentication port.
+            auto_speedtest: (Attributes) Periodic automated internet speed test settings. (see below for nested schema)
+            auto_upgrade: (Boolean) Automatically upgrade device firmware.
+            auto_upgrade_hour: (Number) Hour of day (0-23) for automatic firmware upgrades.
+            brightness: (Number) Display brightness (1-100).
+            broadcast_ping: (Boolean) Enable broadcast ping.
+            category: (String) Alert suppression signature category.
+            code: (Number) Regulatory country code (ISO 3166-1 numeric).
+            comment: (String) Comment.
+            content_filtering_blocking_page_enabled: (Boolean) Show a blocking page when content filtering blocks a request.
+            contents: (List of String) Logged facilities (e.g. device, client, firewall_default_policy, triggers, updates, admin_activity, critical, security_detections, vpn).
+            country: (Attributes) Regulatory country settings. (see below for nested schema)
+            create: (String) A string that can be parsed as a duration consisting of numbers and unit suffixes, such as "30s" or "2h45m". Valid time units are "s" (seconds), "m" (minutes), "h" (hours).
+            cron_expr: (String) Cron expression controlling when the speed test runs (e.g. 0 * * * *).
+            custom_servers: (Attributes List) Custom DNS servers specified via DNS stamp. (see below for nested schema)
+            debug: (Boolean) Enable debug logging.
+            debug_tools_enabled: (Boolean) Enable debug tools.
+            delete: (String) A string that can be parsed as a duration consisting of numbers and unit suffixes, such as "30s" or "2h45m". Valid time units are "s" (seconds), "m" (minutes), "h" (hours). Setting a timeout for a Delete operation is only applicable if changes are saved into state before the destroy operation occurs.
+            direct_connect_enabled: (Boolean) Enable Direct Connect (remote access).
+            direction: '(String) Match direction: both, src, or dest.'
+            dns_verification: (Attributes) DNS verification settings. (see below for nested schema)
+            doh: (Attributes) Encrypted DNS (DNS-over-HTTPS) settings. (see below for nested schema)
+            domain: (String) Domain for DNS verification.
+            dpi: (Attributes) Deep Packet Inspection (DPI) settings. (see below for nested schema)
+            enabled: (Boolean) Whether periodic automated speed tests are enabled.
+            enabled_categories: (List of String) Emerging Threats ruleset categories to enable (e.g. "emerging-malware", "tor", "phishing").
+            enabled_networks: (List of String) Network IDs to apply IPS inspection to.
+            fingerprinting_enabled: (Boolean) Whether device fingerprinting is enabled.
+            ftp_module: (Boolean) Enable FTP module.
+            geo_ip_filtering_block: '(String) Geo IP filtering action: block or allow.'
+            geo_ip_filtering_countries: (String) Comma-separated list of country codes for geo IP filtering.
+            geo_ip_filtering_enabled: (Boolean) Enable geo IP filtering.
+            geo_ip_filtering_traffic_direction: '(String) Geo IP filtering traffic direction: both, ingress, or egress.'
+            gid: (Number) Signature Generator ID (GID).
+            gre_module: (Boolean) Enable GRE module.
+            h323_module: (Boolean) Enable H.323 module.
+            honeypot: (Attributes List) Honeypot IP addresses per network. (see below for nested schema)
+            honeypot_enabled: (Boolean) Enable honeypot to detect internal port scans.
+            icmp_timeout: (String) ICMP connection timeout, as a Go duration string (e.g. 30s, 1m).
+            id: (String) The ID of the settings.
+            idle_timeout: (Number) Seconds of inactivity before the display turns off (10-3600).
+            igmp_snooping: (Attributes) Site-level IGMP snooping setting. On UniFi Network 10.3.x+ the effective IGMP snooping toggle lives here rather than on each network. Advanced querier/flood options configured in the UI are preserved across updates. (see below for nested schema)
+            interim_update_interval: (String) Interim update interval, as a Go duration string (e.g. 1h, 3600s).
+            ip: (String) Remote syslog server IP address.
+            ip_address: (String) IP address to use as a honeypot.
+            ips: (Attributes) Intrusion Prevention System (IPS/IDS) and threat management settings. Basic IDS/IPS uses the built-in Emerging Threats ruleset and is free. A UniFi CyberSecure subscription adds enhanced threat intelligence from Proofpoint and Cloudflare on top of the base ruleset. (see below for nested schema)
+            ips_mode: '(String) IPS operating mode: ids (detect only), ips (detect and block), ipsInline, or disabled.'
+            key: (String) Public SSH key.
+            lcm: (Attributes) LCD/display (LCM) settings for devices with a screen. (see below for nested schema)
+            log_all_contents: (Boolean) Log all available facilities.
+            memory_optimized: (Boolean) Use memory-optimized IPS ruleset (reduced rule set for low-memory devices).
+            mgmt: (Attributes) Management settings. (see below for nested schema)
+            mode: '(String) Match mode: ip, subnet, or network.'
+            mss_clamp: '(String) MSS clamping mode: auto, custom, or disabled.'
+            name: (String) Name of SSH key.
+            netconsole_enabled: (Boolean) Whether netconsole logging is enabled.
+            netconsole_host: (String) Netconsole host.
+            netconsole_port: (Number) Netconsole port (1-65535).
+            network_id: (String) Network ID this honeypot IP belongs to.
+            network_ids: (List of String) IDs of the networks IGMP snooping applies to.
+            network_optimization: (Attributes) Automated network optimization settings. (see below for nested schema)
+            ntp: (Attributes) NTP (time server) settings. (see below for nested schema)
+            ntp_server_1: (String) Primary NTP server.
+            ntp_server_2: (String) Second NTP server.
+            ntp_server_3: (String) Third NTP server.
+            ntp_server_4: (String) Fourth NTP server.
+            offload_accounting: (Boolean) Enable hardware offload for accounting.
+            offload_l2_blocking: (Boolean) Enable hardware offload for L2 blocking.
+            offload_sch: (Boolean) Enable hardware offload for scheduling.
+            other_timeout: (String) Other connections timeout, as a Go duration string (e.g. 600s, 10m).
+            port: (Number) Remote syslog server port (1-65535).
+            pptp_module: (Boolean) Enable PPTP module.
+            primary_dns_server: (String) Primary DNS server.
+            radius: (Attributes) RADIUS settings. (see below for nested schema)
+            read: (String) A string that can be parsed as a duration consisting of numbers and unit suffixes, such as "30s" or "2h45m". Valid time units are "s" (seconds), "m" (minutes), "h" (hours). Read operations occur during any refresh or planning operation when refresh is enabled.
+            receive_redirects: (Boolean) Accept ICMP redirects.
+            restrict_torrents: (Boolean) Block BitTorrent traffic.
+            sdns_stamp: (String) DNS stamp (sdns://) for the custom resolver.
+            secondary_dns_server: (String) Secondary DNS server.
+            secret: (String, Sensitive) RADIUS shared secret.
+            send_redirects: (Boolean) Send ICMP redirects.
+            server_name: (String) Human-readable name for this custom server.
+            server_names: (List of String) Predefined DNS provider names (e.g. "cloudflare", "google").
+            setting_preference: '(String) Configuration mode: auto or manual.'
+            signature: (String) Suppression signature name.
+            sip_module: (Boolean) Enable SIP module.
+            site: (String) The name of the site to associate the settings with.
+            ssh_auth_password_enabled: (Boolean) Allow SSH password authentication (in addition to keys).
+            ssh_enabled: (Boolean) Enable SSH authentication.
+            ssh_keys: (Attributes List) SSH keys. (see below for nested schema)
+            ssh_password: (String, Sensitive) SSH password for device access. Sensitive — the controller stores only a hash, so this value is kept from configuration and not read back.
+            ssh_username: (String) SSH username for device access.
+            state: '(String) Encrypted DNS state: off, auto, manual, or custom.'
+            suppression_alerts: (Attributes List) IPS signature alert suppression entries — silence specific signatures or categories. (see below for nested schema)
+            suppression_whitelist: (Attributes List) IPS suppression whitelist entries — sources/destinations to exclude from inspection. (see below for nested schema)
+            syn_cookies: (Boolean) Enable SYN cookies.
+            sync: (Boolean) Sync display settings across devices.
+            syslog: (Attributes) Remote syslog (rsyslogd) settings. (see below for nested schema)
+            tcp_close_timeout: (String) TCP close timeout, as a Go duration string (e.g. 10s).
+            tcp_close_wait_timeout: (String) TCP close wait timeout, as a Go duration string (e.g. 60s, 1m).
+            tcp_established_timeout: (String) TCP established connection timeout, as a Go duration string (e.g. 7440s, 2h4m).
+            tcp_fin_wait_timeout: (String) TCP fin wait timeout, as a Go duration string (e.g. 120s, 2m).
+            tcp_last_ack_timeout: (String) TCP last ACK timeout, as a Go duration string (e.g. 30s).
+            tcp_syn_recv_timeout: (String) TCP SYN received timeout, as a Go duration string (e.g. 60s, 1m).
+            tcp_syn_sent_timeout: (String) TCP SYN sent timeout, as a Go duration string (e.g. 120s, 2m).
+            tcp_time_wait_timeout: (String) TCP time wait timeout, as a Go duration string (e.g. 120s, 2m).
+            tftp_module: (Boolean) Enable TFTP module.
+            this_controller: (Boolean) Also log this controller's events.
+            this_controller_encrypted_only: (Boolean) Only send this controller's logs over an encrypted channel.
+            timeout_setting_preference: '(String) Timeout setting preference: auto or manual.'
+            timeouts: (Attributes) (see below for nested schema)
+            touch_event: (Boolean) Whether touch events on the display are enabled.
+            tracking: (Attributes List) Tracking specifications (used when type is track). (see below for nested schema)
+            type: '(String) Suppression type: all (everywhere) or track (only the tracked sources/destinations).'
+            udp_other_timeout: (String) UDP other timeout, as a Go duration string (e.g. 30s).
+            udp_stream_timeout: (String) UDP stream timeout, as a Go duration string (e.g. 180s, 3m).
+            unbind_wan_monitors: (Boolean) Unbind WAN monitors.
+            unifi_idp_enabled: (Boolean) Enable the UniFi Identity Provider.
+            update: (String) A string that can be parsed as a duration consisting of numbers and unit suffixes, such as "30s" or "2h45m". Valid time units are "s" (seconds), "m" (minutes), "h" (hours).
+            upnp_enabled: (Boolean) Enable UPnP.
+            upnp_nat_pmp_enabled: (Boolean) Enable UPnP NAT-PMP.
+            upnp_secure_mode: (Boolean) Enable UPnP secure mode.
+            upnp_wan_interface: (String) UPnP WAN interface (e.g., WAN, WAN2).
+            usg: (Attributes) USG settings. (see below for nested schema)
+            value: (String) IP address, CIDR subnet, or network ID to match.
+            version: '(String) IP version: v4 or v6.'
+            wifiman_enabled: (Boolean) Enable WiFiman.
+        importStatements: []
+    Site (Resource):
+        subCategory: ""
+        description: Manages Unifi sites
+        name: Site (Resource)
+        title: Site (Resource)
+        argumentDocs:
+            create: (String) A string that can be parsed as a duration consisting of numbers and unit suffixes, such as "30s" or "2h45m". Valid time units are "s" (seconds), "m" (minutes), "h" (hours).
+            delete: (String) A string that can be parsed as a duration consisting of numbers and unit suffixes, such as "30s" or "2h45m". Valid time units are "s" (seconds), "m" (minutes), "h" (hours). Setting a timeout for a Delete operation is only applicable if changes are saved into state before the destroy operation occurs.
+            description: (String) The description of the site.
+            id: (String) The ID of the site.
+            name: (String) The name of the site.
+            read: (String) A string that can be parsed as a duration consisting of numbers and unit suffixes, such as "30s" or "2h45m". Valid time units are "s" (seconds), "m" (minutes), "h" (hours). Read operations occur during any refresh or planning operation when refresh is enabled.
+            timeouts: (Attributes) (see below for nested schema)
+            update: (String) A string that can be parsed as a duration consisting of numbers and unit suffixes, such as "30s" or "2h45m". Valid time units are "s" (seconds), "m" (minutes), "h" (hours).
+        importStatements:
+            - |-
+              # Import using the site's 24-hex controller id (the `_id` from
+              # /proxy/network/api/self/sites).
+              terraform import unifi_site.mysite 5fe6261995fe130013456a36
+
+              # Or import by the site's short name. Any value that is not a 24-hex id is
+              # treated as a name; use the `name=` prefix to be explicit (e.g. the default
+              # site is named `default`).
+              terraform import unifi_site.mysite name=default
+
+              # Note: the UUID shown in the UI / Integration API (.../integration/v1/sites)
+              # is NOT the import id — use the 24-hex `_id` or the site name above.
+    Site To Site Vpn (Resource):
+        subCategory: ""
+        description: Manages a manual site-to-site IPsec VPN (the UniFi Settings → VPN → Site-to-Site network, purpose = site-vpn, vpn_type = ipsec-vpn). The advanced IKE/ESP attributes only apply when profile = customized.
+        name: Site To Site Vpn (Resource)
+        title: Site To Site Vpn (Resource)
+        argumentDocs:
+            create: (String) A string that can be parsed as a duration consisting of numbers and unit suffixes, such as "30s" or "2h45m". Valid time units are "s" (seconds), "m" (minutes), "h" (hours).
+            delete: (String) A string that can be parsed as a duration consisting of numbers and unit suffixes, such as "30s" or "2h45m". Valid time units are "s" (seconds), "m" (minutes), "h" (hours). Setting a timeout for a Delete operation is only applicable if changes are saved into state before the destroy operation occurs.
+            dynamic_routing: (Boolean) Whether IPsec dynamic routing is enabled.
+            enabled: (Boolean) Whether the tunnel is enabled.
+            esp_dh_group: (Number) ESP (phase 2) Diffie-Hellman group (PFS). Only used when profile = customized.
+            esp_encryption: (String) ESP (phase 2) encryption. Only used when profile = customized.
+            esp_hash: (String) ESP (phase 2) hash. Only used when profile = customized.
+            esp_lifetime: (String) ESP (phase 2) security-association lifetime, as a Go duration string (e.g. 1h, 3600s). Must be a whole number of seconds between 30s and 86400s (24h).
+            id: (String) The ID of the site-to-site VPN network.
+            ike_dh_group: (Number) IKE (phase 1) Diffie-Hellman group. Only used when profile = customized.
+            ike_encryption: (String) IKE (phase 1) encryption. Only used when profile = customized.
+            ike_hash: (String) IKE (phase 1) hash. Only used when profile = customized.
+            ike_lifetime: (String) IKE (phase 1) security-association lifetime, as a Go duration string (e.g. 8h, 28800s). Must be a whole number of seconds between 30s and 86400s (24h).
+            interface: (String) The local WAN interface the tunnel binds to (e.g. wan, wan2).
+            key_exchange: (String) IKE key-exchange version. One of ikev1 or ikev2.
+            local_ip: (String) The local IP used for the tunnel. Defaults to the WAN address when omitted.
+            name: (String) The name of the site-to-site VPN.
+            peer_ip: (String) The public IP address of the remote VPN gateway (peer).
+            pfs: (Boolean) Whether Perfect Forward Secrecy is enabled.
+            pre_shared_key: (String, Sensitive) The IPsec pre-shared key. Stored in state — use pre_shared_key_wo to avoid persisting the secret.
+            pre_shared_key_wo: (String, Sensitive, Write-only) Write-only equivalent of pre_shared_key (Terraform 1.11+). Used at apply time but never written to state, so it can be sourced from an ephemeral resource (e.g. a Vault secret). Mutually exclusive with pre_shared_key.
+            profile: (String) IPsec profile. One of customized, azure_dynamic, or azure_static. Set to customized to tune the IKE/ESP attributes below; the controller may derive the ESP values from the IKE ones.
+            read: (String) A string that can be parsed as a duration consisting of numbers and unit suffixes, such as "30s" or "2h45m". Valid time units are "s" (seconds), "m" (minutes), "h" (hours). Read operations occur during any refresh or planning operation when refresh is enabled.
+            remote_subnets: (List of String) The remote site's subnets reachable through the tunnel (CIDR).
+            route_distance: (Number) The route distance (administrative metric) for tunnel routes (1-255).
+            site: (String) The name of the site to associate the VPN with.
+            timeouts: (Attributes) (see below for nested schema)
+            update: (String) A string that can be parsed as a duration consisting of numbers and unit suffixes, such as "30s" or "2h45m". Valid time units are "s" (seconds), "m" (minutes), "h" (hours).
+        importStatements:
+            - |-
+              # Site-to-site VPN networks can be imported using the network ID (the pre-shared
+              # key is not recovered — set it in config and re-apply).
+              terraform import unifi_site_to_site_vpn.hq_to_branch 5f7e8d9c0a1b2c3d4e5f6a7b
+
+              # Or with an explicit site:
+              terraform import unifi_site_to_site_vpn.hq_to_branch default:5f7e8d9c0a1b2c3d4e5f6a7b
+    Static Route (Resource):
+        subCategory: ""
+        description: Manages a static route for the USG.
+        name: Static Route (Resource)
+        title: Static Route (Resource)
+        argumentDocs:
+            create: (String) A string that can be parsed as a duration consisting of numbers and unit suffixes, such as "30s" or "2h45m". Valid time units are "s" (seconds), "m" (minutes), "h" (hours).
+            delete: (String) A string that can be parsed as a duration consisting of numbers and unit suffixes, such as "30s" or "2h45m". Valid time units are "s" (seconds), "m" (minutes), "h" (hours). Setting a timeout for a Delete operation is only applicable if changes are saved into state before the destroy operation occurs.
+            distance: (Number) The distance of the static route.
+            enabled: (Boolean) Whether the static route is enabled.
+            gateway_device: (String) The MAC address of the gateway device, used when gateway_type is switch.
+            gateway_type: (String) The type of gateway for the static route. Can be default or switch.
+            id: (String) The ID of the static route.
+            interface: (String) The interface of the static route (only valid for interface-route type). This can be WAN1, WAN2, or a network ID.
+            name: (String) The name of the static route.
+            network: (String) The network subnet address.
+            next_hop: (String) The next hop of the static route (only valid for nexthop-route type). Accepts IPv4 or IPv6 addresses.
+            read: (String) A string that can be parsed as a duration consisting of numbers and unit suffixes, such as "30s" or "2h45m". Valid time units are "s" (seconds), "m" (minutes), "h" (hours). Read operations occur during any refresh or planning operation when refresh is enabled.
+            site: (String) The name of the site to associate the static route with.
+            timeouts: (Attributes) (see below for nested schema)
+            type: (String) The type of static route. Can be interface-route, nexthop-route, or blackhole.
+            update: (String) A string that can be parsed as a duration consisting of numbers and unit suffixes, such as "30s" or "2h45m". Valid time units are "s" (seconds), "m" (minutes), "h" (hours).
+        importStatements: []
+    Traffic Route (Resource):
+        subCategory: ""
+        description: Manages a traffic route in the UniFi controller. Traffic routes allow you to steer traffic matching specific destinations through a chosen network or VPN.
+        name: Traffic Route (Resource)
+        title: Traffic Route (Resource)
+        argumentDocs:
+            address: (String) An IP address, CIDR subnet, or hyphenated IP range to match.
+            clients: (Attributes List) List of client devices whose traffic this route applies to. (see below for nested schema)
+            create: (String) A string that can be parsed as a duration consisting of numbers and unit suffixes, such as "30s" or "2h45m". Valid time units are "s" (seconds), "m" (minutes), "h" (hours).
+            delete: (String) A string that can be parsed as a duration consisting of numbers and unit suffixes, such as "30s" or "2h45m". Valid time units are "s" (seconds), "m" (minutes), "h" (hours). Setting a timeout for a Delete operation is only applicable if changes are saved into state before the destroy operation occurs.
+            description: (String) A description of the traffic route (max 128 characters).
+            destination: (Attributes) Destination filter for this traffic route. Specify exactly one of domain, region, or ip. When omitted, the route matches all internet traffic. (see below for nested schema)
+            domain: (List of String) List of domain names to match.
+            enabled: (Boolean) Whether the traffic route is enabled.
+            id: (String) The ID of the traffic route.
+            ip: (Attributes List) List of IP address, subnet, or IP range entries to match. Use CIDR notation (e.g. 10.0.0.0/8) for subnets, or a hyphenated range (e.g. 192.168.10.1-192.168.10.255) for IP ranges. (see below for nested schema)
+            kill_switch_enabled: (Boolean) Whether the kill switch is enabled. When enabled, traffic is blocked if the target network/VPN is unavailable.
+            mac: (String) The MAC address of the client device.
+            network_id: (String) The ID of the network or VPN to route matching traffic through. Defaults to the primary WAN network.
+            networks: (Attributes List) List of networks whose traffic this route applies to. (see below for nested schema)
+            next_hop: (String) The next hop for the traffic route.
+            ports: (List of String) List of ports or port ranges to match. Use a single number (e.g. 80) for individual ports, or a hyphenated range (e.g. 8080-8090) for port ranges. Only supported for IP addresses and subnets, not IP ranges.
+            read: (String) A string that can be parsed as a duration consisting of numbers and unit suffixes, such as "30s" or "2h45m". Valid time units are "s" (seconds), "m" (minutes), "h" (hours). Read operations occur during any refresh or planning operation when refresh is enabled.
+            region: (List of String) List of regions to match.
+            site: (String) The name of the site to associate the traffic route with.
+            source: (Attributes) Source filter for this traffic route. When omitted, the route applies to all clients. (see below for nested schema)
+            timeouts: (Attributes) (see below for nested schema)
+            update: (String) A string that can be parsed as a duration consisting of numbers and unit suffixes, such as "30s" or "2h45m". Valid time units are "s" (seconds), "m" (minutes), "h" (hours).
+        importStatements:
+            - |-
+              # import from provider configured site
+              terraform import unifi_traffic_route.ip_route 6606e3e415f6df0721014c52
+
+              # import from another site
+              terraform import unifi_traffic_route.ip_route bfa2l6i7:6606e3e415f6df0721014c52
+    Vpn Client (Resource):
+        subCategory: ""
+        description: unifi_vpn_client manages WireGuard VPN client connections in the UniFi controller.
+        name: Vpn Client (Resource)
+        title: Vpn Client (Resource)
+        argumentDocs:
+            configuration: (Attributes) File-based WireGuard configuration. Provide a complete WireGuard .conf file. (see below for nested schema)
+            content: (String, Sensitive) Base64-encoded WireGuard configuration file content.
+            create: (String) A string that can be parsed as a duration consisting of numbers and unit suffixes, such as "30s" or "2h45m". Valid time units are "s" (seconds), "m" (minutes), "h" (hours).
+            default_route: (Boolean) Specifies whether to use the VPN as the default route.
+            delete: (String) A string that can be parsed as a duration consisting of numbers and unit suffixes, such as "30s" or "2h45m". Valid time units are "s" (seconds), "m" (minutes), "h" (hours). Setting a timeout for a Delete operation is only applicable if changes are saved into state before the destroy operation occurs.
+            dns_servers: (List of String) DNS servers for the WireGuard interface. Required for manual mode. Must specify 1-2 DNS server addresses.
+            enabled: (Boolean) Specifies whether the VPN client is enabled.
+            filename: (String) Filename of the WireGuard configuration file.
+            id: (String) The ID of the VPN client.
+            interface: (String) WAN interface to use for the VPN connection (e.g., wan, wan2).
+            ip: (String) WireGuard peer endpoint IP address.
+            name: (String) The name of the VPN client.
+            peer: (Attributes) Manual WireGuard peer configuration. Specify peer endpoint and public key. (see below for nested schema)
+            port: (Number) WireGuard peer endpoint port.
+            preshared_key: (String, Sensitive) WireGuard preshared key. Required when preshared_key_enabled is true.
+            preshared_key_enabled: (Boolean) Specifies whether to use a preshared key for additional security.
+            private_key: (String, Sensitive) WireGuard private key for this client.
+            public_key: (String, Sensitive) WireGuard peer public key.
+            pull_dns: (Boolean) Specifies whether to pull DNS servers from the VPN.
+            read: (String) A string that can be parsed as a duration consisting of numbers and unit suffixes, such as "30s" or "2h45m". Valid time units are "s" (seconds), "m" (minutes), "h" (hours). Read operations occur during any refresh or planning operation when refresh is enabled.
+            site: (String) The name of the site to associate the VPN client with.
+            subnet: (String) The local IP address for the WireGuard tunnel in CIDR notation (e.g., 10.0.0.2/24).
+            timeouts: (Attributes) (see below for nested schema)
+            update: (String) A string that can be parsed as a duration consisting of numbers and unit suffixes, such as "30s" or "2h45m". Valid time units are "s" (seconds), "m" (minutes), "h" (hours).
+            wireguard: (Attributes) WireGuard VPN configuration. Specify either configuration for file upload mode or peer for manual configuration. (see below for nested schema)
+        importStatements:
+            - |-
+              # Import a VPN client by ID
+              terraform import unifi_vpn_client.wireguard_vpn 507f1f77bcf86cd799439011
+    Vpn Server (Resource):
+        subCategory: ""
+        description: unifi_vpn_server manages VPN server configurations (WireGuard, L2TP, or OpenVPN) in the UniFi controller.
+        name: Vpn Server (Resource)
+        title: Vpn Server (Resource)
+        argumentDocs:
+            allow_weak_ciphers: (Boolean) Allow weak ciphers for L2TP connections.
+            auth_key: (String, Sensitive) OpenVPN static authentication key generated by the controller.
+            ca_crt: (String, Sensitive) CA certificate generated by the controller.
+            ca_key: (String, Sensitive) CA private key generated by the controller.
+            create: (String) A string that can be parsed as a duration consisting of numbers and unit suffixes, such as "30s" or "2h45m". Valid time units are "s" (seconds), "m" (minutes), "h" (hours).
+            delete: (String) A string that can be parsed as a duration consisting of numbers and unit suffixes, such as "30s" or "2h45m". Valid time units are "s" (seconds), "m" (minutes), "h" (hours). Setting a timeout for a Delete operation is only applicable if changes are saved into state before the destroy operation occurs.
+            dh_key: (String, Sensitive) Diffie-Hellman parameters generated by the controller.
+            dns: (Attributes) DNS configuration pushed to VPN clients. (see below for nested schema)
+            enabled: (Boolean) Specifies whether the VPN server is enabled.
+            encryption_cipher: (String) Encryption cipher for OpenVPN.
+            id: (String) The ID of the VPN server.
+            interface: (String) WAN interface to use for the VPN server (e.g., wan, wan2).
+            ip: (String) Local WAN IP to bind the VPN server to. Use any to listen on all addresses.
+            l2tp: (Attributes) L2TP VPN server configuration. Exactly one of wireguard, l2tp, or openvpn must be specified. (see below for nested schema)
+            mode: (String) OpenVPN mode.
+            name: (String) The name of the VPN server.
+            openvpn: (Attributes) OpenVPN server configuration. Exactly one of wireguard, l2tp, or openvpn must be specified. (see below for nested schema)
+            port: (Number) Port for the OpenVPN server to listen on.
+            pre_shared_key: (String, Sensitive) IPsec pre-shared key for L2TP. Required by the UniFi controller.
+            private_key: (String, Sensitive) WireGuard private key for this server (base64). If not specified, the provider generates one at create time (the controller does not generate it and rejects a server without a key).
+            public_key: (String) WireGuard public key for this server. Computed from the private key.
+            radiusprofile_id: (String) The ID of the RADIUS profile to use for authentication. Applicable to L2TP and OpenVPN server types.
+            read: (String) A string that can be parsed as a duration consisting of numbers and unit suffixes, such as "30s" or "2h45m". Valid time units are "s" (seconds), "m" (minutes), "h" (hours). Read operations occur during any refresh or planning operation when refresh is enabled.
+            server_crt: (String, Sensitive) Server certificate generated by the controller.
+            server_key: (String, Sensitive) Server private key generated by the controller.
+            servers: (List of String) DNS servers to push to VPN clients.
+            shared_client_crt: (String, Sensitive) Shared client certificate generated by the controller.
+            shared_client_key: (String, Sensitive) Shared client private key generated by the controller.
+            site: (String) The name of the site to associate the VPN server with.
+            subnet: (String) The VPN server subnet in CIDR notation (e.g., 10.100.0.1/24). The first address is the server's tunnel IP, so use the gateway form (10.100.0.1/24) — the network address (10.100.0.0/24) is rejected with api.err.IncorrectIPSubnetSpec.
+            timeouts: (Attributes) (see below for nested schema)
+            update: (String) A string that can be parsed as a duration consisting of numbers and unit suffixes, such as "30s" or "2h45m". Valid time units are "s" (seconds), "m" (minutes), "h" (hours).
+            wan: (Attributes) WAN binding configuration for the VPN server. (see below for nested schema)
+            wireguard: (Attributes) WireGuard VPN server configuration. Exactly one of wireguard, l2tp, or openvpn must be specified. (see below for nested schema)
+        importStatements:
+            - |-
+              # VPN servers can be imported by their 24-character hex network ID:
+              terraform import unifi_vpn_server.wireguard 5f3e1c2b9a8d7e6f5a4b3c2d
+
+              # Or by name, using the "name=" prefix:
+              terraform import unifi_vpn_server.wireguard name=wireguard
+
+              # Both forms may be prefixed with a site name and a colon to target a specific
+              # site (otherwise the provider's default site is used):
+              terraform import unifi_vpn_server.wireguard default:5f3e1c2b9a8d7e6f5a4b3c2d
+              terraform import unifi_vpn_server.wireguard default:name=wireguard
+    Wan (Resource):
+        subCategory: ""
+        description: WAN network resource
+        name: Wan (Resource)
+        title: Wan (Resource)
+        argumentDocs:
+            cos: (Number) DHCP Class of Service
+            create: (String) A string that can be parsed as a duration consisting of numbers and unit suffixes, such as "30s" or "2h45m". Valid time units are "s" (seconds), "m" (minutes), "h" (hours).
+            delete: (String) A string that can be parsed as a duration consisting of numbers and unit suffixes, such as "30s" or "2h45m". Valid time units are "s" (seconds), "m" (minutes), "h" (hours). Setting a timeout for a Delete operation is only applicable if changes are saved into state before the destroy operation occurs.
+            dhcp: (Attributes) DHCP configuration (see below for nested schema)
+            dhcpv6: (Attributes) DHCPv6 configuration (see below for nested schema)
+            dns: (Attributes) DNS configuration (see below for nested schema)
+            down_rate: (Number) Smart Queue download rate in kbps
+            download_kilobits_per_second: (Number) Download speed in kilobits per second
+            downstream: (String) IGMP proxy downstream target (none, lan, guest)
+            egress_qos: (Attributes) Egress QoS configuration (see below for nested schema)
+            enabled: (Boolean) Whether the WAN network is enabled
+            failover_priority: (Number) Failover priority
+            id: (String) The ID of the WAN network
+            igmp_proxy: (Attributes) IGMP proxy configuration (see below for nested schema)
+            ip_aliases: (List of String) IP aliases
+            ipv6_preference: (String) IPv6 DNS preference (auto, manual)
+            ipv6_primary: (String) Primary IPv6 DNS server
+            ipv6_secondary: (String) Secondary IPv6 DNS server
+            ipv6_setting_preference: (String) Whether WAN IPv6 settings are managed automatically by the controller or manually. Can be one of auto or manual.
+            load_balance: (Attributes) Load balance configuration (see below for nested schema)
+            mac_override_enabled: (Boolean) Whether the WAN interface MAC address is overridden.
+            name: (String) The name of the WAN network
+            nat_pmp_enabled: (Boolean) Whether UPnP NAT-PMP is enabled
+            option_number: (Number) DHCP option number
+            options: (Attributes List) DHCP options (see below for nested schema)
+            pd_size: (Number) DHCPv6 prefix delegation size
+            pd_size_auto: (Boolean) Whether DHCPv6 PD size is automatic
+            preference: (String) DNS preference (auto, manual)
+            primary: (String) Primary DNS server
+            priority: (Number) Egress QoS priority
+            provider_capabilities: (Attributes) WAN provider capabilities (line rate). Detected/populated by the controller; preserved when not set in config. (see below for nested schema)
+            read: (String) A string that can be parsed as a duration consisting of numbers and unit suffixes, such as "30s" or "2h45m". Valid time units are "s" (seconds), "m" (minutes), "h" (hours). Read operations occur during any refresh or planning operation when refresh is enabled.
+            report_wan_event: (Boolean) Whether to report WAN events
+            secondary: (String) Secondary DNS server
+            secure_mode: (Boolean) Whether UPnP secure mode is enabled
+            setting_preference: (String) Whether WAN settings are managed automatically by the controller or manually. Can be one of auto or manual.
+            single_network_lan: (String) The LAN network used for IPv6 single-network prefix delegation (used when the IPv6 delegation type is single_network).
+            site: (String) The name of the site to associate the WAN network with
+            smartq: (Attributes) Smart Queue configuration (see below for nested schema)
+            timeouts: (Attributes) (see below for nested schema)
+            type: (String) The WAN type (dhcp, static, pppoe)
+            type_v6: '(String) The IPv6 WAN type. One of dhcpv6, slaac, static, or disabled. Note: the controller requires slaac when the IPv6 delegation type is single_network (api.err.SingleNetworkMustBeSLAAC otherwise) — common with ISPs that deliver IPv6 by Router Advertisement, e.g. Free/Freebox in bridge mode.'
+            up_rate: (Number) Smart Queue upload rate in kbps
+            update: (String) A string that can be parsed as a duration consisting of numbers and unit suffixes, such as "30s" or "2h45m". Valid time units are "s" (seconds), "m" (minutes), "h" (hours).
+            upload_kilobits_per_second: (Number) Upload speed in kilobits per second
+            upnp: (Attributes) UPnP configuration (see below for nested schema)
+            upstream: (Boolean) Whether IGMP proxy upstream is enabled
+            value: (String) DHCP option value
+            vlan: (Attributes) VLAN configuration (see below for nested schema)
+            wan_delegation_type: (String) IPv6 WAN delegation type (pd, single_network, none)
+            wan_dslite_remote_host: (String) The DS-Lite AFTR remote host. Only used when wan_dslite_remote_host_auto is disabled.
+            wan_dslite_remote_host_auto: (Boolean) Whether the DS-Lite AFTR remote host is detected automatically.
+            wan_interface: (String) UPnP WAN interface
+            weight: (Number) Load balance weight
+        importStatements:
+            - |-
+              # import from provider configured site
+              terraform import unifi_wan.default "Internet 1"
+
+              # import from another site
+              terraform import unifi_wan.default "bfa2l6i7:Internet 1"
+    Wireguard Peer (Resource):
+        subCategory: ""
+        description: Manages a WireGuard peer (client) of a WireGuard VPN server. The server is a unifi_vpn_server resource (or a network with vpn_type = "wireguard-server"); its network ID is referenced via network_id.
+        name: Wireguard Peer (Resource)
+        title: Wireguard Peer (Resource)
+        argumentDocs:
+            allowed_ips: (List of String) Additional CIDRs routed to this peer beyond its tunnel IP.
+            create: (String) A string that can be parsed as a duration consisting of numbers and unit suffixes, such as "30s" or "2h45m". Valid time units are "s" (seconds), "m" (minutes), "h" (hours).
+            delete: (String) A string that can be parsed as a duration consisting of numbers and unit suffixes, such as "30s" or "2h45m". Valid time units are "s" (seconds), "m" (minutes), "h" (hours). Setting a timeout for a Delete operation is only applicable if changes are saved into state before the destroy operation occurs.
+            id: (String) The ID of the WireGuard peer.
+            interface_ip: (String) The tunnel IP assigned to the peer, without mask (e.g. 192.0.2.10). Must be within the WireGuard server's subnet.
+            name: (String) The name of the WireGuard peer.
+            network_id: (String) The ID of the WireGuard server network the peer connects to.
+            public_key: (String) The WireGuard public key of the peer.
+            read: (String) A string that can be parsed as a duration consisting of numbers and unit suffixes, such as "30s" or "2h45m". Valid time units are "s" (seconds), "m" (minutes), "h" (hours). Read operations occur during any refresh or planning operation when refresh is enabled.
+            site: (String) The name of the site the WireGuard server belongs to.
+            timeouts: (Attributes) (see below for nested schema)
+            update: (String) A string that can be parsed as a duration consisting of numbers and unit suffixes, such as "30s" or "2h45m". Valid time units are "s" (seconds), "m" (minutes), "h" (hours).
+        importStatements:
+            - |-
+              # import by network ID and peer ID from provider configured site
+              terraform import unifi_wireguard_peer.laptop 5dc28e5e9106d105bdc87217:6a259bc465f49edd8b44d2f4
+
+              # import from another site
+              terraform import unifi_wireguard_peer.laptop bfa2l6i7:5dc28e5e9106d105bdc87217:6a259bc465f49edd8b44d2f4
+    Wlan (Resource):
+        subCategory: ""
+        description: Manages a WiFi network / SSID in UniFi Controller
+        name: Wlan (Resource)
+        title: Wlan (Resource)
+        argumentDocs:
+            ap_group_ids: (Set of String) List of AP group IDs to apply this WLAN to.
+            ap_group_mode: (String) Access point group mode.
+            bc_filter_list: (Set of String) List of MAC addresses for the broadcast filter. The controller may populate this on its own, so it is computed when unset.
+            bss_transition: (Boolean) Improves client roaming by providing connection details of nearby APs.
+            create: (String) A string that can be parsed as a duration consisting of numbers and unit suffixes, such as "30s" or "2h45m". Valid time units are "s" (seconds), "m" (minutes), "h" (hours).
+            day_of_week: (String) Day of week for the block.
+            delete: (String) A string that can be parsed as a duration consisting of numbers and unit suffixes, such as "30s" or "2h45m". Valid time units are "s" (seconds), "m" (minutes), "h" (hours). Setting a timeout for a Delete operation is only applicable if changes are saved into state before the destroy operation occurs.
+            dtim_6e: (Number) DTIM period for the 6 GHz band (1-255). Only used when dtim_mode is custom. Computed from the controller when not set.
+            dtim_mode: (String) DTIM mode. Can be one of default or custom. Use custom together with dtim_ng/dtim_na/dtim_6e.
+            dtim_na: (Number) DTIM period for the 5 GHz band (1-255). Only used when dtim_mode is custom. Computed from the controller when not set.
+            dtim_ng: (Number) DTIM period for the 2.4 GHz band (1-255). Only used when dtim_mode is custom. Computed from the controller when not set.
+            duration: (String) Length of the block, as a Go duration string. The controller stores this value with one-minute resolution, so the duration must be at least 1m and a whole multiple of one minute (e.g. 30m, 2h).
+            enabled: (Boolean) Enable or disable the WLAN.
+            enhanced_iot: (Boolean) Enable enhanced IoT connectivity. When true, the controller forces iapp_enabled = true, wpa3_support = false, wpa3_transition = false, pmf_mode = "disabled" and dtim_ng = 1; the provider pins those fields to match, so any conflicting values you set for them are ignored (this disables WPA3 on the SSID).
+            fast_roaming_enabled: (Boolean) Enable fast roaming, aka 802.11r.
+            group_rekey: (Number) Group rekey interval in seconds (0 to disable).
+            hide_ssid: (Boolean) Indicates whether or not to hide the SSID from broadcast.
+            hotspot2conf_enabled: (Boolean) Enable Hotspot 2.0 configuration.
+            iapp_enabled: (Boolean) Enable Inter-Access Point Protocol (802.11f) for faster roaming. Computed from the controller when not set.
+            id: (String) The ID of the WLAN.
+            is_guest: (Boolean) Indicates that this is a guest WLAN and should use guest behaviors.
+            l2_isolation: (Boolean) Isolates stations on layer 2 (ethernet) level.
+            list: (Set of String) List of MAC addresses to filter (only valid if enabled is true).
+            mac_filter: (Attributes) MAC address filtering configuration. (see below for nested schema)
+            minimum_data_rate_2g_kbps: (Number) Minimum data rate for 2G clients in Kbps. When unset, the controller assigns a value (e.g. 1000 in auto mode), so this is computed rather than defaulted to 0.
+            minimum_data_rate_5g_kbps: (Number) Minimum data rate for 5G clients in Kbps. When unset, the controller assigns a value (e.g. 6000 in auto mode), so this is computed rather than defaulted to 0.
+            minrate_setting_preference: (String) Minimum rate setting preference.
+            mlo_enabled: (Boolean) Enable Multi-Link Operation (6 GHz).
+            multicast_enhance: (Boolean) Indicates whether or not Multicast Enhance is turned of for the network.
+            name: (String) The SSID of the network.
+            nas_identifier_type: (String) NAS identifier type for RADIUS.
+            network_id: (String) ID of the network for this WLAN.
+            no2ghz_oui: (Boolean) Connect high performance clients to 5 GHz only.
+            passphrase: (String, Sensitive) The passphrase for the network, only required if security is not open. Stored in state — use passphrase_wo to avoid persisting the secret.
+            passphrase_wo: (String, Sensitive, Write-only) Write-only equivalent of passphrase (Terraform 1.11+). Used at apply time but never written to state, so it can be sourced from an ephemeral resource (e.g. a Vault secret). Mutually exclusive with passphrase.
+            password: (String, Sensitive) The passphrase for this key (8-255 characters).
+            pmf_mode: (String) Enable Protected Management Frames. This cannot be disabled if using WPA 3.
+            policy: (String) MAC address filter policy (only valid if enabled is true).
+            private_preshared_keys: '(Attributes List) Private pre-shared keys (PPSK): a list of per-key passphrases, each optionally bound to its own network/VLAN. Only valid when private_preshared_keys_enabled is true. (see below for nested schema)'
+            private_preshared_keys_enabled: (Boolean) Whether per-key (PPSK) passphrases are enabled for this WLAN. Requires security = wpapsk.
+            proxy_arp: (Boolean) Reduces airtime usage by allowing APs to "proxy" common broadcast frames as unicast.
+            radius_mac_auth_enabled: (Boolean) Enable RADIUS MAC authentication.
+            radius_profile_id: (String) ID of the RADIUS profile to use when security wpaeap. The controller may assign a default profile, so this is computed when unset.
+            read: (String) A string that can be parsed as a duration consisting of numbers and unit suffixes, such as "30s" or "2h45m". Valid time units are "s" (seconds), "m" (minutes), "h" (hours). Read operations occur during any refresh or planning operation when refresh is enabled.
+            schedule: (Block List) Start and stop schedules for the WLAN (see below for nested schema)
+            security: (String) The type of WiFi security for this network.
+            site: (String) The name of the site to associate the WLAN with.
+            start_hour: (Number) Start hour for the block (0-23).
+            start_minute: (Number) Start minute for the block (0-59).
+            timeouts: (Attributes) (see below for nested schema)
+            uapsd: (Boolean) Enable Unscheduled Automatic Power Save Delivery.
+            update: (String) A string that can be parsed as a duration consisting of numbers and unit suffixes, such as "30s" or "2h45m". Valid time units are "s" (seconds), "m" (minutes), "h" (hours).
+            user_group_id: (String) ID of the user group to use for this network.
+            vlan: (Number) VLAN ID.
+            vlan_enabled: (Boolean) Enable VLAN tagging.
+            wlan_band: (String) WLAN band.
+            wlan_bands: (Set of String) List of WLAN bands.
+            wpa_enc: (String) WPA encryption. Can be one of auto, ccmp, gcmp, ccmp-256, or gcmp-256.
+            wpa_mode: (String) WPA mode. Can be one of auto, wpa1, or wpa2.
+            wpa3_enhanced_192: (Boolean) Enable WPA3 Enterprise 192-bit mode.
+            wpa3_fast_roaming: (Boolean) Enable WPA3 fast roaming (802.11r).
+            wpa3_support: (Boolean) Enable WPA 3 support (security must be wpapsk and PMF must be turned on).
+            wpa3_transition: (Boolean) Enable WPA 3 and WPA 2 support (security must be wpapsk and wpa3_support must be true).
+        importStatements:
+            - |-
+              # import from provider configured site
+              terraform import unifi_wlan.mywlan 5dc28e5e9106d105bdc87217
+
+              # import from another site
+              terraform import unifi_wlan.mywlan bfa2l6i7:5dc28e5e9106d105bdc87217

@@ -1,0 +1,1715 @@
+---
+apiVersion: apiextensions.k8s.io/v1
+kind: CustomResourceDefinition
+metadata:
+  annotations:
+    controller-gen.kubebuilder.io/version: v0.20.1
+  name: settings.setting.unifi.m.crossplane.io
+spec:
+  group: setting.unifi.m.crossplane.io
+  names:
+    categories:
+    - crossplane
+    - managed
+    - unifi
+    kind: Setting
+    listKind: SettingList
+    plural: settings
+    singular: setting
+  scope: Namespaced
+  versions:
+  - additionalPrinterColumns:
+    - jsonPath: .status.conditions[?(@.type=='Synced')].status
+      name: SYNCED
+      type: string
+    - jsonPath: .status.conditions[?(@.type=='Ready')].status
+      name: READY
+      type: string
+    - jsonPath: .metadata.annotations.crossplane\.io/external-name
+      name: EXTERNAL-NAME
+      type: string
+    - jsonPath: .metadata.creationTimestamp
+      name: AGE
+      type: date
+    name: v1alpha1
+    schema:
+      openAPIV3Schema:
+        description: Setting is the Schema for the Settings API. <no value>
+        properties:
+          apiVersion:
+            description: |-
+              APIVersion defines the versioned schema of this representation of an object.
+              Servers should convert recognized schemas to the latest internal value, and
+              may reject unrecognized values.
+              More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#resources
+            type: string
+          kind:
+            description: |-
+              Kind is a string value representing the REST resource this object represents.
+              Servers may infer this from the endpoint the client submits requests to.
+              Cannot be updated.
+              In CamelCase.
+              More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#types-kinds
+            type: string
+          metadata:
+            type: object
+          spec:
+            description: SettingSpec defines the desired state of Setting
+            properties:
+              forProvider:
+                properties:
+                  autoSpeedtest:
+                    properties:
+                      cronExpr:
+                        description: Cron expression controlling when the speed test
+                          runs (e.g. `0 * * * *`).
+                        type: string
+                      enabled:
+                        description: Whether periodic automated speed tests are enabled.
+                        type: boolean
+                    type: object
+                  country:
+                    properties:
+                      code:
+                        description: Regulatory country code (ISO 3166-1 numeric).
+                        type: number
+                    type: object
+                  doh:
+                    properties:
+                      customServers:
+                        items:
+                          properties:
+                            enabled:
+                              description: Enable this custom server. Defaults to
+                                true.
+                              type: boolean
+                            sdnsStamp:
+                              description: DNS stamp (sdns://) for the custom resolver.
+                              type: string
+                            serverName:
+                              description: Human-readable name for this custom server.
+                              type: string
+                          type: object
+                        type: array
+                      serverNames:
+                        description: Predefined DNS provider names (e.g. "cloudflare",
+                          "google").
+                        items:
+                          type: string
+                        type: array
+                      state:
+                        description: 'Encrypted DNS state: off, auto, manual, or custom.'
+                        type: string
+                    type: object
+                  dpi:
+                    properties:
+                      enabled:
+                        description: Whether DPI is enabled.
+                        type: boolean
+                      fingerprintingEnabled:
+                        description: Whether device fingerprinting is enabled.
+                        type: boolean
+                    type: object
+                  igmpSnooping:
+                    properties:
+                      enabled:
+                        description: Whether IGMP snooping is enabled for the site.
+                        type: boolean
+                      networkIds:
+                        description: IDs of the networks IGMP snooping applies to.
+                        items:
+                          type: string
+                        type: array
+                    type: object
+                  ips:
+                    properties:
+                      advancedFilteringPreference:
+                        description: 'Advanced filtering mode: manual or disabled.'
+                        type: string
+                      contentFilteringBlockingPageEnabled:
+                        description: Show a blocking page when content filtering blocks
+                          a request.
+                        type: boolean
+                      enabledCategories:
+                        description: Emerging Threats ruleset categories to enable
+                          (e.g. "emerging-malware", "tor", "phishing").
+                        items:
+                          type: string
+                        type: array
+                      enabledNetworks:
+                        description: Network IDs to apply IPS inspection to.
+                        items:
+                          type: string
+                        type: array
+                      honeypot:
+                        items:
+                          properties:
+                            ipAddress:
+                              description: IP address to use as a honeypot.
+                              type: string
+                            networkId:
+                              description: Network ID this honeypot IP belongs to.
+                              type: string
+                            version:
+                              description: 'IP version: v4 or v6.'
+                              type: string
+                          type: object
+                        type: array
+                      honeypotEnabled:
+                        description: Enable honeypot to detect internal port scans.
+                        type: boolean
+                      ipsMode:
+                        description: 'IPS operating mode: ids (detect only), ips (detect
+                          and block), ipsInline, or disabled.'
+                        type: string
+                      memoryOptimized:
+                        description: Use memory-optimized IPS ruleset (reduced rule
+                          set for low-memory devices).
+                        type: boolean
+                      restrictTorrents:
+                        description: Block BitTorrent traffic.
+                        type: boolean
+                      suppressionAlerts:
+                        items:
+                          properties:
+                            category:
+                              description: Alert suppression signature category.
+                              type: string
+                            gid:
+                              description: Signature Generator ID (GID).
+                              type: number
+                            id:
+                              description: Signature ID.
+                              type: number
+                            signature:
+                              description: Suppression signature name.
+                              type: string
+                            tracking:
+                              items:
+                                properties:
+                                  direction:
+                                    description: 'Match direction: both, src, or dest.'
+                                    type: string
+                                  mode:
+                                    description: 'Match mode: ip, subnet, or network.'
+                                    type: string
+                                  value:
+                                    description: IP address, CIDR subnet, or network
+                                      ID to match.
+                                    type: string
+                                type: object
+                              type: array
+                            type:
+                              description: 'Suppression type: `all` (everywhere) or
+                                `track` (only the tracked sources/destinations).'
+                              type: string
+                          type: object
+                        type: array
+                      suppressionWhitelist:
+                        items:
+                          properties:
+                            direction:
+                              description: 'Match direction: both, src, or dest.'
+                              type: string
+                            mode:
+                              description: 'Match mode: ip, subnet, or network.'
+                              type: string
+                            value:
+                              description: IP address, CIDR subnet, or network ID
+                                to whitelist.
+                              type: string
+                          type: object
+                        type: array
+                    type: object
+                  lcm:
+                    properties:
+                      brightness:
+                        description: Display brightness (1-100).
+                        type: number
+                      enabled:
+                        description: Whether the device display is enabled.
+                        type: boolean
+                      idleTimeout:
+                        description: Seconds of inactivity before the display turns
+                          off (10-3600).
+                        type: number
+                      sync:
+                        description: Sync display settings across devices.
+                        type: boolean
+                      touchEvent:
+                        description: Whether touch events on the display are enabled.
+                        type: boolean
+                    type: object
+                  mgmt:
+                    properties:
+                      advancedFeatureEnabled:
+                        description: Enable advanced features.
+                        type: boolean
+                      autoUpgrade:
+                        description: Automatically upgrade device firmware.
+                        type: boolean
+                      autoUpgradeHour:
+                        description: Hour of day (0-23) for automatic firmware upgrades.
+                        type: number
+                      debugToolsEnabled:
+                        description: Enable debug tools.
+                        type: boolean
+                      directConnectEnabled:
+                        description: Enable Direct Connect (remote access).
+                        type: boolean
+                      sshAuthPasswordEnabled:
+                        description: Allow SSH password authentication (in addition
+                          to keys).
+                        type: boolean
+                      sshEnabled:
+                        description: Enable SSH authentication.
+                        type: boolean
+                      sshKeys:
+                        items:
+                          properties:
+                            comment:
+                              description: Comment.
+                              type: string
+                            key:
+                              description: Public SSH key.
+                              type: string
+                            name:
+                              description: Name of SSH key.
+                              type: string
+                            type:
+                              description: Type of SSH key, e.g. ssh-rsa.
+                              type: string
+                          type: object
+                        type: array
+                      sshPasswordSecretRef:
+                        description: SSH password for device access. Sensitive — the
+                          controller stores only a hash, so this value is kept from
+                          configuration and not read back.
+                        properties:
+                          key:
+                            type: string
+                          name:
+                            description: Name of the secret.
+                            type: string
+                        required:
+                        - key
+                        - name
+                        type: object
+                      sshUsername:
+                        description: SSH username for device access.
+                        type: string
+                      unifiIdpEnabled:
+                        description: Enable the UniFi Identity Provider.
+                        type: boolean
+                      wifimanEnabled:
+                        description: Enable WiFiman.
+                        type: boolean
+                    type: object
+                  networkOptimization:
+                    properties:
+                      enabled:
+                        description: Whether automated network optimization is enabled.
+                        type: boolean
+                    type: object
+                  ntp:
+                    properties:
+                      ntpServer1:
+                        description: Primary NTP server.
+                        type: string
+                      ntpServer2:
+                        description: Second NTP server.
+                        type: string
+                      ntpServer3:
+                        description: Third NTP server.
+                        type: string
+                      ntpServer4:
+                        description: Fourth NTP server.
+                        type: string
+                      settingPreference:
+                        description: 'Configuration mode: `auto` or `manual`.'
+                        type: string
+                    type: object
+                  radius:
+                    properties:
+                      accountingEnabled:
+                        description: Enable RADIUS accounting.
+                        type: boolean
+                      acctPort:
+                        description: RADIUS accounting port.
+                        type: number
+                      authPort:
+                        description: RADIUS authentication port.
+                        type: number
+                      interimUpdateInterval:
+                        description: Interim update interval, as a Go duration string
+                          (e.g. `1h`, `3600s`).
+                        type: string
+                      secretSecretRef:
+                        description: RADIUS shared secret.
+                        properties:
+                          key:
+                            type: string
+                          name:
+                            description: Name of the secret.
+                            type: string
+                        required:
+                        - key
+                        - name
+                        type: object
+                    type: object
+                  site:
+                    description: The name of the site to associate the settings with.
+                    type: string
+                  syslog:
+                    properties:
+                      contents:
+                        description: Logged facilities (e.g. `device`, `client`, `firewall_default_policy`,
+                          `triggers`, `updates`, `admin_activity`, `critical`, `security_detections`,
+                          `vpn`).
+                        items:
+                          type: string
+                        type: array
+                      debug:
+                        description: Enable debug logging.
+                        type: boolean
+                      enabled:
+                        description: Whether remote syslog is enabled.
+                        type: boolean
+                      ip:
+                        description: Remote syslog server IP address.
+                        type: string
+                      logAllContents:
+                        description: Log all available facilities.
+                        type: boolean
+                      netconsoleEnabled:
+                        description: Whether netconsole logging is enabled.
+                        type: boolean
+                      netconsoleHost:
+                        description: Netconsole host.
+                        type: string
+                      netconsolePort:
+                        description: Netconsole port (1-65535).
+                        type: number
+                      port:
+                        description: Remote syslog server port (1-65535).
+                        type: number
+                      thisController:
+                        description: Also log this controller's events.
+                        type: boolean
+                      thisControllerEncryptedOnly:
+                        description: Only send this controller's logs over an encrypted
+                          channel.
+                        type: boolean
+                    type: object
+                  timeouts:
+                    properties:
+                      create:
+                        description: A string that can be [parsed as a duration](https://pkg.go.dev/time#ParseDuration)
+                          consisting of numbers and unit suffixes, such as "30s" or
+                          "2h45m". Valid time units are "s" (seconds), "m" (minutes),
+                          "h" (hours).
+                        type: string
+                      delete:
+                        description: A string that can be [parsed as a duration](https://pkg.go.dev/time#ParseDuration)
+                          consisting of numbers and unit suffixes, such as "30s" or
+                          "2h45m". Valid time units are "s" (seconds), "m" (minutes),
+                          "h" (hours). Setting a timeout for a Delete operation is
+                          only applicable if changes are saved into state before the
+                          destroy operation occurs.
+                        type: string
+                      read:
+                        description: A string that can be [parsed as a duration](https://pkg.go.dev/time#ParseDuration)
+                          consisting of numbers and unit suffixes, such as "30s" or
+                          "2h45m". Valid time units are "s" (seconds), "m" (minutes),
+                          "h" (hours). Read operations occur during any refresh or
+                          planning operation when refresh is enabled.
+                        type: string
+                      update:
+                        description: A string that can be [parsed as a duration](https://pkg.go.dev/time#ParseDuration)
+                          consisting of numbers and unit suffixes, such as "30s" or
+                          "2h45m". Valid time units are "s" (seconds), "m" (minutes),
+                          "h" (hours).
+                        type: string
+                    type: object
+                  usg:
+                    properties:
+                      broadcastPing:
+                        description: Enable broadcast ping.
+                        type: boolean
+                      dnsVerification:
+                        properties:
+                          domain:
+                            description: Domain for DNS verification.
+                            type: string
+                          primaryDnsServer:
+                            description: Primary DNS server.
+                            type: string
+                          secondaryDnsServer:
+                            description: Secondary DNS server.
+                            type: string
+                          settingPreference:
+                            description: 'Setting preference: auto or manual.'
+                            type: string
+                        type: object
+                      ftpModule:
+                        description: Enable FTP module.
+                        type: boolean
+                      geoIpFilteringBlock:
+                        description: 'Geo IP filtering action: block or allow.'
+                        type: string
+                      geoIpFilteringCountries:
+                        description: Comma-separated list of country codes for geo
+                          IP filtering.
+                        type: string
+                      geoIpFilteringEnabled:
+                        description: Enable geo IP filtering.
+                        type: boolean
+                      geoIpFilteringTrafficDirection:
+                        description: 'Geo IP filtering traffic direction: both, ingress,
+                          or egress.'
+                        type: string
+                      greModule:
+                        description: Enable GRE module.
+                        type: boolean
+                      h323Module:
+                        description: Enable H.323 module.
+                        type: boolean
+                      icmpTimeout:
+                        description: ICMP connection timeout, as a Go duration string
+                          (e.g. `30s`, `1m`).
+                        type: string
+                      mssClamp:
+                        description: 'MSS clamping mode: auto, custom, or disabled.'
+                        type: string
+                      offloadAccounting:
+                        description: Enable hardware offload for accounting.
+                        type: boolean
+                      offloadL2Blocking:
+                        description: Enable hardware offload for L2 blocking.
+                        type: boolean
+                      offloadSch:
+                        description: Enable hardware offload for scheduling.
+                        type: boolean
+                      otherTimeout:
+                        description: Other connections timeout, as a Go duration string
+                          (e.g. `600s`, `10m`).
+                        type: string
+                      pptpModule:
+                        description: Enable PPTP module.
+                        type: boolean
+                      receiveRedirects:
+                        description: Accept ICMP redirects.
+                        type: boolean
+                      sendRedirects:
+                        description: Send ICMP redirects.
+                        type: boolean
+                      sipModule:
+                        description: Enable SIP module.
+                        type: boolean
+                      synCookies:
+                        description: Enable SYN cookies.
+                        type: boolean
+                      tcpCloseTimeout:
+                        description: TCP close timeout, as a Go duration string (e.g.
+                          `10s`).
+                        type: string
+                      tcpCloseWaitTimeout:
+                        description: TCP close wait timeout, as a Go duration string
+                          (e.g. `60s`, `1m`).
+                        type: string
+                      tcpEstablishedTimeout:
+                        description: TCP established connection timeout, as a Go duration
+                          string (e.g. `7440s`, `2h4m`).
+                        type: string
+                      tcpFinWaitTimeout:
+                        description: TCP fin wait timeout, as a Go duration string
+                          (e.g. `120s`, `2m`).
+                        type: string
+                      tcpLastAckTimeout:
+                        description: TCP last ACK timeout, as a Go duration string
+                          (e.g. `30s`).
+                        type: string
+                      tcpSynRecvTimeout:
+                        description: TCP SYN received timeout, as a Go duration string
+                          (e.g. `60s`, `1m`).
+                        type: string
+                      tcpSynSentTimeout:
+                        description: TCP SYN sent timeout, as a Go duration string
+                          (e.g. `120s`, `2m`).
+                        type: string
+                      tcpTimeWaitTimeout:
+                        description: TCP time wait timeout, as a Go duration string
+                          (e.g. `120s`, `2m`).
+                        type: string
+                      tftpModule:
+                        description: Enable TFTP module.
+                        type: boolean
+                      timeoutSettingPreference:
+                        description: 'Timeout setting preference: auto or manual.'
+                        type: string
+                      udpOtherTimeout:
+                        description: UDP other timeout, as a Go duration string (e.g.
+                          `30s`).
+                        type: string
+                      udpStreamTimeout:
+                        description: UDP stream timeout, as a Go duration string (e.g.
+                          `180s`, `3m`).
+                        type: string
+                      unbindWanMonitors:
+                        description: Unbind WAN monitors.
+                        type: boolean
+                      upnpEnabled:
+                        description: Enable UPnP.
+                        type: boolean
+                      upnpNatPmpEnabled:
+                        description: Enable UPnP NAT-PMP.
+                        type: boolean
+                      upnpSecureMode:
+                        description: Enable UPnP secure mode.
+                        type: boolean
+                      upnpWanInterface:
+                        description: UPnP WAN interface (e.g., WAN, WAN2).
+                        type: string
+                    type: object
+                type: object
+              initProvider:
+                description: |-
+                  THIS IS A BETA FIELD. It will be honored
+                  unless the Management Policies feature flag is disabled.
+                  InitProvider holds the same fields as ForProvider, with the exception
+                  of Identifier and other resource reference fields. The fields that are
+                  in InitProvider are merged into ForProvider when the resource is created.
+                  The same fields are also added to the terraform ignore_changes hook, to
+                  avoid updating them after creation. This is useful for fields that are
+                  required on creation, but we do not desire to update them after creation,
+                  for example because of an external controller is managing them, like an
+                  autoscaler.
+                properties:
+                  autoSpeedtest:
+                    properties:
+                      cronExpr:
+                        description: Cron expression controlling when the speed test
+                          runs (e.g. `0 * * * *`).
+                        type: string
+                      enabled:
+                        description: Whether periodic automated speed tests are enabled.
+                        type: boolean
+                    type: object
+                  country:
+                    properties:
+                      code:
+                        description: Regulatory country code (ISO 3166-1 numeric).
+                        type: number
+                    type: object
+                  doh:
+                    properties:
+                      customServers:
+                        items:
+                          properties:
+                            enabled:
+                              description: Enable this custom server. Defaults to
+                                true.
+                              type: boolean
+                            sdnsStamp:
+                              description: DNS stamp (sdns://) for the custom resolver.
+                              type: string
+                            serverName:
+                              description: Human-readable name for this custom server.
+                              type: string
+                          type: object
+                        type: array
+                      serverNames:
+                        description: Predefined DNS provider names (e.g. "cloudflare",
+                          "google").
+                        items:
+                          type: string
+                        type: array
+                      state:
+                        description: 'Encrypted DNS state: off, auto, manual, or custom.'
+                        type: string
+                    type: object
+                  dpi:
+                    properties:
+                      enabled:
+                        description: Whether DPI is enabled.
+                        type: boolean
+                      fingerprintingEnabled:
+                        description: Whether device fingerprinting is enabled.
+                        type: boolean
+                    type: object
+                  igmpSnooping:
+                    properties:
+                      enabled:
+                        description: Whether IGMP snooping is enabled for the site.
+                        type: boolean
+                      networkIds:
+                        description: IDs of the networks IGMP snooping applies to.
+                        items:
+                          type: string
+                        type: array
+                    type: object
+                  ips:
+                    properties:
+                      advancedFilteringPreference:
+                        description: 'Advanced filtering mode: manual or disabled.'
+                        type: string
+                      contentFilteringBlockingPageEnabled:
+                        description: Show a blocking page when content filtering blocks
+                          a request.
+                        type: boolean
+                      enabledCategories:
+                        description: Emerging Threats ruleset categories to enable
+                          (e.g. "emerging-malware", "tor", "phishing").
+                        items:
+                          type: string
+                        type: array
+                      enabledNetworks:
+                        description: Network IDs to apply IPS inspection to.
+                        items:
+                          type: string
+                        type: array
+                      honeypot:
+                        items:
+                          properties:
+                            ipAddress:
+                              description: IP address to use as a honeypot.
+                              type: string
+                            networkId:
+                              description: Network ID this honeypot IP belongs to.
+                              type: string
+                            version:
+                              description: 'IP version: v4 or v6.'
+                              type: string
+                          type: object
+                        type: array
+                      honeypotEnabled:
+                        description: Enable honeypot to detect internal port scans.
+                        type: boolean
+                      ipsMode:
+                        description: 'IPS operating mode: ids (detect only), ips (detect
+                          and block), ipsInline, or disabled.'
+                        type: string
+                      memoryOptimized:
+                        description: Use memory-optimized IPS ruleset (reduced rule
+                          set for low-memory devices).
+                        type: boolean
+                      restrictTorrents:
+                        description: Block BitTorrent traffic.
+                        type: boolean
+                      suppressionAlerts:
+                        items:
+                          properties:
+                            category:
+                              description: Alert suppression signature category.
+                              type: string
+                            gid:
+                              description: Signature Generator ID (GID).
+                              type: number
+                            id:
+                              description: Signature ID.
+                              type: number
+                            signature:
+                              description: Suppression signature name.
+                              type: string
+                            tracking:
+                              items:
+                                properties:
+                                  direction:
+                                    description: 'Match direction: both, src, or dest.'
+                                    type: string
+                                  mode:
+                                    description: 'Match mode: ip, subnet, or network.'
+                                    type: string
+                                  value:
+                                    description: IP address, CIDR subnet, or network
+                                      ID to match.
+                                    type: string
+                                type: object
+                              type: array
+                            type:
+                              description: 'Suppression type: `all` (everywhere) or
+                                `track` (only the tracked sources/destinations).'
+                              type: string
+                          type: object
+                        type: array
+                      suppressionWhitelist:
+                        items:
+                          properties:
+                            direction:
+                              description: 'Match direction: both, src, or dest.'
+                              type: string
+                            mode:
+                              description: 'Match mode: ip, subnet, or network.'
+                              type: string
+                            value:
+                              description: IP address, CIDR subnet, or network ID
+                                to whitelist.
+                              type: string
+                          type: object
+                        type: array
+                    type: object
+                  lcm:
+                    properties:
+                      brightness:
+                        description: Display brightness (1-100).
+                        type: number
+                      enabled:
+                        description: Whether the device display is enabled.
+                        type: boolean
+                      idleTimeout:
+                        description: Seconds of inactivity before the display turns
+                          off (10-3600).
+                        type: number
+                      sync:
+                        description: Sync display settings across devices.
+                        type: boolean
+                      touchEvent:
+                        description: Whether touch events on the display are enabled.
+                        type: boolean
+                    type: object
+                  mgmt:
+                    properties:
+                      advancedFeatureEnabled:
+                        description: Enable advanced features.
+                        type: boolean
+                      autoUpgrade:
+                        description: Automatically upgrade device firmware.
+                        type: boolean
+                      autoUpgradeHour:
+                        description: Hour of day (0-23) for automatic firmware upgrades.
+                        type: number
+                      debugToolsEnabled:
+                        description: Enable debug tools.
+                        type: boolean
+                      directConnectEnabled:
+                        description: Enable Direct Connect (remote access).
+                        type: boolean
+                      sshAuthPasswordEnabled:
+                        description: Allow SSH password authentication (in addition
+                          to keys).
+                        type: boolean
+                      sshEnabled:
+                        description: Enable SSH authentication.
+                        type: boolean
+                      sshKeys:
+                        items:
+                          properties:
+                            comment:
+                              description: Comment.
+                              type: string
+                            key:
+                              description: Public SSH key.
+                              type: string
+                            name:
+                              description: Name of SSH key.
+                              type: string
+                            type:
+                              description: Type of SSH key, e.g. ssh-rsa.
+                              type: string
+                          type: object
+                        type: array
+                      sshPasswordSecretRef:
+                        description: SSH password for device access. Sensitive — the
+                          controller stores only a hash, so this value is kept from
+                          configuration and not read back.
+                        properties:
+                          key:
+                            type: string
+                          name:
+                            description: Name of the secret.
+                            type: string
+                        required:
+                        - key
+                        - name
+                        type: object
+                      sshUsername:
+                        description: SSH username for device access.
+                        type: string
+                      unifiIdpEnabled:
+                        description: Enable the UniFi Identity Provider.
+                        type: boolean
+                      wifimanEnabled:
+                        description: Enable WiFiman.
+                        type: boolean
+                    type: object
+                  networkOptimization:
+                    properties:
+                      enabled:
+                        description: Whether automated network optimization is enabled.
+                        type: boolean
+                    type: object
+                  ntp:
+                    properties:
+                      ntpServer1:
+                        description: Primary NTP server.
+                        type: string
+                      ntpServer2:
+                        description: Second NTP server.
+                        type: string
+                      ntpServer3:
+                        description: Third NTP server.
+                        type: string
+                      ntpServer4:
+                        description: Fourth NTP server.
+                        type: string
+                      settingPreference:
+                        description: 'Configuration mode: `auto` or `manual`.'
+                        type: string
+                    type: object
+                  radius:
+                    properties:
+                      accountingEnabled:
+                        description: Enable RADIUS accounting.
+                        type: boolean
+                      acctPort:
+                        description: RADIUS accounting port.
+                        type: number
+                      authPort:
+                        description: RADIUS authentication port.
+                        type: number
+                      interimUpdateInterval:
+                        description: Interim update interval, as a Go duration string
+                          (e.g. `1h`, `3600s`).
+                        type: string
+                      secretSecretRef:
+                        description: RADIUS shared secret.
+                        properties:
+                          key:
+                            type: string
+                          name:
+                            description: Name of the secret.
+                            type: string
+                        required:
+                        - key
+                        - name
+                        type: object
+                    type: object
+                  site:
+                    description: The name of the site to associate the settings with.
+                    type: string
+                  syslog:
+                    properties:
+                      contents:
+                        description: Logged facilities (e.g. `device`, `client`, `firewall_default_policy`,
+                          `triggers`, `updates`, `admin_activity`, `critical`, `security_detections`,
+                          `vpn`).
+                        items:
+                          type: string
+                        type: array
+                      debug:
+                        description: Enable debug logging.
+                        type: boolean
+                      enabled:
+                        description: Whether remote syslog is enabled.
+                        type: boolean
+                      ip:
+                        description: Remote syslog server IP address.
+                        type: string
+                      logAllContents:
+                        description: Log all available facilities.
+                        type: boolean
+                      netconsoleEnabled:
+                        description: Whether netconsole logging is enabled.
+                        type: boolean
+                      netconsoleHost:
+                        description: Netconsole host.
+                        type: string
+                      netconsolePort:
+                        description: Netconsole port (1-65535).
+                        type: number
+                      port:
+                        description: Remote syslog server port (1-65535).
+                        type: number
+                      thisController:
+                        description: Also log this controller's events.
+                        type: boolean
+                      thisControllerEncryptedOnly:
+                        description: Only send this controller's logs over an encrypted
+                          channel.
+                        type: boolean
+                    type: object
+                  timeouts:
+                    properties:
+                      create:
+                        description: A string that can be [parsed as a duration](https://pkg.go.dev/time#ParseDuration)
+                          consisting of numbers and unit suffixes, such as "30s" or
+                          "2h45m". Valid time units are "s" (seconds), "m" (minutes),
+                          "h" (hours).
+                        type: string
+                      delete:
+                        description: A string that can be [parsed as a duration](https://pkg.go.dev/time#ParseDuration)
+                          consisting of numbers and unit suffixes, such as "30s" or
+                          "2h45m". Valid time units are "s" (seconds), "m" (minutes),
+                          "h" (hours). Setting a timeout for a Delete operation is
+                          only applicable if changes are saved into state before the
+                          destroy operation occurs.
+                        type: string
+                      read:
+                        description: A string that can be [parsed as a duration](https://pkg.go.dev/time#ParseDuration)
+                          consisting of numbers and unit suffixes, such as "30s" or
+                          "2h45m". Valid time units are "s" (seconds), "m" (minutes),
+                          "h" (hours). Read operations occur during any refresh or
+                          planning operation when refresh is enabled.
+                        type: string
+                      update:
+                        description: A string that can be [parsed as a duration](https://pkg.go.dev/time#ParseDuration)
+                          consisting of numbers and unit suffixes, such as "30s" or
+                          "2h45m". Valid time units are "s" (seconds), "m" (minutes),
+                          "h" (hours).
+                        type: string
+                    type: object
+                  usg:
+                    properties:
+                      broadcastPing:
+                        description: Enable broadcast ping.
+                        type: boolean
+                      dnsVerification:
+                        properties:
+                          domain:
+                            description: Domain for DNS verification.
+                            type: string
+                          primaryDnsServer:
+                            description: Primary DNS server.
+                            type: string
+                          secondaryDnsServer:
+                            description: Secondary DNS server.
+                            type: string
+                          settingPreference:
+                            description: 'Setting preference: auto or manual.'
+                            type: string
+                        type: object
+                      ftpModule:
+                        description: Enable FTP module.
+                        type: boolean
+                      geoIpFilteringBlock:
+                        description: 'Geo IP filtering action: block or allow.'
+                        type: string
+                      geoIpFilteringCountries:
+                        description: Comma-separated list of country codes for geo
+                          IP filtering.
+                        type: string
+                      geoIpFilteringEnabled:
+                        description: Enable geo IP filtering.
+                        type: boolean
+                      geoIpFilteringTrafficDirection:
+                        description: 'Geo IP filtering traffic direction: both, ingress,
+                          or egress.'
+                        type: string
+                      greModule:
+                        description: Enable GRE module.
+                        type: boolean
+                      h323Module:
+                        description: Enable H.323 module.
+                        type: boolean
+                      icmpTimeout:
+                        description: ICMP connection timeout, as a Go duration string
+                          (e.g. `30s`, `1m`).
+                        type: string
+                      mssClamp:
+                        description: 'MSS clamping mode: auto, custom, or disabled.'
+                        type: string
+                      offloadAccounting:
+                        description: Enable hardware offload for accounting.
+                        type: boolean
+                      offloadL2Blocking:
+                        description: Enable hardware offload for L2 blocking.
+                        type: boolean
+                      offloadSch:
+                        description: Enable hardware offload for scheduling.
+                        type: boolean
+                      otherTimeout:
+                        description: Other connections timeout, as a Go duration string
+                          (e.g. `600s`, `10m`).
+                        type: string
+                      pptpModule:
+                        description: Enable PPTP module.
+                        type: boolean
+                      receiveRedirects:
+                        description: Accept ICMP redirects.
+                        type: boolean
+                      sendRedirects:
+                        description: Send ICMP redirects.
+                        type: boolean
+                      sipModule:
+                        description: Enable SIP module.
+                        type: boolean
+                      synCookies:
+                        description: Enable SYN cookies.
+                        type: boolean
+                      tcpCloseTimeout:
+                        description: TCP close timeout, as a Go duration string (e.g.
+                          `10s`).
+                        type: string
+                      tcpCloseWaitTimeout:
+                        description: TCP close wait timeout, as a Go duration string
+                          (e.g. `60s`, `1m`).
+                        type: string
+                      tcpEstablishedTimeout:
+                        description: TCP established connection timeout, as a Go duration
+                          string (e.g. `7440s`, `2h4m`).
+                        type: string
+                      tcpFinWaitTimeout:
+                        description: TCP fin wait timeout, as a Go duration string
+                          (e.g. `120s`, `2m`).
+                        type: string
+                      tcpLastAckTimeout:
+                        description: TCP last ACK timeout, as a Go duration string
+                          (e.g. `30s`).
+                        type: string
+                      tcpSynRecvTimeout:
+                        description: TCP SYN received timeout, as a Go duration string
+                          (e.g. `60s`, `1m`).
+                        type: string
+                      tcpSynSentTimeout:
+                        description: TCP SYN sent timeout, as a Go duration string
+                          (e.g. `120s`, `2m`).
+                        type: string
+                      tcpTimeWaitTimeout:
+                        description: TCP time wait timeout, as a Go duration string
+                          (e.g. `120s`, `2m`).
+                        type: string
+                      tftpModule:
+                        description: Enable TFTP module.
+                        type: boolean
+                      timeoutSettingPreference:
+                        description: 'Timeout setting preference: auto or manual.'
+                        type: string
+                      udpOtherTimeout:
+                        description: UDP other timeout, as a Go duration string (e.g.
+                          `30s`).
+                        type: string
+                      udpStreamTimeout:
+                        description: UDP stream timeout, as a Go duration string (e.g.
+                          `180s`, `3m`).
+                        type: string
+                      unbindWanMonitors:
+                        description: Unbind WAN monitors.
+                        type: boolean
+                      upnpEnabled:
+                        description: Enable UPnP.
+                        type: boolean
+                      upnpNatPmpEnabled:
+                        description: Enable UPnP NAT-PMP.
+                        type: boolean
+                      upnpSecureMode:
+                        description: Enable UPnP secure mode.
+                        type: boolean
+                      upnpWanInterface:
+                        description: UPnP WAN interface (e.g., WAN, WAN2).
+                        type: string
+                    type: object
+                type: object
+              managementPolicies:
+                default:
+                - '*'
+                description: |-
+                  THIS IS A BETA FIELD. It is on by default but can be opted out
+                  through a Crossplane feature flag.
+                  ManagementPolicies specify the array of actions Crossplane is allowed to
+                  take on the managed and external resources.
+                  See the design doc for more information: https://github.com/crossplane/crossplane/blob/499895a25d1a1a0ba1604944ef98ac7a1a71f197/design/design-doc-observe-only-resources.md?plain=1#L223
+                  and this one: https://github.com/crossplane/crossplane/blob/444267e84783136daa93568b364a5f01228cacbe/design/one-pager-ignore-changes.md
+                items:
+                  description: |-
+                    A ManagementAction represents an action that the Crossplane controllers
+                    can take on an external resource.
+                  enum:
+                  - Observe
+                  - Create
+                  - Update
+                  - Delete
+                  - LateInitialize
+                  - '*'
+                  type: string
+                type: array
+              providerConfigRef:
+                default:
+                  kind: ClusterProviderConfig
+                  name: default
+                description: |-
+                  ProviderConfigReference specifies how the provider that will be used to
+                  create, observe, update, and delete this managed resource should be
+                  configured.
+                properties:
+                  kind:
+                    description: Kind of the referenced object.
+                    type: string
+                  name:
+                    description: Name of the referenced object.
+                    type: string
+                required:
+                - kind
+                - name
+                type: object
+              writeConnectionSecretToRef:
+                description: |-
+                  WriteConnectionSecretToReference specifies the namespace and name of a
+                  Secret to which any connection details for this managed resource should
+                  be written. Connection details frequently include the endpoint, username,
+                  and password required to connect to the managed resource.
+                properties:
+                  name:
+                    description: Name of the secret.
+                    type: string
+                required:
+                - name
+                type: object
+            required:
+            - forProvider
+            type: object
+          status:
+            description: SettingStatus defines the observed state of Setting.
+            properties:
+              atProvider:
+                properties:
+                  autoSpeedtest:
+                    properties:
+                      cronExpr:
+                        description: Cron expression controlling when the speed test
+                          runs (e.g. `0 * * * *`).
+                        type: string
+                      enabled:
+                        description: Whether periodic automated speed tests are enabled.
+                        type: boolean
+                    type: object
+                  country:
+                    properties:
+                      code:
+                        description: Regulatory country code (ISO 3166-1 numeric).
+                        type: number
+                    type: object
+                  doh:
+                    properties:
+                      customServers:
+                        items:
+                          properties:
+                            enabled:
+                              description: Enable this custom server. Defaults to
+                                true.
+                              type: boolean
+                            sdnsStamp:
+                              description: DNS stamp (sdns://) for the custom resolver.
+                              type: string
+                            serverName:
+                              description: Human-readable name for this custom server.
+                              type: string
+                          type: object
+                        type: array
+                      serverNames:
+                        description: Predefined DNS provider names (e.g. "cloudflare",
+                          "google").
+                        items:
+                          type: string
+                        type: array
+                      state:
+                        description: 'Encrypted DNS state: off, auto, manual, or custom.'
+                        type: string
+                    type: object
+                  dpi:
+                    properties:
+                      enabled:
+                        description: Whether DPI is enabled.
+                        type: boolean
+                      fingerprintingEnabled:
+                        description: Whether device fingerprinting is enabled.
+                        type: boolean
+                    type: object
+                  id:
+                    type: string
+                  igmpSnooping:
+                    properties:
+                      enabled:
+                        description: Whether IGMP snooping is enabled for the site.
+                        type: boolean
+                      networkIds:
+                        description: IDs of the networks IGMP snooping applies to.
+                        items:
+                          type: string
+                        type: array
+                    type: object
+                  ips:
+                    properties:
+                      advancedFilteringPreference:
+                        description: 'Advanced filtering mode: manual or disabled.'
+                        type: string
+                      contentFilteringBlockingPageEnabled:
+                        description: Show a blocking page when content filtering blocks
+                          a request.
+                        type: boolean
+                      enabledCategories:
+                        description: Emerging Threats ruleset categories to enable
+                          (e.g. "emerging-malware", "tor", "phishing").
+                        items:
+                          type: string
+                        type: array
+                      enabledNetworks:
+                        description: Network IDs to apply IPS inspection to.
+                        items:
+                          type: string
+                        type: array
+                      honeypot:
+                        items:
+                          properties:
+                            ipAddress:
+                              description: IP address to use as a honeypot.
+                              type: string
+                            networkId:
+                              description: Network ID this honeypot IP belongs to.
+                              type: string
+                            version:
+                              description: 'IP version: v4 or v6.'
+                              type: string
+                          type: object
+                        type: array
+                      honeypotEnabled:
+                        description: Enable honeypot to detect internal port scans.
+                        type: boolean
+                      ipsMode:
+                        description: 'IPS operating mode: ids (detect only), ips (detect
+                          and block), ipsInline, or disabled.'
+                        type: string
+                      memoryOptimized:
+                        description: Use memory-optimized IPS ruleset (reduced rule
+                          set for low-memory devices).
+                        type: boolean
+                      restrictTorrents:
+                        description: Block BitTorrent traffic.
+                        type: boolean
+                      suppressionAlerts:
+                        items:
+                          properties:
+                            category:
+                              description: Alert suppression signature category.
+                              type: string
+                            gid:
+                              description: Signature Generator ID (GID).
+                              type: number
+                            id:
+                              description: Signature ID.
+                              type: number
+                            signature:
+                              description: Suppression signature name.
+                              type: string
+                            tracking:
+                              items:
+                                properties:
+                                  direction:
+                                    description: 'Match direction: both, src, or dest.'
+                                    type: string
+                                  mode:
+                                    description: 'Match mode: ip, subnet, or network.'
+                                    type: string
+                                  value:
+                                    description: IP address, CIDR subnet, or network
+                                      ID to match.
+                                    type: string
+                                type: object
+                              type: array
+                            type:
+                              description: 'Suppression type: `all` (everywhere) or
+                                `track` (only the tracked sources/destinations).'
+                              type: string
+                          type: object
+                        type: array
+                      suppressionWhitelist:
+                        items:
+                          properties:
+                            direction:
+                              description: 'Match direction: both, src, or dest.'
+                              type: string
+                            mode:
+                              description: 'Match mode: ip, subnet, or network.'
+                              type: string
+                            value:
+                              description: IP address, CIDR subnet, or network ID
+                                to whitelist.
+                              type: string
+                          type: object
+                        type: array
+                    type: object
+                  lcm:
+                    properties:
+                      brightness:
+                        description: Display brightness (1-100).
+                        type: number
+                      enabled:
+                        description: Whether the device display is enabled.
+                        type: boolean
+                      idleTimeout:
+                        description: Seconds of inactivity before the display turns
+                          off (10-3600).
+                        type: number
+                      sync:
+                        description: Sync display settings across devices.
+                        type: boolean
+                      touchEvent:
+                        description: Whether touch events on the display are enabled.
+                        type: boolean
+                    type: object
+                  mgmt:
+                    properties:
+                      advancedFeatureEnabled:
+                        description: Enable advanced features.
+                        type: boolean
+                      autoUpgrade:
+                        description: Automatically upgrade device firmware.
+                        type: boolean
+                      autoUpgradeHour:
+                        description: Hour of day (0-23) for automatic firmware upgrades.
+                        type: number
+                      debugToolsEnabled:
+                        description: Enable debug tools.
+                        type: boolean
+                      directConnectEnabled:
+                        description: Enable Direct Connect (remote access).
+                        type: boolean
+                      sshAuthPasswordEnabled:
+                        description: Allow SSH password authentication (in addition
+                          to keys).
+                        type: boolean
+                      sshEnabled:
+                        description: Enable SSH authentication.
+                        type: boolean
+                      sshKeys:
+                        items:
+                          properties:
+                            comment:
+                              description: Comment.
+                              type: string
+                            key:
+                              description: Public SSH key.
+                              type: string
+                            name:
+                              description: Name of SSH key.
+                              type: string
+                            type:
+                              description: Type of SSH key, e.g. ssh-rsa.
+                              type: string
+                          type: object
+                        type: array
+                      sshUsername:
+                        description: SSH username for device access.
+                        type: string
+                      unifiIdpEnabled:
+                        description: Enable the UniFi Identity Provider.
+                        type: boolean
+                      wifimanEnabled:
+                        description: Enable WiFiman.
+                        type: boolean
+                    type: object
+                  networkOptimization:
+                    properties:
+                      enabled:
+                        description: Whether automated network optimization is enabled.
+                        type: boolean
+                    type: object
+                  ntp:
+                    properties:
+                      ntpServer1:
+                        description: Primary NTP server.
+                        type: string
+                      ntpServer2:
+                        description: Second NTP server.
+                        type: string
+                      ntpServer3:
+                        description: Third NTP server.
+                        type: string
+                      ntpServer4:
+                        description: Fourth NTP server.
+                        type: string
+                      settingPreference:
+                        description: 'Configuration mode: `auto` or `manual`.'
+                        type: string
+                    type: object
+                  radius:
+                    properties:
+                      accountingEnabled:
+                        description: Enable RADIUS accounting.
+                        type: boolean
+                      acctPort:
+                        description: RADIUS accounting port.
+                        type: number
+                      authPort:
+                        description: RADIUS authentication port.
+                        type: number
+                      interimUpdateInterval:
+                        description: Interim update interval, as a Go duration string
+                          (e.g. `1h`, `3600s`).
+                        type: string
+                    type: object
+                  site:
+                    description: The name of the site to associate the settings with.
+                    type: string
+                  syslog:
+                    properties:
+                      contents:
+                        description: Logged facilities (e.g. `device`, `client`, `firewall_default_policy`,
+                          `triggers`, `updates`, `admin_activity`, `critical`, `security_detections`,
+                          `vpn`).
+                        items:
+                          type: string
+                        type: array
+                      debug:
+                        description: Enable debug logging.
+                        type: boolean
+                      enabled:
+                        description: Whether remote syslog is enabled.
+                        type: boolean
+                      ip:
+                        description: Remote syslog server IP address.
+                        type: string
+                      logAllContents:
+                        description: Log all available facilities.
+                        type: boolean
+                      netconsoleEnabled:
+                        description: Whether netconsole logging is enabled.
+                        type: boolean
+                      netconsoleHost:
+                        description: Netconsole host.
+                        type: string
+                      netconsolePort:
+                        description: Netconsole port (1-65535).
+                        type: number
+                      port:
+                        description: Remote syslog server port (1-65535).
+                        type: number
+                      thisController:
+                        description: Also log this controller's events.
+                        type: boolean
+                      thisControllerEncryptedOnly:
+                        description: Only send this controller's logs over an encrypted
+                          channel.
+                        type: boolean
+                    type: object
+                  timeouts:
+                    properties:
+                      create:
+                        description: A string that can be [parsed as a duration](https://pkg.go.dev/time#ParseDuration)
+                          consisting of numbers and unit suffixes, such as "30s" or
+                          "2h45m". Valid time units are "s" (seconds), "m" (minutes),
+                          "h" (hours).
+                        type: string
+                      delete:
+                        description: A string that can be [parsed as a duration](https://pkg.go.dev/time#ParseDuration)
+                          consisting of numbers and unit suffixes, such as "30s" or
+                          "2h45m". Valid time units are "s" (seconds), "m" (minutes),
+                          "h" (hours). Setting a timeout for a Delete operation is
+                          only applicable if changes are saved into state before the
+                          destroy operation occurs.
+                        type: string
+                      read:
+                        description: A string that can be [parsed as a duration](https://pkg.go.dev/time#ParseDuration)
+                          consisting of numbers and unit suffixes, such as "30s" or
+                          "2h45m". Valid time units are "s" (seconds), "m" (minutes),
+                          "h" (hours). Read operations occur during any refresh or
+                          planning operation when refresh is enabled.
+                        type: string
+                      update:
+                        description: A string that can be [parsed as a duration](https://pkg.go.dev/time#ParseDuration)
+                          consisting of numbers and unit suffixes, such as "30s" or
+                          "2h45m". Valid time units are "s" (seconds), "m" (minutes),
+                          "h" (hours).
+                        type: string
+                    type: object
+                  usg:
+                    properties:
+                      broadcastPing:
+                        description: Enable broadcast ping.
+                        type: boolean
+                      dnsVerification:
+                        properties:
+                          domain:
+                            description: Domain for DNS verification.
+                            type: string
+                          primaryDnsServer:
+                            description: Primary DNS server.
+                            type: string
+                          secondaryDnsServer:
+                            description: Secondary DNS server.
+                            type: string
+                          settingPreference:
+                            description: 'Setting preference: auto or manual.'
+                            type: string
+                        type: object
+                      ftpModule:
+                        description: Enable FTP module.
+                        type: boolean
+                      geoIpFilteringBlock:
+                        description: 'Geo IP filtering action: block or allow.'
+                        type: string
+                      geoIpFilteringCountries:
+                        description: Comma-separated list of country codes for geo
+                          IP filtering.
+                        type: string
+                      geoIpFilteringEnabled:
+                        description: Enable geo IP filtering.
+                        type: boolean
+                      geoIpFilteringTrafficDirection:
+                        description: 'Geo IP filtering traffic direction: both, ingress,
+                          or egress.'
+                        type: string
+                      greModule:
+                        description: Enable GRE module.
+                        type: boolean
+                      h323Module:
+                        description: Enable H.323 module.
+                        type: boolean
+                      icmpTimeout:
+                        description: ICMP connection timeout, as a Go duration string
+                          (e.g. `30s`, `1m`).
+                        type: string
+                      mssClamp:
+                        description: 'MSS clamping mode: auto, custom, or disabled.'
+                        type: string
+                      offloadAccounting:
+                        description: Enable hardware offload for accounting.
+                        type: boolean
+                      offloadL2Blocking:
+                        description: Enable hardware offload for L2 blocking.
+                        type: boolean
+                      offloadSch:
+                        description: Enable hardware offload for scheduling.
+                        type: boolean
+                      otherTimeout:
+                        description: Other connections timeout, as a Go duration string
+                          (e.g. `600s`, `10m`).
+                        type: string
+                      pptpModule:
+                        description: Enable PPTP module.
+                        type: boolean
+                      receiveRedirects:
+                        description: Accept ICMP redirects.
+                        type: boolean
+                      sendRedirects:
+                        description: Send ICMP redirects.
+                        type: boolean
+                      sipModule:
+                        description: Enable SIP module.
+                        type: boolean
+                      synCookies:
+                        description: Enable SYN cookies.
+                        type: boolean
+                      tcpCloseTimeout:
+                        description: TCP close timeout, as a Go duration string (e.g.
+                          `10s`).
+                        type: string
+                      tcpCloseWaitTimeout:
+                        description: TCP close wait timeout, as a Go duration string
+                          (e.g. `60s`, `1m`).
+                        type: string
+                      tcpEstablishedTimeout:
+                        description: TCP established connection timeout, as a Go duration
+                          string (e.g. `7440s`, `2h4m`).
+                        type: string
+                      tcpFinWaitTimeout:
+                        description: TCP fin wait timeout, as a Go duration string
+                          (e.g. `120s`, `2m`).
+                        type: string
+                      tcpLastAckTimeout:
+                        description: TCP last ACK timeout, as a Go duration string
+                          (e.g. `30s`).
+                        type: string
+                      tcpSynRecvTimeout:
+                        description: TCP SYN received timeout, as a Go duration string
+                          (e.g. `60s`, `1m`).
+                        type: string
+                      tcpSynSentTimeout:
+                        description: TCP SYN sent timeout, as a Go duration string
+                          (e.g. `120s`, `2m`).
+                        type: string
+                      tcpTimeWaitTimeout:
+                        description: TCP time wait timeout, as a Go duration string
+                          (e.g. `120s`, `2m`).
+                        type: string
+                      tftpModule:
+                        description: Enable TFTP module.
+                        type: boolean
+                      timeoutSettingPreference:
+                        description: 'Timeout setting preference: auto or manual.'
+                        type: string
+                      udpOtherTimeout:
+                        description: UDP other timeout, as a Go duration string (e.g.
+                          `30s`).
+                        type: string
+                      udpStreamTimeout:
+                        description: UDP stream timeout, as a Go duration string (e.g.
+                          `180s`, `3m`).
+                        type: string
+                      unbindWanMonitors:
+                        description: Unbind WAN monitors.
+                        type: boolean
+                      upnpEnabled:
+                        description: Enable UPnP.
+                        type: boolean
+                      upnpNatPmpEnabled:
+                        description: Enable UPnP NAT-PMP.
+                        type: boolean
+                      upnpSecureMode:
+                        description: Enable UPnP secure mode.
+                        type: boolean
+                      upnpWanInterface:
+                        description: UPnP WAN interface (e.g., WAN, WAN2).
+                        type: string
+                    type: object
+                type: object
+              conditions:
+                description: Conditions of the resource.
+                items:
+                  description: A Condition that may apply to a resource.
+                  properties:
+                    lastTransitionTime:
+                      description: |-
+                        LastTransitionTime is the last time this condition transitioned from one
+                        status to another.
+                      format: date-time
+                      type: string
+                    message:
+                      description: |-
+                        A Message containing details about this condition's last transition from
+                        one status to another, if any.
+                      type: string
+                    observedGeneration:
+                      description: |-
+                        ObservedGeneration represents the .metadata.generation that the condition was set based upon.
+                        For instance, if .metadata.generation is currently 12, but the .status.conditions[x].observedGeneration is 9, the condition is out of date
+                        with respect to the current state of the instance.
+                      format: int64
+                      type: integer
+                    reason:
+                      description: A Reason for this condition's last transition from
+                        one status to another.
+                      type: string
+                    status:
+                      description: Status of this condition; is it currently True,
+                        False, or Unknown?
+                      type: string
+                    type:
+                      description: |-
+                        Type of this condition. At most one of each condition type may apply to
+                        a resource at any point in time.
+                      type: string
+                  required:
+                  - lastTransitionTime
+                  - reason
+                  - status
+                  - type
+                  type: object
+                type: array
+                x-kubernetes-list-map-keys:
+                - type
+                x-kubernetes-list-type: map
+              observedGeneration:
+                description: |-
+                  ObservedGeneration is the latest metadata.generation
+                  which resulted in either a ready state, or stalled due to error
+                  it can not recover from without human intervention.
+                format: int64
+                type: integer
+            type: object
+        required:
+        - spec
+        type: object
+    served: true
+    storage: true
+    subresources:
+      status: {}

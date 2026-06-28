@@ -1,0 +1,21 @@
+apiVersion: wlan.unifi.crossplane.io/v1alpha1
+kind: Wlan
+metadata:
+  name: example-wifi
+spec:
+  forProvider:
+    name: example-wifi
+    security: wpapsk
+    # WLAN passphrase is read from a Kubernetes Secret, never inlined.
+    passphraseSecretRef:
+      name: example-wifi-passphrase
+      namespace: crossplane-system
+      key: passphrase
+    # Replace with a real network id, or wire networkIdRef/networkIdSelector
+    # to a Network managed resource.
+    networkId: REPLACE_WITH_NETWORK_ID
+    # Replace with a controller user-group id (e.g. the Default group).
+    userGroupId: REPLACE_WITH_USER_GROUP_ID
+    wlanBand: both
+  providerConfigRef:
+    name: default

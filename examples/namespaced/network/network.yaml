@@ -1,0 +1,17 @@
+apiVersion: network.unifi.m.crossplane.io/v1alpha1
+kind: Network
+metadata:
+  name: example-lan
+  namespace: default
+spec:
+  forProvider:
+    name: example-lan
+    subnet: 10.0.42.1/24
+    vlan: 42
+    dhcpServer:
+      - enabled: true
+        start: 10.0.42.10
+        stop: 10.0.42.254
+  providerConfigRef:
+    kind: ClusterProviderConfig
+    name: default

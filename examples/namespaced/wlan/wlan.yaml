@@ -1,0 +1,19 @@
+apiVersion: wlan.unifi.m.crossplane.io/v1alpha1
+kind: Wlan
+metadata:
+  name: example-wifi
+  namespace: default
+spec:
+  forProvider:
+    name: example-wifi
+    security: wpapsk
+    passphraseSecretRef:
+      name: example-wifi-passphrase
+      namespace: default
+      key: passphrase
+    networkId: REPLACE_WITH_NETWORK_ID
+    userGroupId: REPLACE_WITH_USER_GROUP_ID
+    wlanBand: both
+  providerConfigRef:
+    kind: ClusterProviderConfig
+    name: default

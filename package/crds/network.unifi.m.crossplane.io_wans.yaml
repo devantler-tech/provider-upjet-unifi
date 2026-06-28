@@ -1,0 +1,873 @@
+---
+apiVersion: apiextensions.k8s.io/v1
+kind: CustomResourceDefinition
+metadata:
+  annotations:
+    controller-gen.kubebuilder.io/version: v0.20.1
+  name: wans.network.unifi.m.crossplane.io
+spec:
+  group: network.unifi.m.crossplane.io
+  names:
+    categories:
+    - crossplane
+    - managed
+    - unifi
+    kind: Wan
+    listKind: WanList
+    plural: wans
+    singular: wan
+  scope: Namespaced
+  versions:
+  - additionalPrinterColumns:
+    - jsonPath: .status.conditions[?(@.type=='Synced')].status
+      name: SYNCED
+      type: string
+    - jsonPath: .status.conditions[?(@.type=='Ready')].status
+      name: READY
+      type: string
+    - jsonPath: .metadata.annotations.crossplane\.io/external-name
+      name: EXTERNAL-NAME
+      type: string
+    - jsonPath: .metadata.creationTimestamp
+      name: AGE
+      type: date
+    name: v1alpha1
+    schema:
+      openAPIV3Schema:
+        description: Wan is the Schema for the Wans API. <no value>
+        properties:
+          apiVersion:
+            description: |-
+              APIVersion defines the versioned schema of this representation of an object.
+              Servers should convert recognized schemas to the latest internal value, and
+              may reject unrecognized values.
+              More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#resources
+            type: string
+          kind:
+            description: |-
+              Kind is a string value representing the REST resource this object represents.
+              Servers may infer this from the endpoint the client submits requests to.
+              Cannot be updated.
+              In CamelCase.
+              More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#types-kinds
+            type: string
+          metadata:
+            type: object
+          spec:
+            description: WanSpec defines the desired state of Wan
+            properties:
+              forProvider:
+                properties:
+                  dhcp:
+                    properties:
+                      cos:
+                        description: DHCP Class of Service
+                        type: number
+                      options:
+                        items:
+                          properties:
+                            optionNumber:
+                              description: DHCP option number
+                              type: number
+                            value:
+                              description: DHCP option value
+                              type: string
+                          type: object
+                        type: array
+                    type: object
+                  dhcpv6:
+                    properties:
+                      cos:
+                        description: DHCPv6 Class of Service
+                        type: number
+                      options:
+                        items:
+                          properties:
+                            optionNumber:
+                              description: DHCPv6 option number (1, 11, 15, 16, or
+                                17)
+                              type: number
+                            value:
+                              description: DHCPv6 option value
+                              type: string
+                          type: object
+                        type: array
+                      pdSize:
+                        description: DHCPv6 prefix delegation size
+                        type: number
+                      pdSizeAuto:
+                        description: Whether DHCPv6 PD size is automatic
+                        type: boolean
+                      wanDelegationType:
+                        description: IPv6 WAN delegation type (pd, single_network,
+                          none)
+                        type: string
+                    type: object
+                  dns:
+                    properties:
+                      ipv6Preference:
+                        description: IPv6 DNS preference (auto, manual)
+                        type: string
+                      ipv6Primary:
+                        description: Primary IPv6 DNS server
+                        type: string
+                      ipv6Secondary:
+                        description: Secondary IPv6 DNS server
+                        type: string
+                      preference:
+                        description: DNS preference (auto, manual)
+                        type: string
+                      primary:
+                        description: Primary DNS server
+                        type: string
+                      secondary:
+                        description: Secondary DNS server
+                        type: string
+                    type: object
+                  egressQos:
+                    properties:
+                      enabled:
+                        description: Whether egress QoS is enabled
+                        type: boolean
+                      priority:
+                        description: Egress QoS priority
+                        type: number
+                    type: object
+                  enabled:
+                    description: Whether the WAN network is enabled
+                    type: boolean
+                  igmpProxy:
+                    properties:
+                      downstream:
+                        description: IGMP proxy downstream target (none, lan, guest)
+                        type: string
+                      upstream:
+                        description: Whether IGMP proxy upstream is enabled
+                        type: boolean
+                    type: object
+                  ipAliases:
+                    description: IP aliases
+                    items:
+                      type: string
+                    type: array
+                  ipv6SettingPreference:
+                    description: Whether WAN IPv6 settings are managed automatically
+                      by the controller or manually. Can be one of `auto` or `manual`.
+                    type: string
+                  loadBalance:
+                    properties:
+                      failoverPriority:
+                        description: Failover priority
+                        type: number
+                      type:
+                        description: Load balance type (failover-only, weighted)
+                        type: string
+                      weight:
+                        description: Load balance weight
+                        type: number
+                    type: object
+                  macOverrideEnabled:
+                    description: Whether the WAN interface MAC address is overridden.
+                    type: boolean
+                  name:
+                    description: The name of the WAN network
+                    type: string
+                  providerCapabilities:
+                    properties:
+                      downloadKilobitsPerSecond:
+                        description: Download speed in kilobits per second
+                        type: number
+                      uploadKilobitsPerSecond:
+                        description: Upload speed in kilobits per second
+                        type: number
+                    type: object
+                  reportWanEvent:
+                    description: Whether to report WAN events
+                    type: boolean
+                  settingPreference:
+                    description: Whether WAN settings are managed automatically by
+                      the controller or manually. Can be one of `auto` or `manual`.
+                    type: string
+                  singleNetworkLan:
+                    description: The LAN network used for IPv6 single-network prefix
+                      delegation (used when the IPv6 delegation type is `single_network`).
+                    type: string
+                  site:
+                    description: The name of the site to associate the WAN network
+                      with
+                    type: string
+                  smartq:
+                    properties:
+                      downRate:
+                        description: Smart Queue download rate in kbps
+                        type: number
+                      enabled:
+                        description: Whether Smart Queue is enabled
+                        type: boolean
+                      upRate:
+                        description: Smart Queue upload rate in kbps
+                        type: number
+                    type: object
+                  timeouts:
+                    properties:
+                      create:
+                        description: A string that can be [parsed as a duration](https://pkg.go.dev/time#ParseDuration)
+                          consisting of numbers and unit suffixes, such as "30s" or
+                          "2h45m". Valid time units are "s" (seconds), "m" (minutes),
+                          "h" (hours).
+                        type: string
+                      delete:
+                        description: A string that can be [parsed as a duration](https://pkg.go.dev/time#ParseDuration)
+                          consisting of numbers and unit suffixes, such as "30s" or
+                          "2h45m". Valid time units are "s" (seconds), "m" (minutes),
+                          "h" (hours). Setting a timeout for a Delete operation is
+                          only applicable if changes are saved into state before the
+                          destroy operation occurs.
+                        type: string
+                      read:
+                        description: A string that can be [parsed as a duration](https://pkg.go.dev/time#ParseDuration)
+                          consisting of numbers and unit suffixes, such as "30s" or
+                          "2h45m". Valid time units are "s" (seconds), "m" (minutes),
+                          "h" (hours). Read operations occur during any refresh or
+                          planning operation when refresh is enabled.
+                        type: string
+                      update:
+                        description: A string that can be [parsed as a duration](https://pkg.go.dev/time#ParseDuration)
+                          consisting of numbers and unit suffixes, such as "30s" or
+                          "2h45m". Valid time units are "s" (seconds), "m" (minutes),
+                          "h" (hours).
+                        type: string
+                    type: object
+                  type:
+                    description: The WAN type (dhcp, static, pppoe)
+                    type: string
+                  typeV6:
+                    description: 'The IPv6 WAN type. One of `dhcpv6`, `slaac`, `static`,
+                      or `disabled`. Note: the controller requires `slaac` when the
+                      IPv6 delegation type is `single_network` (`api.err.SingleNetworkMustBeSLAAC`
+                      otherwise) — common with ISPs that deliver IPv6 by Router Advertisement,
+                      e.g. Free/Freebox in bridge mode.'
+                    type: string
+                  upnp:
+                    properties:
+                      enabled:
+                        description: Whether UPnP is enabled
+                        type: boolean
+                      natPmpEnabled:
+                        description: Whether UPnP NAT-PMP is enabled
+                        type: boolean
+                      secureMode:
+                        description: Whether UPnP secure mode is enabled
+                        type: boolean
+                      wanInterface:
+                        description: UPnP WAN interface
+                        type: string
+                    type: object
+                  vlan:
+                    properties:
+                      enabled:
+                        description: Whether VLAN is enabled
+                        type: boolean
+                      id:
+                        description: The VLAN ID
+                        type: number
+                    type: object
+                  wanDsliteRemoteHost:
+                    description: The DS-Lite AFTR remote host. Only used when `wan_dslite_remote_host_auto`
+                      is disabled.
+                    type: string
+                  wanDsliteRemoteHostAuto:
+                    description: Whether the DS-Lite AFTR remote host is detected
+                      automatically.
+                    type: boolean
+                type: object
+              initProvider:
+                description: |-
+                  THIS IS A BETA FIELD. It will be honored
+                  unless the Management Policies feature flag is disabled.
+                  InitProvider holds the same fields as ForProvider, with the exception
+                  of Identifier and other resource reference fields. The fields that are
+                  in InitProvider are merged into ForProvider when the resource is created.
+                  The same fields are also added to the terraform ignore_changes hook, to
+                  avoid updating them after creation. This is useful for fields that are
+                  required on creation, but we do not desire to update them after creation,
+                  for example because of an external controller is managing them, like an
+                  autoscaler.
+                properties:
+                  dhcp:
+                    properties:
+                      cos:
+                        description: DHCP Class of Service
+                        type: number
+                      options:
+                        items:
+                          properties:
+                            optionNumber:
+                              description: DHCP option number
+                              type: number
+                            value:
+                              description: DHCP option value
+                              type: string
+                          type: object
+                        type: array
+                    type: object
+                  dhcpv6:
+                    properties:
+                      cos:
+                        description: DHCPv6 Class of Service
+                        type: number
+                      options:
+                        items:
+                          properties:
+                            optionNumber:
+                              description: DHCPv6 option number (1, 11, 15, 16, or
+                                17)
+                              type: number
+                            value:
+                              description: DHCPv6 option value
+                              type: string
+                          type: object
+                        type: array
+                      pdSize:
+                        description: DHCPv6 prefix delegation size
+                        type: number
+                      pdSizeAuto:
+                        description: Whether DHCPv6 PD size is automatic
+                        type: boolean
+                      wanDelegationType:
+                        description: IPv6 WAN delegation type (pd, single_network,
+                          none)
+                        type: string
+                    type: object
+                  dns:
+                    properties:
+                      ipv6Preference:
+                        description: IPv6 DNS preference (auto, manual)
+                        type: string
+                      ipv6Primary:
+                        description: Primary IPv6 DNS server
+                        type: string
+                      ipv6Secondary:
+                        description: Secondary IPv6 DNS server
+                        type: string
+                      preference:
+                        description: DNS preference (auto, manual)
+                        type: string
+                      primary:
+                        description: Primary DNS server
+                        type: string
+                      secondary:
+                        description: Secondary DNS server
+                        type: string
+                    type: object
+                  egressQos:
+                    properties:
+                      enabled:
+                        description: Whether egress QoS is enabled
+                        type: boolean
+                      priority:
+                        description: Egress QoS priority
+                        type: number
+                    type: object
+                  enabled:
+                    description: Whether the WAN network is enabled
+                    type: boolean
+                  igmpProxy:
+                    properties:
+                      downstream:
+                        description: IGMP proxy downstream target (none, lan, guest)
+                        type: string
+                      upstream:
+                        description: Whether IGMP proxy upstream is enabled
+                        type: boolean
+                    type: object
+                  ipAliases:
+                    description: IP aliases
+                    items:
+                      type: string
+                    type: array
+                  ipv6SettingPreference:
+                    description: Whether WAN IPv6 settings are managed automatically
+                      by the controller or manually. Can be one of `auto` or `manual`.
+                    type: string
+                  loadBalance:
+                    properties:
+                      failoverPriority:
+                        description: Failover priority
+                        type: number
+                      type:
+                        description: Load balance type (failover-only, weighted)
+                        type: string
+                      weight:
+                        description: Load balance weight
+                        type: number
+                    type: object
+                  macOverrideEnabled:
+                    description: Whether the WAN interface MAC address is overridden.
+                    type: boolean
+                  name:
+                    description: The name of the WAN network
+                    type: string
+                  providerCapabilities:
+                    properties:
+                      downloadKilobitsPerSecond:
+                        description: Download speed in kilobits per second
+                        type: number
+                      uploadKilobitsPerSecond:
+                        description: Upload speed in kilobits per second
+                        type: number
+                    type: object
+                  reportWanEvent:
+                    description: Whether to report WAN events
+                    type: boolean
+                  settingPreference:
+                    description: Whether WAN settings are managed automatically by
+                      the controller or manually. Can be one of `auto` or `manual`.
+                    type: string
+                  singleNetworkLan:
+                    description: The LAN network used for IPv6 single-network prefix
+                      delegation (used when the IPv6 delegation type is `single_network`).
+                    type: string
+                  site:
+                    description: The name of the site to associate the WAN network
+                      with
+                    type: string
+                  smartq:
+                    properties:
+                      downRate:
+                        description: Smart Queue download rate in kbps
+                        type: number
+                      enabled:
+                        description: Whether Smart Queue is enabled
+                        type: boolean
+                      upRate:
+                        description: Smart Queue upload rate in kbps
+                        type: number
+                    type: object
+                  timeouts:
+                    properties:
+                      create:
+                        description: A string that can be [parsed as a duration](https://pkg.go.dev/time#ParseDuration)
+                          consisting of numbers and unit suffixes, such as "30s" or
+                          "2h45m". Valid time units are "s" (seconds), "m" (minutes),
+                          "h" (hours).
+                        type: string
+                      delete:
+                        description: A string that can be [parsed as a duration](https://pkg.go.dev/time#ParseDuration)
+                          consisting of numbers and unit suffixes, such as "30s" or
+                          "2h45m". Valid time units are "s" (seconds), "m" (minutes),
+                          "h" (hours). Setting a timeout for a Delete operation is
+                          only applicable if changes are saved into state before the
+                          destroy operation occurs.
+                        type: string
+                      read:
+                        description: A string that can be [parsed as a duration](https://pkg.go.dev/time#ParseDuration)
+                          consisting of numbers and unit suffixes, such as "30s" or
+                          "2h45m". Valid time units are "s" (seconds), "m" (minutes),
+                          "h" (hours). Read operations occur during any refresh or
+                          planning operation when refresh is enabled.
+                        type: string
+                      update:
+                        description: A string that can be [parsed as a duration](https://pkg.go.dev/time#ParseDuration)
+                          consisting of numbers and unit suffixes, such as "30s" or
+                          "2h45m". Valid time units are "s" (seconds), "m" (minutes),
+                          "h" (hours).
+                        type: string
+                    type: object
+                  type:
+                    description: The WAN type (dhcp, static, pppoe)
+                    type: string
+                  typeV6:
+                    description: 'The IPv6 WAN type. One of `dhcpv6`, `slaac`, `static`,
+                      or `disabled`. Note: the controller requires `slaac` when the
+                      IPv6 delegation type is `single_network` (`api.err.SingleNetworkMustBeSLAAC`
+                      otherwise) — common with ISPs that deliver IPv6 by Router Advertisement,
+                      e.g. Free/Freebox in bridge mode.'
+                    type: string
+                  upnp:
+                    properties:
+                      enabled:
+                        description: Whether UPnP is enabled
+                        type: boolean
+                      natPmpEnabled:
+                        description: Whether UPnP NAT-PMP is enabled
+                        type: boolean
+                      secureMode:
+                        description: Whether UPnP secure mode is enabled
+                        type: boolean
+                      wanInterface:
+                        description: UPnP WAN interface
+                        type: string
+                    type: object
+                  vlan:
+                    properties:
+                      enabled:
+                        description: Whether VLAN is enabled
+                        type: boolean
+                      id:
+                        description: The VLAN ID
+                        type: number
+                    type: object
+                  wanDsliteRemoteHost:
+                    description: The DS-Lite AFTR remote host. Only used when `wan_dslite_remote_host_auto`
+                      is disabled.
+                    type: string
+                  wanDsliteRemoteHostAuto:
+                    description: Whether the DS-Lite AFTR remote host is detected
+                      automatically.
+                    type: boolean
+                type: object
+              managementPolicies:
+                default:
+                - '*'
+                description: |-
+                  THIS IS A BETA FIELD. It is on by default but can be opted out
+                  through a Crossplane feature flag.
+                  ManagementPolicies specify the array of actions Crossplane is allowed to
+                  take on the managed and external resources.
+                  See the design doc for more information: https://github.com/crossplane/crossplane/blob/499895a25d1a1a0ba1604944ef98ac7a1a71f197/design/design-doc-observe-only-resources.md?plain=1#L223
+                  and this one: https://github.com/crossplane/crossplane/blob/444267e84783136daa93568b364a5f01228cacbe/design/one-pager-ignore-changes.md
+                items:
+                  description: |-
+                    A ManagementAction represents an action that the Crossplane controllers
+                    can take on an external resource.
+                  enum:
+                  - Observe
+                  - Create
+                  - Update
+                  - Delete
+                  - LateInitialize
+                  - '*'
+                  type: string
+                type: array
+              providerConfigRef:
+                default:
+                  kind: ClusterProviderConfig
+                  name: default
+                description: |-
+                  ProviderConfigReference specifies how the provider that will be used to
+                  create, observe, update, and delete this managed resource should be
+                  configured.
+                properties:
+                  kind:
+                    description: Kind of the referenced object.
+                    type: string
+                  name:
+                    description: Name of the referenced object.
+                    type: string
+                required:
+                - kind
+                - name
+                type: object
+              writeConnectionSecretToRef:
+                description: |-
+                  WriteConnectionSecretToReference specifies the namespace and name of a
+                  Secret to which any connection details for this managed resource should
+                  be written. Connection details frequently include the endpoint, username,
+                  and password required to connect to the managed resource.
+                properties:
+                  name:
+                    description: Name of the secret.
+                    type: string
+                required:
+                - name
+                type: object
+            required:
+            - forProvider
+            type: object
+            x-kubernetes-validations:
+            - message: spec.forProvider.name is a required parameter
+              rule: '!(''*'' in self.managementPolicies || ''Create'' in self.managementPolicies
+                || ''Update'' in self.managementPolicies) || has(self.forProvider.name)
+                || (has(self.initProvider) && has(self.initProvider.name))'
+          status:
+            description: WanStatus defines the observed state of Wan.
+            properties:
+              atProvider:
+                properties:
+                  dhcp:
+                    properties:
+                      cos:
+                        description: DHCP Class of Service
+                        type: number
+                      options:
+                        items:
+                          properties:
+                            optionNumber:
+                              description: DHCP option number
+                              type: number
+                            value:
+                              description: DHCP option value
+                              type: string
+                          type: object
+                        type: array
+                    type: object
+                  dhcpv6:
+                    properties:
+                      cos:
+                        description: DHCPv6 Class of Service
+                        type: number
+                      options:
+                        items:
+                          properties:
+                            optionNumber:
+                              description: DHCPv6 option number (1, 11, 15, 16, or
+                                17)
+                              type: number
+                            value:
+                              description: DHCPv6 option value
+                              type: string
+                          type: object
+                        type: array
+                      pdSize:
+                        description: DHCPv6 prefix delegation size
+                        type: number
+                      pdSizeAuto:
+                        description: Whether DHCPv6 PD size is automatic
+                        type: boolean
+                      wanDelegationType:
+                        description: IPv6 WAN delegation type (pd, single_network,
+                          none)
+                        type: string
+                    type: object
+                  dns:
+                    properties:
+                      ipv6Preference:
+                        description: IPv6 DNS preference (auto, manual)
+                        type: string
+                      ipv6Primary:
+                        description: Primary IPv6 DNS server
+                        type: string
+                      ipv6Secondary:
+                        description: Secondary IPv6 DNS server
+                        type: string
+                      preference:
+                        description: DNS preference (auto, manual)
+                        type: string
+                      primary:
+                        description: Primary DNS server
+                        type: string
+                      secondary:
+                        description: Secondary DNS server
+                        type: string
+                    type: object
+                  egressQos:
+                    properties:
+                      enabled:
+                        description: Whether egress QoS is enabled
+                        type: boolean
+                      priority:
+                        description: Egress QoS priority
+                        type: number
+                    type: object
+                  enabled:
+                    description: Whether the WAN network is enabled
+                    type: boolean
+                  id:
+                    type: string
+                  igmpProxy:
+                    properties:
+                      downstream:
+                        description: IGMP proxy downstream target (none, lan, guest)
+                        type: string
+                      upstream:
+                        description: Whether IGMP proxy upstream is enabled
+                        type: boolean
+                    type: object
+                  ipAliases:
+                    description: IP aliases
+                    items:
+                      type: string
+                    type: array
+                  ipv6SettingPreference:
+                    description: Whether WAN IPv6 settings are managed automatically
+                      by the controller or manually. Can be one of `auto` or `manual`.
+                    type: string
+                  loadBalance:
+                    properties:
+                      failoverPriority:
+                        description: Failover priority
+                        type: number
+                      type:
+                        description: Load balance type (failover-only, weighted)
+                        type: string
+                      weight:
+                        description: Load balance weight
+                        type: number
+                    type: object
+                  macOverrideEnabled:
+                    description: Whether the WAN interface MAC address is overridden.
+                    type: boolean
+                  name:
+                    description: The name of the WAN network
+                    type: string
+                  providerCapabilities:
+                    properties:
+                      downloadKilobitsPerSecond:
+                        description: Download speed in kilobits per second
+                        type: number
+                      uploadKilobitsPerSecond:
+                        description: Upload speed in kilobits per second
+                        type: number
+                    type: object
+                  reportWanEvent:
+                    description: Whether to report WAN events
+                    type: boolean
+                  settingPreference:
+                    description: Whether WAN settings are managed automatically by
+                      the controller or manually. Can be one of `auto` or `manual`.
+                    type: string
+                  singleNetworkLan:
+                    description: The LAN network used for IPv6 single-network prefix
+                      delegation (used when the IPv6 delegation type is `single_network`).
+                    type: string
+                  site:
+                    description: The name of the site to associate the WAN network
+                      with
+                    type: string
+                  smartq:
+                    properties:
+                      downRate:
+                        description: Smart Queue download rate in kbps
+                        type: number
+                      enabled:
+                        description: Whether Smart Queue is enabled
+                        type: boolean
+                      upRate:
+                        description: Smart Queue upload rate in kbps
+                        type: number
+                    type: object
+                  timeouts:
+                    properties:
+                      create:
+                        description: A string that can be [parsed as a duration](https://pkg.go.dev/time#ParseDuration)
+                          consisting of numbers and unit suffixes, such as "30s" or
+                          "2h45m". Valid time units are "s" (seconds), "m" (minutes),
+                          "h" (hours).
+                        type: string
+                      delete:
+                        description: A string that can be [parsed as a duration](https://pkg.go.dev/time#ParseDuration)
+                          consisting of numbers and unit suffixes, such as "30s" or
+                          "2h45m". Valid time units are "s" (seconds), "m" (minutes),
+                          "h" (hours). Setting a timeout for a Delete operation is
+                          only applicable if changes are saved into state before the
+                          destroy operation occurs.
+                        type: string
+                      read:
+                        description: A string that can be [parsed as a duration](https://pkg.go.dev/time#ParseDuration)
+                          consisting of numbers and unit suffixes, such as "30s" or
+                          "2h45m". Valid time units are "s" (seconds), "m" (minutes),
+                          "h" (hours). Read operations occur during any refresh or
+                          planning operation when refresh is enabled.
+                        type: string
+                      update:
+                        description: A string that can be [parsed as a duration](https://pkg.go.dev/time#ParseDuration)
+                          consisting of numbers and unit suffixes, such as "30s" or
+                          "2h45m". Valid time units are "s" (seconds), "m" (minutes),
+                          "h" (hours).
+                        type: string
+                    type: object
+                  type:
+                    description: The WAN type (dhcp, static, pppoe)
+                    type: string
+                  typeV6:
+                    description: 'The IPv6 WAN type. One of `dhcpv6`, `slaac`, `static`,
+                      or `disabled`. Note: the controller requires `slaac` when the
+                      IPv6 delegation type is `single_network` (`api.err.SingleNetworkMustBeSLAAC`
+                      otherwise) — common with ISPs that deliver IPv6 by Router Advertisement,
+                      e.g. Free/Freebox in bridge mode.'
+                    type: string
+                  upnp:
+                    properties:
+                      enabled:
+                        description: Whether UPnP is enabled
+                        type: boolean
+                      natPmpEnabled:
+                        description: Whether UPnP NAT-PMP is enabled
+                        type: boolean
+                      secureMode:
+                        description: Whether UPnP secure mode is enabled
+                        type: boolean
+                      wanInterface:
+                        description: UPnP WAN interface
+                        type: string
+                    type: object
+                  vlan:
+                    properties:
+                      enabled:
+                        description: Whether VLAN is enabled
+                        type: boolean
+                      id:
+                        description: The VLAN ID
+                        type: number
+                    type: object
+                  wanDsliteRemoteHost:
+                    description: The DS-Lite AFTR remote host. Only used when `wan_dslite_remote_host_auto`
+                      is disabled.
+                    type: string
+                  wanDsliteRemoteHostAuto:
+                    description: Whether the DS-Lite AFTR remote host is detected
+                      automatically.
+                    type: boolean
+                type: object
+              conditions:
+                description: Conditions of the resource.
+                items:
+                  description: A Condition that may apply to a resource.
+                  properties:
+                    lastTransitionTime:
+                      description: |-
+                        LastTransitionTime is the last time this condition transitioned from one
+                        status to another.
+                      format: date-time
+                      type: string
+                    message:
+                      description: |-
+                        A Message containing details about this condition's last transition from
+                        one status to another, if any.
+                      type: string
+                    observedGeneration:
+                      description: |-
+                        ObservedGeneration represents the .metadata.generation that the condition was set based upon.
+                        For instance, if .metadata.generation is currently 12, but the .status.conditions[x].observedGeneration is 9, the condition is out of date
+                        with respect to the current state of the instance.
+                      format: int64
+                      type: integer
+                    reason:
+                      description: A Reason for this condition's last transition from
+                        one status to another.
+                      type: string
+                    status:
+                      description: Status of this condition; is it currently True,
+                        False, or Unknown?
+                      type: string
+                    type:
+                      description: |-
+                        Type of this condition. At most one of each condition type may apply to
+                        a resource at any point in time.
+                      type: string
+                  required:
+                  - lastTransitionTime
+                  - reason
+                  - status
+                  - type
+                  type: object
+                type: array
+                x-kubernetes-list-map-keys:
+                - type
+                x-kubernetes-list-type: map
+              observedGeneration:
+                description: |-
+                  ObservedGeneration is the latest metadata.generation
+                  which resulted in either a ready state, or stalled due to error
+                  it can not recover from without human intervention.
+                format: int64
+                type: integer
+            type: object
+        required:
+        - spec
+        type: object
+    served: true
+    storage: true
+    subresources:
+      status: {}

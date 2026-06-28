@@ -1,0 +1,1450 @@
+---
+apiVersion: apiextensions.k8s.io/v1
+kind: CustomResourceDefinition
+metadata:
+  annotations:
+    controller-gen.kubebuilder.io/version: v0.20.1
+  name: devices.device.unifi.m.crossplane.io
+spec:
+  group: device.unifi.m.crossplane.io
+  names:
+    categories:
+    - crossplane
+    - managed
+    - unifi
+    kind: Device
+    listKind: DeviceList
+    plural: devices
+    singular: device
+  scope: Namespaced
+  versions:
+  - additionalPrinterColumns:
+    - jsonPath: .status.conditions[?(@.type=='Synced')].status
+      name: SYNCED
+      type: string
+    - jsonPath: .status.conditions[?(@.type=='Ready')].status
+      name: READY
+      type: string
+    - jsonPath: .metadata.annotations.crossplane\.io/external-name
+      name: EXTERNAL-NAME
+      type: string
+    - jsonPath: .metadata.creationTimestamp
+      name: AGE
+      type: date
+    name: v1alpha1
+    schema:
+      openAPIV3Schema:
+        description: Device is the Schema for the Devices API. <no value>
+        properties:
+          apiVersion:
+            description: |-
+              APIVersion defines the versioned schema of this representation of an object.
+              Servers should convert recognized schemas to the latest internal value, and
+              may reject unrecognized values.
+              More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#resources
+            type: string
+          kind:
+            description: |-
+              Kind is a string value representing the REST resource this object represents.
+              Servers may infer this from the endpoint the client submits requests to.
+              Cannot be updated.
+              In CamelCase.
+              More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#types-kinds
+            type: string
+          metadata:
+            type: object
+          spec:
+            description: DeviceSpec defines the desired state of Device
+            properties:
+              forProvider:
+                properties:
+                  allowAdoption:
+                    description: Specifies whether this resource should tell the controller
+                      to adopt the device on create.
+                    type: boolean
+                  bandsteeringMode:
+                    description: Band steering mode; valid values are `off`, `equal`,
+                      and `prefer_5g`.
+                    type: string
+                  configNetwork:
+                    properties:
+                      bondingEnabled:
+                        description: Enable network bonding.
+                        type: boolean
+                      dns1:
+                        description: Primary DNS server.
+                        type: string
+                      dns2:
+                        description: Secondary DNS server.
+                        type: string
+                      dnssuffix:
+                        description: DNS suffix.
+                        type: string
+                      gateway:
+                        description: Gateway address (for static configuration).
+                        type: string
+                      ip:
+                        description: IP address (for static configuration).
+                        type: string
+                      netmask:
+                        description: Network mask (for static configuration).
+                        type: string
+                      type:
+                        description: Network configuration type (dhcp or static).
+                        type: string
+                    type: object
+                  disabled:
+                    description: Specifies whether this device should be disabled.
+                    type: boolean
+                  flowctrlEnabled:
+                    description: Enable flow control.
+                    type: boolean
+                  forgetOnDestroy:
+                    description: Specifies whether this resource should tell the controller
+                      to forget the device on destroy.
+                    type: boolean
+                  jumboframeEnabled:
+                    description: Enable jumbo frames.
+                    type: boolean
+                  lcmBrightness:
+                    description: LCM brightness (1-100).
+                    type: number
+                  lcmBrightnessOverride:
+                    description: Override LCM brightness.
+                    type: boolean
+                  lcmIdleTimeout:
+                    description: LCM idle timeout, as a Go duration string (e.g. `10m`,
+                      `600s`).
+                    type: string
+                  lcmIdleTimeoutOverride:
+                    description: Override LCM idle timeout.
+                    type: boolean
+                  lcmNightModeBegins:
+                    description: LCM night mode begin time (HH:MM format).
+                    type: string
+                  lcmNightModeEnds:
+                    description: LCM night mode end time (HH:MM format).
+                    type: string
+                  ledOverride:
+                    description: LED override setting; valid values are `default`,
+                      `on`, and `off`.
+                    type: string
+                  ledOverrideColor:
+                    description: LED color override (hex color code).
+                    type: string
+                  ledOverrideColorBrightness:
+                    description: LED brightness (0-100).
+                    type: number
+                  locked:
+                    description: Specifies whether the device is locked.
+                    type: boolean
+                  mac:
+                    description: The MAC address of the device. This can be specified
+                      so that the provider can take control of a device (since devices
+                      are created through adoption).
+                    type: string
+                  mgmtNetworkId:
+                    description: 'Management network ID. The network this device uses
+                      for its own management traffic (the UI''s Network Override).
+                      When set, the device tags its management onto this network''s
+                      VLAN, so that VLAN must already be tagged on the device''s upstream
+                      switch port(s) before this attribute is applied. Otherwise the
+                      device loses its management path, drops off, and the apply fails
+                      with an inconsistent-result error. Apply in two steps: tag the
+                      VLAN on the uplink (a port_override tagged_networkconf_ids entry)
+                      first, then set mgmt_network_id. Leave unset to manage on the
+                      uplink''s native (untagged) network.'
+                    type: string
+                  name:
+                    description: The name of the device.
+                    type: string
+                  outdoorModeOverride:
+                    description: Outdoor mode override; valid values are `default`,
+                      `on`, and `off`.
+                    type: string
+                  outletEnabled:
+                    description: Enable outlet control.
+                    type: boolean
+                  outletOverrides:
+                    items:
+                      properties:
+                        cycleEnabled:
+                          description: Enable power cycle.
+                          type: boolean
+                        index:
+                          description: Outlet index.
+                          type: number
+                        name:
+                          description: Outlet name.
+                          type: string
+                        relayState:
+                          description: Relay state (on/off).
+                          type: boolean
+                      type: object
+                    type: array
+                  poeMode:
+                    description: PoE mode; valid values are `auto`, `pasv24`, `passthrough`,
+                      and `off`.
+                    type: string
+                  portOverride:
+                    description: Per-port settings overrides, applied only to the
+                      ports you declare. Ports without a `port_override` block keep
+                      their existing controller-side configuration — the provider
+                      merges your declared ports (by `index`) into the device's current
+                      overrides rather than replacing the whole set. Removing a block
+                      stops managing that port but does not reset it; clear a port
+                      by overriding it back to the defaults instead.
+                    items:
+                      properties:
+                        aggregateMembers:
+                          description: Port indices that make up this link-aggregation
+                            (LAG) group. Only takes effect when `op_mode` is `aggregate`
+                            on this port.
+                          items:
+                            type: number
+                          type: array
+                        autoneg:
+                          description: Enable auto-negotiation for port speed.
+                          type: boolean
+                        dot1xCtrl:
+                          description: 802.1X control mode.
+                          type: string
+                        dot1xIdleTimeout:
+                          description: 802.1X idle timeout, as a Go duration string
+                            (e.g. `5m`, `300s`).
+                          type: string
+                        egressRateLimitKbps:
+                          description: Egress rate limit in kbps.
+                          type: number
+                        egressRateLimitKbpsEnabled:
+                          description: Enable egress rate limiting.
+                          type: boolean
+                        excludedNetworkconfIds:
+                          description: List of network IDs to exclude from this port.
+                          items:
+                            type: string
+                          type: array
+                        fecMode:
+                          description: Forward Error Correction mode.
+                          type: string
+                        flowControlEnabled:
+                          description: Enable flow control.
+                          type: boolean
+                        forward:
+                          description: Forwarding mode.
+                          type: string
+                        fullDuplex:
+                          description: Enable full duplex mode.
+                          type: boolean
+                        index:
+                          description: Switch port index.
+                          type: number
+                        isolation:
+                          description: Enable port isolation.
+                          type: boolean
+                        lldpmedEnabled:
+                          description: Enable LLDP-MED.
+                          type: boolean
+                        lldpmedNotifyEnabled:
+                          description: Enable LLDP-MED notifications.
+                          type: boolean
+                        mirrorPortIdx:
+                          description: Mirror port index.
+                          type: number
+                        multicastRouterNetworkconfIds:
+                          description: List of network IDs for multicast router.
+                          items:
+                            type: string
+                          type: array
+                        name:
+                          description: Human-readable name of the port.
+                          type: string
+                        nativeNetworkconfId:
+                          description: Native network ID (VLAN).
+                          type: string
+                        opMode:
+                          description: 'Operating mode of the port: `switch` (default),
+                            `mirror`, or `aggregate`. Set `aggregate` on the lead
+                            port of an SFP+/link-aggregation (LAG) group and list
+                            the member ports in `aggregate_members`. Only written
+                            when not `switch`, as gateway devices (UDM) reject op_mode
+                            on update.'
+                          type: string
+                        poeMode:
+                          description: PoE mode of the port; valid values are `auto`,
+                            `pasv24`, `passthrough`, and `off`.
+                          type: string
+                        portKeepaliveEnabled:
+                          description: Enable port keepalive.
+                          type: boolean
+                        portProfileId:
+                          description: ID of the Port Profile used on this port.
+                          type: string
+                        portSecurityEnabled:
+                          description: Enable port security.
+                          type: boolean
+                        portSecurityMacAddress:
+                          description: List of MAC addresses allowed when port security
+                            is enabled.
+                          items:
+                            type: string
+                          type: array
+                        priorityQueue1Level:
+                          description: Priority queue 1 level.
+                          type: number
+                        priorityQueue2Level:
+                          description: Priority queue 2 level.
+                          type: number
+                        priorityQueue3Level:
+                          description: Priority queue 3 level.
+                          type: number
+                        priorityQueue4Level:
+                          description: Priority queue 4 level.
+                          type: number
+                        settingPreference:
+                          description: Setting preference.
+                          type: string
+                        speed:
+                          description: Port speed in Mbps.
+                          type: number
+                        stormctrlBcastEnabled:
+                          description: Enable broadcast storm control.
+                          type: boolean
+                        stormctrlBcastLevel:
+                          description: Broadcast storm control level.
+                          type: number
+                        stormctrlBcastRate:
+                          description: Broadcast storm control rate.
+                          type: number
+                        stormctrlMcastEnabled:
+                          description: Enable multicast storm control.
+                          type: boolean
+                        stormctrlMcastLevel:
+                          description: Multicast storm control level.
+                          type: number
+                        stormctrlMcastRate:
+                          description: Multicast storm control rate.
+                          type: number
+                        stormctrlType:
+                          description: Storm control type.
+                          type: string
+                        stormctrlUcastEnabled:
+                          description: Enable unicast storm control.
+                          type: boolean
+                        stormctrlUcastLevel:
+                          description: Unicast storm control level.
+                          type: number
+                        stormctrlUcastRate:
+                          description: Unicast storm control rate.
+                          type: number
+                        stpPortMode:
+                          description: STP port mode.
+                          type: boolean
+                        taggedNetworkconfIds:
+                          description: List of network IDs to tag on this port.
+                          items:
+                            type: string
+                          type: array
+                        taggedVlanMgmt:
+                          description: Tagged VLAN management.
+                          type: string
+                        voiceNetworkconfId:
+                          description: Voice network ID.
+                          type: string
+                      type: object
+                    type: array
+                  radioTable:
+                    items:
+                      properties:
+                        antennaGain:
+                          description: Antenna gain.
+                          type: number
+                        antennaId:
+                          description: Antenna ID.
+                          type: number
+                        assistedRoamingEnabled:
+                          description: Enable assisted roaming.
+                          type: boolean
+                        assistedRoamingRssi:
+                          description: Assisted roaming RSSI threshold.
+                          type: number
+                        channel:
+                          description: Channel number or 'auto'.
+                          type: string
+                        dfs:
+                          description: Enable DFS (Dynamic Frequency Selection).
+                          type: boolean
+                        hardNoiseFloorEnabled:
+                          description: Enable hard noise floor.
+                          type: boolean
+                        ht:
+                          description: Channel width (20, 40, 80, 160).
+                          type: number
+                        loadbalanceEnabled:
+                          description: Enable load balancing.
+                          type: boolean
+                        maxsta:
+                          description: Maximum number of stations.
+                          type: number
+                        minRssi:
+                          description: Minimum RSSI value.
+                          type: number
+                        minRssiEnabled:
+                          description: Enable minimum RSSI.
+                          type: boolean
+                        name:
+                          description: Radio name.
+                          type: string
+                        radio:
+                          description: Radio band (ng, na, ad, 6e).
+                          type: string
+                        sensLevel:
+                          description: Sensitivity level.
+                          type: number
+                        sensLevelEnabled:
+                          description: Enable sensitivity level.
+                          type: boolean
+                        txPower:
+                          description: Transmit power or 'auto'.
+                          type: string
+                        txPowerMode:
+                          description: Transmit power mode (auto, medium, high, low,
+                            custom).
+                          type: string
+                        vwireEnabled:
+                          description: Enable virtual wire.
+                          type: boolean
+                      type: object
+                    type: array
+                  site:
+                    description: The name of the site to associate the device with.
+                    type: string
+                  stpPriority:
+                    description: STP priority.
+                    type: number
+                  stpVersion:
+                    description: STP version; valid values are `stp`, `rstp`, and
+                      `disabled`.
+                    type: string
+                  switchVlanEnabled:
+                    description: Enable VLAN support on the switch.
+                    type: boolean
+                  timeouts:
+                    properties:
+                      create:
+                        description: A string that can be [parsed as a duration](https://pkg.go.dev/time#ParseDuration)
+                          consisting of numbers and unit suffixes, such as "30s" or
+                          "2h45m". Valid time units are "s" (seconds), "m" (minutes),
+                          "h" (hours).
+                        type: string
+                      delete:
+                        description: A string that can be [parsed as a duration](https://pkg.go.dev/time#ParseDuration)
+                          consisting of numbers and unit suffixes, such as "30s" or
+                          "2h45m". Valid time units are "s" (seconds), "m" (minutes),
+                          "h" (hours). Setting a timeout for a Delete operation is
+                          only applicable if changes are saved into state before the
+                          destroy operation occurs.
+                        type: string
+                      read:
+                        description: A string that can be [parsed as a duration](https://pkg.go.dev/time#ParseDuration)
+                          consisting of numbers and unit suffixes, such as "30s" or
+                          "2h45m". Valid time units are "s" (seconds), "m" (minutes),
+                          "h" (hours). Read operations occur during any refresh or
+                          planning operation when refresh is enabled.
+                        type: string
+                      update:
+                        description: A string that can be [parsed as a duration](https://pkg.go.dev/time#ParseDuration)
+                          consisting of numbers and unit suffixes, such as "30s" or
+                          "2h45m". Valid time units are "s" (seconds), "m" (minutes),
+                          "h" (hours).
+                        type: string
+                    type: object
+                  volume:
+                    description: Volume level (0-100).
+                    type: number
+                  xBaresipPasswordSecretRef:
+                    description: Baresip password.
+                    properties:
+                      key:
+                        type: string
+                      name:
+                        description: Name of the secret.
+                        type: string
+                    required:
+                    - key
+                    - name
+                    type: object
+                type: object
+              initProvider:
+                description: |-
+                  THIS IS A BETA FIELD. It will be honored
+                  unless the Management Policies feature flag is disabled.
+                  InitProvider holds the same fields as ForProvider, with the exception
+                  of Identifier and other resource reference fields. The fields that are
+                  in InitProvider are merged into ForProvider when the resource is created.
+                  The same fields are also added to the terraform ignore_changes hook, to
+                  avoid updating them after creation. This is useful for fields that are
+                  required on creation, but we do not desire to update them after creation,
+                  for example because of an external controller is managing them, like an
+                  autoscaler.
+                properties:
+                  allowAdoption:
+                    description: Specifies whether this resource should tell the controller
+                      to adopt the device on create.
+                    type: boolean
+                  bandsteeringMode:
+                    description: Band steering mode; valid values are `off`, `equal`,
+                      and `prefer_5g`.
+                    type: string
+                  configNetwork:
+                    properties:
+                      bondingEnabled:
+                        description: Enable network bonding.
+                        type: boolean
+                      dns1:
+                        description: Primary DNS server.
+                        type: string
+                      dns2:
+                        description: Secondary DNS server.
+                        type: string
+                      dnssuffix:
+                        description: DNS suffix.
+                        type: string
+                      gateway:
+                        description: Gateway address (for static configuration).
+                        type: string
+                      ip:
+                        description: IP address (for static configuration).
+                        type: string
+                      netmask:
+                        description: Network mask (for static configuration).
+                        type: string
+                      type:
+                        description: Network configuration type (dhcp or static).
+                        type: string
+                    type: object
+                  disabled:
+                    description: Specifies whether this device should be disabled.
+                    type: boolean
+                  flowctrlEnabled:
+                    description: Enable flow control.
+                    type: boolean
+                  forgetOnDestroy:
+                    description: Specifies whether this resource should tell the controller
+                      to forget the device on destroy.
+                    type: boolean
+                  jumboframeEnabled:
+                    description: Enable jumbo frames.
+                    type: boolean
+                  lcmBrightness:
+                    description: LCM brightness (1-100).
+                    type: number
+                  lcmBrightnessOverride:
+                    description: Override LCM brightness.
+                    type: boolean
+                  lcmIdleTimeout:
+                    description: LCM idle timeout, as a Go duration string (e.g. `10m`,
+                      `600s`).
+                    type: string
+                  lcmIdleTimeoutOverride:
+                    description: Override LCM idle timeout.
+                    type: boolean
+                  lcmNightModeBegins:
+                    description: LCM night mode begin time (HH:MM format).
+                    type: string
+                  lcmNightModeEnds:
+                    description: LCM night mode end time (HH:MM format).
+                    type: string
+                  ledOverride:
+                    description: LED override setting; valid values are `default`,
+                      `on`, and `off`.
+                    type: string
+                  ledOverrideColor:
+                    description: LED color override (hex color code).
+                    type: string
+                  ledOverrideColorBrightness:
+                    description: LED brightness (0-100).
+                    type: number
+                  locked:
+                    description: Specifies whether the device is locked.
+                    type: boolean
+                  mac:
+                    description: The MAC address of the device. This can be specified
+                      so that the provider can take control of a device (since devices
+                      are created through adoption).
+                    type: string
+                  mgmtNetworkId:
+                    description: 'Management network ID. The network this device uses
+                      for its own management traffic (the UI''s Network Override).
+                      When set, the device tags its management onto this network''s
+                      VLAN, so that VLAN must already be tagged on the device''s upstream
+                      switch port(s) before this attribute is applied. Otherwise the
+                      device loses its management path, drops off, and the apply fails
+                      with an inconsistent-result error. Apply in two steps: tag the
+                      VLAN on the uplink (a port_override tagged_networkconf_ids entry)
+                      first, then set mgmt_network_id. Leave unset to manage on the
+                      uplink''s native (untagged) network.'
+                    type: string
+                  name:
+                    description: The name of the device.
+                    type: string
+                  outdoorModeOverride:
+                    description: Outdoor mode override; valid values are `default`,
+                      `on`, and `off`.
+                    type: string
+                  outletEnabled:
+                    description: Enable outlet control.
+                    type: boolean
+                  outletOverrides:
+                    items:
+                      properties:
+                        cycleEnabled:
+                          description: Enable power cycle.
+                          type: boolean
+                        index:
+                          description: Outlet index.
+                          type: number
+                        name:
+                          description: Outlet name.
+                          type: string
+                        relayState:
+                          description: Relay state (on/off).
+                          type: boolean
+                      type: object
+                    type: array
+                  poeMode:
+                    description: PoE mode; valid values are `auto`, `pasv24`, `passthrough`,
+                      and `off`.
+                    type: string
+                  portOverride:
+                    description: Per-port settings overrides, applied only to the
+                      ports you declare. Ports without a `port_override` block keep
+                      their existing controller-side configuration — the provider
+                      merges your declared ports (by `index`) into the device's current
+                      overrides rather than replacing the whole set. Removing a block
+                      stops managing that port but does not reset it; clear a port
+                      by overriding it back to the defaults instead.
+                    items:
+                      properties:
+                        aggregateMembers:
+                          description: Port indices that make up this link-aggregation
+                            (LAG) group. Only takes effect when `op_mode` is `aggregate`
+                            on this port.
+                          items:
+                            type: number
+                          type: array
+                        autoneg:
+                          description: Enable auto-negotiation for port speed.
+                          type: boolean
+                        dot1xCtrl:
+                          description: 802.1X control mode.
+                          type: string
+                        dot1xIdleTimeout:
+                          description: 802.1X idle timeout, as a Go duration string
+                            (e.g. `5m`, `300s`).
+                          type: string
+                        egressRateLimitKbps:
+                          description: Egress rate limit in kbps.
+                          type: number
+                        egressRateLimitKbpsEnabled:
+                          description: Enable egress rate limiting.
+                          type: boolean
+                        excludedNetworkconfIds:
+                          description: List of network IDs to exclude from this port.
+                          items:
+                            type: string
+                          type: array
+                        fecMode:
+                          description: Forward Error Correction mode.
+                          type: string
+                        flowControlEnabled:
+                          description: Enable flow control.
+                          type: boolean
+                        forward:
+                          description: Forwarding mode.
+                          type: string
+                        fullDuplex:
+                          description: Enable full duplex mode.
+                          type: boolean
+                        index:
+                          description: Switch port index.
+                          type: number
+                        isolation:
+                          description: Enable port isolation.
+                          type: boolean
+                        lldpmedEnabled:
+                          description: Enable LLDP-MED.
+                          type: boolean
+                        lldpmedNotifyEnabled:
+                          description: Enable LLDP-MED notifications.
+                          type: boolean
+                        mirrorPortIdx:
+                          description: Mirror port index.
+                          type: number
+                        multicastRouterNetworkconfIds:
+                          description: List of network IDs for multicast router.
+                          items:
+                            type: string
+                          type: array
+                        name:
+                          description: Human-readable name of the port.
+                          type: string
+                        nativeNetworkconfId:
+                          description: Native network ID (VLAN).
+                          type: string
+                        opMode:
+                          description: 'Operating mode of the port: `switch` (default),
+                            `mirror`, or `aggregate`. Set `aggregate` on the lead
+                            port of an SFP+/link-aggregation (LAG) group and list
+                            the member ports in `aggregate_members`. Only written
+                            when not `switch`, as gateway devices (UDM) reject op_mode
+                            on update.'
+                          type: string
+                        poeMode:
+                          description: PoE mode of the port; valid values are `auto`,
+                            `pasv24`, `passthrough`, and `off`.
+                          type: string
+                        portKeepaliveEnabled:
+                          description: Enable port keepalive.
+                          type: boolean
+                        portProfileId:
+                          description: ID of the Port Profile used on this port.
+                          type: string
+                        portSecurityEnabled:
+                          description: Enable port security.
+                          type: boolean
+                        portSecurityMacAddress:
+                          description: List of MAC addresses allowed when port security
+                            is enabled.
+                          items:
+                            type: string
+                          type: array
+                        priorityQueue1Level:
+                          description: Priority queue 1 level.
+                          type: number
+                        priorityQueue2Level:
+                          description: Priority queue 2 level.
+                          type: number
+                        priorityQueue3Level:
+                          description: Priority queue 3 level.
+                          type: number
+                        priorityQueue4Level:
+                          description: Priority queue 4 level.
+                          type: number
+                        settingPreference:
+                          description: Setting preference.
+                          type: string
+                        speed:
+                          description: Port speed in Mbps.
+                          type: number
+                        stormctrlBcastEnabled:
+                          description: Enable broadcast storm control.
+                          type: boolean
+                        stormctrlBcastLevel:
+                          description: Broadcast storm control level.
+                          type: number
+                        stormctrlBcastRate:
+                          description: Broadcast storm control rate.
+                          type: number
+                        stormctrlMcastEnabled:
+                          description: Enable multicast storm control.
+                          type: boolean
+                        stormctrlMcastLevel:
+                          description: Multicast storm control level.
+                          type: number
+                        stormctrlMcastRate:
+                          description: Multicast storm control rate.
+                          type: number
+                        stormctrlType:
+                          description: Storm control type.
+                          type: string
+                        stormctrlUcastEnabled:
+                          description: Enable unicast storm control.
+                          type: boolean
+                        stormctrlUcastLevel:
+                          description: Unicast storm control level.
+                          type: number
+                        stormctrlUcastRate:
+                          description: Unicast storm control rate.
+                          type: number
+                        stpPortMode:
+                          description: STP port mode.
+                          type: boolean
+                        taggedNetworkconfIds:
+                          description: List of network IDs to tag on this port.
+                          items:
+                            type: string
+                          type: array
+                        taggedVlanMgmt:
+                          description: Tagged VLAN management.
+                          type: string
+                        voiceNetworkconfId:
+                          description: Voice network ID.
+                          type: string
+                      type: object
+                    type: array
+                  radioTable:
+                    items:
+                      properties:
+                        antennaGain:
+                          description: Antenna gain.
+                          type: number
+                        antennaId:
+                          description: Antenna ID.
+                          type: number
+                        assistedRoamingEnabled:
+                          description: Enable assisted roaming.
+                          type: boolean
+                        assistedRoamingRssi:
+                          description: Assisted roaming RSSI threshold.
+                          type: number
+                        channel:
+                          description: Channel number or 'auto'.
+                          type: string
+                        dfs:
+                          description: Enable DFS (Dynamic Frequency Selection).
+                          type: boolean
+                        hardNoiseFloorEnabled:
+                          description: Enable hard noise floor.
+                          type: boolean
+                        ht:
+                          description: Channel width (20, 40, 80, 160).
+                          type: number
+                        loadbalanceEnabled:
+                          description: Enable load balancing.
+                          type: boolean
+                        maxsta:
+                          description: Maximum number of stations.
+                          type: number
+                        minRssi:
+                          description: Minimum RSSI value.
+                          type: number
+                        minRssiEnabled:
+                          description: Enable minimum RSSI.
+                          type: boolean
+                        name:
+                          description: Radio name.
+                          type: string
+                        radio:
+                          description: Radio band (ng, na, ad, 6e).
+                          type: string
+                        sensLevel:
+                          description: Sensitivity level.
+                          type: number
+                        sensLevelEnabled:
+                          description: Enable sensitivity level.
+                          type: boolean
+                        txPower:
+                          description: Transmit power or 'auto'.
+                          type: string
+                        txPowerMode:
+                          description: Transmit power mode (auto, medium, high, low,
+                            custom).
+                          type: string
+                        vwireEnabled:
+                          description: Enable virtual wire.
+                          type: boolean
+                      type: object
+                    type: array
+                  site:
+                    description: The name of the site to associate the device with.
+                    type: string
+                  stpPriority:
+                    description: STP priority.
+                    type: number
+                  stpVersion:
+                    description: STP version; valid values are `stp`, `rstp`, and
+                      `disabled`.
+                    type: string
+                  switchVlanEnabled:
+                    description: Enable VLAN support on the switch.
+                    type: boolean
+                  timeouts:
+                    properties:
+                      create:
+                        description: A string that can be [parsed as a duration](https://pkg.go.dev/time#ParseDuration)
+                          consisting of numbers and unit suffixes, such as "30s" or
+                          "2h45m". Valid time units are "s" (seconds), "m" (minutes),
+                          "h" (hours).
+                        type: string
+                      delete:
+                        description: A string that can be [parsed as a duration](https://pkg.go.dev/time#ParseDuration)
+                          consisting of numbers and unit suffixes, such as "30s" or
+                          "2h45m". Valid time units are "s" (seconds), "m" (minutes),
+                          "h" (hours). Setting a timeout for a Delete operation is
+                          only applicable if changes are saved into state before the
+                          destroy operation occurs.
+                        type: string
+                      read:
+                        description: A string that can be [parsed as a duration](https://pkg.go.dev/time#ParseDuration)
+                          consisting of numbers and unit suffixes, such as "30s" or
+                          "2h45m". Valid time units are "s" (seconds), "m" (minutes),
+                          "h" (hours). Read operations occur during any refresh or
+                          planning operation when refresh is enabled.
+                        type: string
+                      update:
+                        description: A string that can be [parsed as a duration](https://pkg.go.dev/time#ParseDuration)
+                          consisting of numbers and unit suffixes, such as "30s" or
+                          "2h45m". Valid time units are "s" (seconds), "m" (minutes),
+                          "h" (hours).
+                        type: string
+                    type: object
+                  volume:
+                    description: Volume level (0-100).
+                    type: number
+                  xBaresipPasswordSecretRef:
+                    description: Baresip password.
+                    properties:
+                      key:
+                        type: string
+                      name:
+                        description: Name of the secret.
+                        type: string
+                    required:
+                    - key
+                    - name
+                    type: object
+                type: object
+              managementPolicies:
+                default:
+                - '*'
+                description: |-
+                  THIS IS A BETA FIELD. It is on by default but can be opted out
+                  through a Crossplane feature flag.
+                  ManagementPolicies specify the array of actions Crossplane is allowed to
+                  take on the managed and external resources.
+                  See the design doc for more information: https://github.com/crossplane/crossplane/blob/499895a25d1a1a0ba1604944ef98ac7a1a71f197/design/design-doc-observe-only-resources.md?plain=1#L223
+                  and this one: https://github.com/crossplane/crossplane/blob/444267e84783136daa93568b364a5f01228cacbe/design/one-pager-ignore-changes.md
+                items:
+                  description: |-
+                    A ManagementAction represents an action that the Crossplane controllers
+                    can take on an external resource.
+                  enum:
+                  - Observe
+                  - Create
+                  - Update
+                  - Delete
+                  - LateInitialize
+                  - '*'
+                  type: string
+                type: array
+              providerConfigRef:
+                default:
+                  kind: ClusterProviderConfig
+                  name: default
+                description: |-
+                  ProviderConfigReference specifies how the provider that will be used to
+                  create, observe, update, and delete this managed resource should be
+                  configured.
+                properties:
+                  kind:
+                    description: Kind of the referenced object.
+                    type: string
+                  name:
+                    description: Name of the referenced object.
+                    type: string
+                required:
+                - kind
+                - name
+                type: object
+              writeConnectionSecretToRef:
+                description: |-
+                  WriteConnectionSecretToReference specifies the namespace and name of a
+                  Secret to which any connection details for this managed resource should
+                  be written. Connection details frequently include the endpoint, username,
+                  and password required to connect to the managed resource.
+                properties:
+                  name:
+                    description: Name of the secret.
+                    type: string
+                required:
+                - name
+                type: object
+            required:
+            - forProvider
+            type: object
+          status:
+            description: DeviceStatus defines the observed state of Device.
+            properties:
+              atProvider:
+                properties:
+                  adopted:
+                    description: Whether the device is adopted.
+                    type: boolean
+                  allowAdoption:
+                    description: Specifies whether this resource should tell the controller
+                      to adopt the device on create.
+                    type: boolean
+                  bandsteeringMode:
+                    description: Band steering mode; valid values are `off`, `equal`,
+                      and `prefer_5g`.
+                    type: string
+                  configNetwork:
+                    properties:
+                      bondingEnabled:
+                        description: Enable network bonding.
+                        type: boolean
+                      dns1:
+                        description: Primary DNS server.
+                        type: string
+                      dns2:
+                        description: Secondary DNS server.
+                        type: string
+                      dnssuffix:
+                        description: DNS suffix.
+                        type: string
+                      gateway:
+                        description: Gateway address (for static configuration).
+                        type: string
+                      ip:
+                        description: IP address (for static configuration).
+                        type: string
+                      netmask:
+                        description: Network mask (for static configuration).
+                        type: string
+                      type:
+                        description: Network configuration type (dhcp or static).
+                        type: string
+                    type: object
+                  disabled:
+                    description: Specifies whether this device should be disabled.
+                    type: boolean
+                  flowctrlEnabled:
+                    description: Enable flow control.
+                    type: boolean
+                  forgetOnDestroy:
+                    description: Specifies whether this resource should tell the controller
+                      to forget the device on destroy.
+                    type: boolean
+                  id:
+                    type: string
+                  jumboframeEnabled:
+                    description: Enable jumbo frames.
+                    type: boolean
+                  lcmBrightness:
+                    description: LCM brightness (1-100).
+                    type: number
+                  lcmBrightnessOverride:
+                    description: Override LCM brightness.
+                    type: boolean
+                  lcmIdleTimeout:
+                    description: LCM idle timeout, as a Go duration string (e.g. `10m`,
+                      `600s`).
+                    type: string
+                  lcmIdleTimeoutOverride:
+                    description: Override LCM idle timeout.
+                    type: boolean
+                  lcmNightModeBegins:
+                    description: LCM night mode begin time (HH:MM format).
+                    type: string
+                  lcmNightModeEnds:
+                    description: LCM night mode end time (HH:MM format).
+                    type: string
+                  ledOverride:
+                    description: LED override setting; valid values are `default`,
+                      `on`, and `off`.
+                    type: string
+                  ledOverrideColor:
+                    description: LED color override (hex color code).
+                    type: string
+                  ledOverrideColorBrightness:
+                    description: LED brightness (0-100).
+                    type: number
+                  locked:
+                    description: Specifies whether the device is locked.
+                    type: boolean
+                  mac:
+                    description: The MAC address of the device. This can be specified
+                      so that the provider can take control of a device (since devices
+                      are created through adoption).
+                    type: string
+                  mgmtNetworkId:
+                    description: 'Management network ID. The network this device uses
+                      for its own management traffic (the UI''s Network Override).
+                      When set, the device tags its management onto this network''s
+                      VLAN, so that VLAN must already be tagged on the device''s upstream
+                      switch port(s) before this attribute is applied. Otherwise the
+                      device loses its management path, drops off, and the apply fails
+                      with an inconsistent-result error. Apply in two steps: tag the
+                      VLAN on the uplink (a port_override tagged_networkconf_ids entry)
+                      first, then set mgmt_network_id. Leave unset to manage on the
+                      uplink''s native (untagged) network.'
+                    type: string
+                  model:
+                    description: Device model.
+                    type: string
+                  name:
+                    description: The name of the device.
+                    type: string
+                  outdoorModeOverride:
+                    description: Outdoor mode override; valid values are `default`,
+                      `on`, and `off`.
+                    type: string
+                  outletEnabled:
+                    description: Enable outlet control.
+                    type: boolean
+                  outletOverrides:
+                    items:
+                      properties:
+                        cycleEnabled:
+                          description: Enable power cycle.
+                          type: boolean
+                        index:
+                          description: Outlet index.
+                          type: number
+                        name:
+                          description: Outlet name.
+                          type: string
+                        relayState:
+                          description: Relay state (on/off).
+                          type: boolean
+                      type: object
+                    type: array
+                  poeMode:
+                    description: PoE mode; valid values are `auto`, `pasv24`, `passthrough`,
+                      and `off`.
+                    type: string
+                  portOverride:
+                    description: Per-port settings overrides, applied only to the
+                      ports you declare. Ports without a `port_override` block keep
+                      their existing controller-side configuration — the provider
+                      merges your declared ports (by `index`) into the device's current
+                      overrides rather than replacing the whole set. Removing a block
+                      stops managing that port but does not reset it; clear a port
+                      by overriding it back to the defaults instead.
+                    items:
+                      properties:
+                        aggregateMembers:
+                          description: Port indices that make up this link-aggregation
+                            (LAG) group. Only takes effect when `op_mode` is `aggregate`
+                            on this port.
+                          items:
+                            type: number
+                          type: array
+                        autoneg:
+                          description: Enable auto-negotiation for port speed.
+                          type: boolean
+                        dot1xCtrl:
+                          description: 802.1X control mode.
+                          type: string
+                        dot1xIdleTimeout:
+                          description: 802.1X idle timeout, as a Go duration string
+                            (e.g. `5m`, `300s`).
+                          type: string
+                        egressRateLimitKbps:
+                          description: Egress rate limit in kbps.
+                          type: number
+                        egressRateLimitKbpsEnabled:
+                          description: Enable egress rate limiting.
+                          type: boolean
+                        excludedNetworkconfIds:
+                          description: List of network IDs to exclude from this port.
+                          items:
+                            type: string
+                          type: array
+                        fecMode:
+                          description: Forward Error Correction mode.
+                          type: string
+                        flowControlEnabled:
+                          description: Enable flow control.
+                          type: boolean
+                        forward:
+                          description: Forwarding mode.
+                          type: string
+                        fullDuplex:
+                          description: Enable full duplex mode.
+                          type: boolean
+                        index:
+                          description: Switch port index.
+                          type: number
+                        isolation:
+                          description: Enable port isolation.
+                          type: boolean
+                        lldpmedEnabled:
+                          description: Enable LLDP-MED.
+                          type: boolean
+                        lldpmedNotifyEnabled:
+                          description: Enable LLDP-MED notifications.
+                          type: boolean
+                        mirrorPortIdx:
+                          description: Mirror port index.
+                          type: number
+                        multicastRouterNetworkconfIds:
+                          description: List of network IDs for multicast router.
+                          items:
+                            type: string
+                          type: array
+                        name:
+                          description: Human-readable name of the port.
+                          type: string
+                        nativeNetworkconfId:
+                          description: Native network ID (VLAN).
+                          type: string
+                        opMode:
+                          description: 'Operating mode of the port: `switch` (default),
+                            `mirror`, or `aggregate`. Set `aggregate` on the lead
+                            port of an SFP+/link-aggregation (LAG) group and list
+                            the member ports in `aggregate_members`. Only written
+                            when not `switch`, as gateway devices (UDM) reject op_mode
+                            on update.'
+                          type: string
+                        poeMode:
+                          description: PoE mode of the port; valid values are `auto`,
+                            `pasv24`, `passthrough`, and `off`.
+                          type: string
+                        portKeepaliveEnabled:
+                          description: Enable port keepalive.
+                          type: boolean
+                        portProfileId:
+                          description: ID of the Port Profile used on this port.
+                          type: string
+                        portSecurityEnabled:
+                          description: Enable port security.
+                          type: boolean
+                        portSecurityMacAddress:
+                          description: List of MAC addresses allowed when port security
+                            is enabled.
+                          items:
+                            type: string
+                          type: array
+                        priorityQueue1Level:
+                          description: Priority queue 1 level.
+                          type: number
+                        priorityQueue2Level:
+                          description: Priority queue 2 level.
+                          type: number
+                        priorityQueue3Level:
+                          description: Priority queue 3 level.
+                          type: number
+                        priorityQueue4Level:
+                          description: Priority queue 4 level.
+                          type: number
+                        settingPreference:
+                          description: Setting preference.
+                          type: string
+                        speed:
+                          description: Port speed in Mbps.
+                          type: number
+                        stormctrlBcastEnabled:
+                          description: Enable broadcast storm control.
+                          type: boolean
+                        stormctrlBcastLevel:
+                          description: Broadcast storm control level.
+                          type: number
+                        stormctrlBcastRate:
+                          description: Broadcast storm control rate.
+                          type: number
+                        stormctrlMcastEnabled:
+                          description: Enable multicast storm control.
+                          type: boolean
+                        stormctrlMcastLevel:
+                          description: Multicast storm control level.
+                          type: number
+                        stormctrlMcastRate:
+                          description: Multicast storm control rate.
+                          type: number
+                        stormctrlType:
+                          description: Storm control type.
+                          type: string
+                        stormctrlUcastEnabled:
+                          description: Enable unicast storm control.
+                          type: boolean
+                        stormctrlUcastLevel:
+                          description: Unicast storm control level.
+                          type: number
+                        stormctrlUcastRate:
+                          description: Unicast storm control rate.
+                          type: number
+                        stpPortMode:
+                          description: STP port mode.
+                          type: boolean
+                        taggedNetworkconfIds:
+                          description: List of network IDs to tag on this port.
+                          items:
+                            type: string
+                          type: array
+                        taggedVlanMgmt:
+                          description: Tagged VLAN management.
+                          type: string
+                        voiceNetworkconfId:
+                          description: Voice network ID.
+                          type: string
+                      type: object
+                    type: array
+                  radioTable:
+                    items:
+                      properties:
+                        antennaGain:
+                          description: Antenna gain.
+                          type: number
+                        antennaId:
+                          description: Antenna ID.
+                          type: number
+                        assistedRoamingEnabled:
+                          description: Enable assisted roaming.
+                          type: boolean
+                        assistedRoamingRssi:
+                          description: Assisted roaming RSSI threshold.
+                          type: number
+                        channel:
+                          description: Channel number or 'auto'.
+                          type: string
+                        dfs:
+                          description: Enable DFS (Dynamic Frequency Selection).
+                          type: boolean
+                        hardNoiseFloorEnabled:
+                          description: Enable hard noise floor.
+                          type: boolean
+                        ht:
+                          description: Channel width (20, 40, 80, 160).
+                          type: number
+                        loadbalanceEnabled:
+                          description: Enable load balancing.
+                          type: boolean
+                        maxsta:
+                          description: Maximum number of stations.
+                          type: number
+                        minRssi:
+                          description: Minimum RSSI value.
+                          type: number
+                        minRssiEnabled:
+                          description: Enable minimum RSSI.
+                          type: boolean
+                        name:
+                          description: Radio name.
+                          type: string
+                        radio:
+                          description: Radio band (ng, na, ad, 6e).
+                          type: string
+                        sensLevel:
+                          description: Sensitivity level.
+                          type: number
+                        sensLevelEnabled:
+                          description: Enable sensitivity level.
+                          type: boolean
+                        txPower:
+                          description: Transmit power or 'auto'.
+                          type: string
+                        txPowerMode:
+                          description: Transmit power mode (auto, medium, high, low,
+                            custom).
+                          type: string
+                        vwireEnabled:
+                          description: Enable virtual wire.
+                          type: boolean
+                      type: object
+                    type: array
+                  site:
+                    description: The name of the site to associate the device with.
+                    type: string
+                  state:
+                    description: Device state.
+                    type: number
+                  stpPriority:
+                    description: STP priority.
+                    type: number
+                  stpVersion:
+                    description: STP version; valid values are `stp`, `rstp`, and
+                      `disabled`.
+                    type: string
+                  switchVlanEnabled:
+                    description: Enable VLAN support on the switch.
+                    type: boolean
+                  timeouts:
+                    properties:
+                      create:
+                        description: A string that can be [parsed as a duration](https://pkg.go.dev/time#ParseDuration)
+                          consisting of numbers and unit suffixes, such as "30s" or
+                          "2h45m". Valid time units are "s" (seconds), "m" (minutes),
+                          "h" (hours).
+                        type: string
+                      delete:
+                        description: A string that can be [parsed as a duration](https://pkg.go.dev/time#ParseDuration)
+                          consisting of numbers and unit suffixes, such as "30s" or
+                          "2h45m". Valid time units are "s" (seconds), "m" (minutes),
+                          "h" (hours). Setting a timeout for a Delete operation is
+                          only applicable if changes are saved into state before the
+                          destroy operation occurs.
+                        type: string
+                      read:
+                        description: A string that can be [parsed as a duration](https://pkg.go.dev/time#ParseDuration)
+                          consisting of numbers and unit suffixes, such as "30s" or
+                          "2h45m". Valid time units are "s" (seconds), "m" (minutes),
+                          "h" (hours). Read operations occur during any refresh or
+                          planning operation when refresh is enabled.
+                        type: string
+                      update:
+                        description: A string that can be [parsed as a duration](https://pkg.go.dev/time#ParseDuration)
+                          consisting of numbers and unit suffixes, such as "30s" or
+                          "2h45m". Valid time units are "s" (seconds), "m" (minutes),
+                          "h" (hours).
+                        type: string
+                    type: object
+                  type:
+                    description: Device type.
+                    type: string
+                  volume:
+                    description: Volume level (0-100).
+                    type: number
+                type: object
+              conditions:
+                description: Conditions of the resource.
+                items:
+                  description: A Condition that may apply to a resource.
+                  properties:
+                    lastTransitionTime:
+                      description: |-
+                        LastTransitionTime is the last time this condition transitioned from one
+                        status to another.
+                      format: date-time
+                      type: string
+                    message:
+                      description: |-
+                        A Message containing details about this condition's last transition from
+                        one status to another, if any.
+                      type: string
+                    observedGeneration:
+                      description: |-
+                        ObservedGeneration represents the .metadata.generation that the condition was set based upon.
+                        For instance, if .metadata.generation is currently 12, but the .status.conditions[x].observedGeneration is 9, the condition is out of date
+                        with respect to the current state of the instance.
+                      format: int64
+                      type: integer
+                    reason:
+                      description: A Reason for this condition's last transition from
+                        one status to another.
+                      type: string
+                    status:
+                      description: Status of this condition; is it currently True,
+                        False, or Unknown?
+                      type: string
+                    type:
+                      description: |-
+                        Type of this condition. At most one of each condition type may apply to
+                        a resource at any point in time.
+                      type: string
+                  required:
+                  - lastTransitionTime
+                  - reason
+                  - status
+                  - type
+                  type: object
+                type: array
+                x-kubernetes-list-map-keys:
+                - type
+                x-kubernetes-list-type: map
+              observedGeneration:
+                description: |-
+                  ObservedGeneration is the latest metadata.generation
+                  which resulted in either a ready state, or stalled due to error
+                  it can not recover from without human intervention.
+                format: int64
+                type: integer
+            type: object
+        required:
+        - spec
+        type: object
+    served: true
+    storage: true
+    subresources:
+      status: {}

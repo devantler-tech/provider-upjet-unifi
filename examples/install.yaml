@@ -1,0 +1,6 @@
+apiVersion: pkg.crossplane.io/v1
+kind: Provider
+metadata:
+  name: provider-unifi
+spec:
+  package: xpkg.crossplane.io/github.com/devantler-tech/provider-upjet-unifi:v0.1.0
