@@ -1,0 +1,26 @@
+# Checkov configuration (consumed by MegaLinter's REPOSITORY_CHECKOV linter,
+# which discovers it by the name `.checkov.yml` in the repo root and passes it
+# via --config-file, replacing MegaLinter's bundled default).
+#
+# Only genuine, justified false positives are skipped here. Every other finding —
+# in particular the CKV2_GHA_1 least-privilege `permissions:` checks — is fixed at
+# the source (the workflows), not skipped.
+#
+#   CKV_DOCKER_2 — HEALTHCHECK instruction. This Crossplane provider image runs a
+#                  long-lived controller, not an HTTP service with a meaningful
+#                  health endpoint; MegaLinter's own bundled config skips this, so
+#                  we preserve that skip rather than regress it.
+#   CKV_GHA_7    — requires workflow_dispatch to declare no inputs. The publish
+#                  workflow (.github/workflows/publish-provider-package.yml)
+#                  legitimately needs its `version` + `go-version` inputs to publish
+#                  a chosen provider package version on demand.
+#   CKV_DOCKER_4 — prefers COPY over ADD. The provider image
+#                  (cluster/images/provider-upjet-unifi/Dockerfile) uses ADD to fetch
+#                  remote https:// archives (Terraform + the native provider); COPY
+#                  cannot fetch URLs, so ADD is required (same reason as hadolint's
+#                  DL3020, already suppressed there).
+quiet: true
+skip-check:
+  - CKV_DOCKER_2
+  - CKV_GHA_7
+  - CKV_DOCKER_4

@@ -9,28 +9,38 @@ name: End to End Testing
   issue_comment:
     types: [created]
 
+# Deny by default; grant only what each job needs.
+permissions: {}
+
 env:
   GO_VERSION: "1.25.11"
 
 jobs:
   check-permissions:
     runs-on: ubuntu-latest
+    # Only reads the commenter's repo permission via the GitHub API.
+    permissions:
+      contents: read
     outputs:
       permission: ${{ steps.check-permissions.outputs.permission }}
     steps:
       - name: Get Commenter Permissions
         id: check-permissions
+        env:
+          # Pass untrusted/secret values through the environment rather than
+          # interpolating them into the shell (avoids template injection and
+          # keeps the token out of the process command line).
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          REPO: ${{ github.repository }}
+          COMMENTER: ${{ github.event.comment.user.login }}
         run: |
           echo "Trigger keyword: '/test-examples'"
-          echo "Go version: ${{ env.GO_VERSION }}"
-
-          REPO=${{ github.repository }}
-          COMMENTER=${{ github.event.comment.user.login }}
+          echo "Go version: $GO_VERSION"
 
           # Fetch the commenter's repo-level permission grant
-          GRANTED=$(curl -s -H "Authorization: Bearer ${{ secrets.GITHUB_TOKEN }}" \
+          GRANTED=$(gh api \
             -H "Accept: application/vnd.github.v3+json" \
-            "https://api.github.com/repos/$REPO/collaborators/$COMMENTER/permission" | jq -r .permission)
+            "/repos/$REPO/collaborators/$COMMENTER/permission" --jq .permission)
 
           # Make it accessible in the workflow via a job output -- cannot use env
           echo "User $COMMENTER has $GRANTED permissions"
@@ -40,6 +50,11 @@ jobs:
     needs: check-permissions
     if: ${{ (needs.check-permissions.outputs.permission == 'admin' || needs.check-permissions.outputs.permission == 'write') && github.event.issue.pull_request != null && contains(github.event.comment.body, '/test-examples')}}
     runs-on: ubuntu-latest
+    # Checks out the PR (contents:read) and posts a pending commit status
+    # (statuses:write).
+    permissions:
+      contents: read
+      statuses: write
     outputs:
       example_list: ${{ steps.get-example-list-name.outputs.example-list }}
       example_hash: ${{ steps.get-example-list-name.outputs.example-hash }}
@@ -100,6 +115,11 @@ jobs:
       - get-example-list
     if: ${{ (needs.check-permissions.outputs.permission == 'admin' || needs.check-permissions.outputs.permission == 'write') && github.event.issue.pull_request != null && contains(github.event.comment.body, '/test-examples')}}
     runs-on: ubuntu-latest
+    # Checks out the PR (contents:read) and posts pending/success/failure
+    # commit statuses (statuses:write).
+    permissions:
+      contents: read
+      statuses: write
 
     steps:
       - name: Cleanup Disk

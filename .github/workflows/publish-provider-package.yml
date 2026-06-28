@@ -13,8 +13,18 @@ name: Publish Provider Package
         default: "1.25.11"
         required: false
 
+# Deny by default; grant only what the called workflow needs.
+permissions: {}
+
 jobs:
   publish-provider-package:
+    # The reusable workflow pushes the xpkg to GHCR (docker login + crane copy)
+    # using GHCR_PAT (the job's GITHUB_TOKEN), so it needs packages:write to
+    # publish and contents:read to check out. It uses no OIDC/cosign keyless
+    # signing, so id-token:write is intentionally omitted.
+    permissions:
+      contents: read
+      packages: write
     uses: crossplane-contrib/provider-workflows/.github/workflows/publish-provider.yml@451c4dc6ad3691b0a702a997a0ac24e8bbc8bbaa # main
     with:
       repository: provider-upjet-unifi

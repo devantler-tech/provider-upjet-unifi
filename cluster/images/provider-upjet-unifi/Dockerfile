@@ -26,10 +26,11 @@ ENV TF_FORK=0
 
 RUN mkdir -p ${PLUGIN_DIR}
 
+# Both ADDs fetch remote https:// archives (Terraform + the native provider);
+# only ADD can fetch URLs, so COPY is not an option. hadolint's DL3020 and
+# checkov's CKV_DOCKER_4 (prefer COPY over ADD) are false positives here —
+# DL3020 is suppressed inline below, CKV_DOCKER_4 in .checkov.yml.
 ADD https://releases.hashicorp.com/terraform/${TERRAFORM_VERSION}/terraform_${TERRAFORM_VERSION}_${TARGETOS}_${TARGETARCH}.zip /tmp
-# TERRAFORM_PROVIDER_DOWNLOAD_URL_PREFIX holds an https:// URL, so this is a remote
-# download that requires ADD — COPY cannot fetch URLs. hadolint can't see the URL
-# through the build arg, so DL3020 is a false positive here.
 # hadolint ignore=DL3020
 ADD ${TERRAFORM_PROVIDER_DOWNLOAD_URL_PREFIX}/${TERRAFORM_PROVIDER_DOWNLOAD_NAME}_${TERRAFORM_PROVIDER_VERSION}_${TARGETOS}_${TARGETARCH}.zip /tmp
 COPY terraformrc.hcl ${TF_CLI_CONFIG_FILE}

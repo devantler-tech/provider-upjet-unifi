@@ -17,7 +17,10 @@ DISABLE_LINTERS:
   - ACTION_ZIZMOR
   - GO_GOLANGCI_LINT # Disabled: MegaLinter container ships an older Go than this provider requires. CI runs golangci-lint separately with the correct Go version.
   - GO_REVIVE
-  - REPOSITORY_CHECKOV
+  # REPOSITORY_CHECKOV is ENABLED: it caught real workflow-security findings
+  # (CKV2_GHA_1 least-privilege permissions), now fixed in the workflows. The
+  # one publish-workflow false-gate (CKV_GHA_7 — it legitimately needs a version
+  # input) is scoped-skipped in .checkov.yaml, not disabled here.
   - REPOSITORY_GITLEAKS
   - REPOSITORY_GRYPE
   # Disabled: consistent with the other dependency vulnerability scanners

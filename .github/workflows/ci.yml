@@ -9,6 +9,12 @@ name: CI
   pull_request: {}
   workflow_dispatch: {}
 
+# Least-privilege default. Every job only checks out, builds/tests, uploads
+# artifacts, or aggregates check results — none write to the repo, packages,
+# checks, or statuses — so read-only access to contents is sufficient.
+permissions:
+  contents: read
+
 env:
   # Common versions
   GO_VERSION: "1.25.11"
