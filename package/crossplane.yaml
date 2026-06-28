@@ -1,7 +1,7 @@
 apiVersion: meta.pkg.crossplane.io/v1
 kind: Provider
 metadata:
-  name: provider-unifi
+  name: provider-upjet-unifi
 spec:
   capabilities:
     - SafeStart
