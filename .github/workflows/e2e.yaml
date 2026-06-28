@@ -65,7 +65,9 @@ jobs:
           COMMENT: ${{ github.event.comment.body }}
         id: get-example-list-name
         run: |
-          PATHS=$(echo "$COMMENT" | sed 's/^.*\/test-examples="//g' | cut -d '"' -f 1 | sed 's/,/ /g')
+          COMMAND=$(printf '%s\n' "$COMMENT" | grep -oE '/test-examples="[^"]+"' | head -n1)
+          [ -n "$COMMAND" ] || { echo 'No /test-examples command found'; exit 1; }
+          PATHS=$(printf '%s\n' "$COMMAND" | cut -d '"' -f 2 | tr ',' ' ')
           EXAMPLE_LIST=""
           for P in $PATHS; do EXAMPLE_LIST="${EXAMPLE_LIST},$(find "$P" -name '*.yaml' | tr '\n' ',')"; done
 
