@@ -1,22 +1,33 @@
+---
 name: Publish Provider Package
 
-on:
+"on":
   workflow_dispatch:
     inputs:
       version:
         description: "Version string to use while publishing the package (e.g. v1.0.0-alpha.1)"
-        default: ''
+        default: ""
         required: false
       go-version:
-        description: 'Go version to use if building needs to be done'
-        default: '1.24'
+        description: "Go version to use if building needs to be done"
+        default: "1.25.11"
         required: false
+
+# Deny by default; grant only what the called workflow needs.
+permissions: {}
 
 jobs:
   publish-provider-package:
+    # The reusable workflow pushes the xpkg to GHCR (docker login + crane copy)
+    # using GHCR_PAT (the job's GITHUB_TOKEN), so it needs packages:write to
+    # publish and contents:read to check out. It uses no OIDC/cosign keyless
+    # signing, so id-token:write is intentionally omitted.
+    permissions:
+      contents: read
+      packages: write
     uses: crossplane-contrib/provider-workflows/.github/workflows/publish-provider.yml@451c4dc6ad3691b0a702a997a0ac24e8bbc8bbaa # main
     with:
-      repository: provider-unifi
+      repository: provider-upjet-unifi
       version: ${{ github.event.inputs.version }}
       go-version: ${{ github.event.inputs.go-version }}
       cleanup-disk: true

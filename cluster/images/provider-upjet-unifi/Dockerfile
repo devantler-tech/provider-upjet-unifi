@@ -4,7 +4,7 @@ RUN apk --no-cache add ca-certificates bash
 ARG TARGETOS
 ARG TARGETARCH
 
-ADD "bin/${TARGETOS}_${TARGETARCH}/provider" /usr/local/bin/provider
+COPY "bin/${TARGETOS}_${TARGETARCH}/provider" /usr/local/bin/provider
 
 ENV USER_ID=65532
 
@@ -26,9 +26,14 @@ ENV TF_FORK=0
 
 RUN mkdir -p ${PLUGIN_DIR}
 
+# Both ADDs fetch remote https:// archives (Terraform + the native provider);
+# only ADD can fetch URLs, so COPY is not an option. hadolint's DL3020 and
+# checkov's CKV_DOCKER_4 (prefer COPY over ADD) are false positives here —
+# DL3020 is suppressed inline below, CKV_DOCKER_4 in .checkov.yml.
 ADD https://releases.hashicorp.com/terraform/${TERRAFORM_VERSION}/terraform_${TERRAFORM_VERSION}_${TARGETOS}_${TARGETARCH}.zip /tmp
+# hadolint ignore=DL3020
 ADD ${TERRAFORM_PROVIDER_DOWNLOAD_URL_PREFIX}/${TERRAFORM_PROVIDER_DOWNLOAD_NAME}_${TERRAFORM_PROVIDER_VERSION}_${TARGETOS}_${TARGETARCH}.zip /tmp
-ADD terraformrc.hcl ${TF_CLI_CONFIG_FILE}
+COPY terraformrc.hcl ${TF_CLI_CONFIG_FILE}
 
 RUN unzip /tmp/terraform_${TERRAFORM_VERSION}_${TARGETOS}_${TARGETARCH}.zip -d /usr/local/bin \
   && chmod +x /usr/local/bin/terraform \

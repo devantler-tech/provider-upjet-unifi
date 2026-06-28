@@ -84,7 +84,7 @@ func main() {
 	kingpin.MustParse(app.Parse(os.Args[1:]))
 
 	zl := zap.New(zap.UseDevMode(*debug))
-	log := logging.NewLogrLogger(zl.WithName("provider-unifi"))
+	log := logging.NewLogrLogger(zl.WithName("provider-upjet-unifi"))
 	if *debug {
 		// The controller-runtime runs with a no-op logger by default. It is
 		// *very* verbose even at info level, so we only provide it a real
@@ -121,7 +121,7 @@ func main() {
 
 	mgr, err := ctrl.NewManager(cfg, ctrl.Options{
 		LeaderElection:   *leaderElection,
-		LeaderElectionID: "crossplane-leader-election-provider-unifi",
+		LeaderElectionID: "crossplane-leader-election-provider-upjet-unifi",
 		Cache: cache.Options{
 			SyncPeriod: syncPeriod,
 		},

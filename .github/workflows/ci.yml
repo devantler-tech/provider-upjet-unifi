@@ -1,6 +1,7 @@
+---
 name: CI
 
-on:
+"on":
   push:
     branches:
       - main
@@ -8,11 +9,17 @@ on:
   pull_request: {}
   workflow_dispatch: {}
 
+# Least-privilege default. Every job only checks out, builds/tests, uploads
+# artifacts, or aggregates check results — none write to the repo, packages,
+# checks, or statuses — so read-only access to contents is sufficient.
+permissions:
+  contents: read
+
 env:
   # Common versions
-  GO_VERSION: '1.25'
-  GOLANGCI_VERSION: 'v2.12.1'
-  DOCKER_BUILDX_VERSION: 'v0.34.1'
+  GO_VERSION: "1.25.11"
+  GOLANGCI_VERSION: "v2.12.1"
+  DOCKER_BUILDX_VERSION: "v0.34.1"
 
 jobs:
   detect-noop:
@@ -51,10 +58,8 @@ jobs:
         run: |
           make crddiff
       - name: Report native schema version changes
-        if: ${{ inputs.upjet-based-provider }}
         run: |
           make schema-version-diff
-
 
   lint:
     runs-on: ubuntu-24.04
@@ -74,7 +79,7 @@ jobs:
 
       - name: Find the Go Build Cache
         id: go
-        run: echo "cache=$(make go.cachedir)" >> $GITHUB_OUTPUT
+        run: echo "cache=$(make go.cachedir)" >> "$GITHUB_OUTPUT"
 
       - name: Cache the Go Build Cache
         uses: actions/cache@27d5ce7f107fe9357f9df03efb73ab90386fccae # v5.0.5
@@ -121,7 +126,7 @@ jobs:
 
       - name: Find the Go Build Cache
         id: go
-        run: echo "cache=$(make go.cachedir)" >> $GITHUB_OUTPUT
+        run: echo "cache=$(make go.cachedir)" >> "$GITHUB_OUTPUT"
 
       - name: Cache the Go Build Cache
         uses: actions/cache@27d5ce7f107fe9357f9df03efb73ab90386fccae # v5.0.5
@@ -164,7 +169,7 @@ jobs:
 
       - name: Find the Go Build Cache
         id: go
-        run: echo "cache=$(make go.cachedir)" >> $GITHUB_OUTPUT
+        run: echo "cache=$(make go.cachedir)" >> "$GITHUB_OUTPUT"
 
       - name: Cache the Go Build Cache
         uses: actions/cache@27d5ce7f107fe9357f9df03efb73ab90386fccae # v5.0.5
@@ -213,7 +218,7 @@ jobs:
 
       - name: Find the Go Build Cache
         id: go
-        run: echo "cache=$(make go.cachedir)" >> $GITHUB_OUTPUT
+        run: echo "cache=$(make go.cachedir)" >> "$GITHUB_OUTPUT"
 
       - name: Cache the Go Build Cache
         uses: actions/cache@27d5ce7f107fe9357f9df03efb73ab90386fccae # v5.0.5
@@ -273,7 +278,7 @@ jobs:
 
       - name: Find the Go Build Cache
         id: go
-        run: echo "cache=$(make go.cachedir)" >> $GITHUB_OUTPUT
+        run: echo "cache=$(make go.cachedir)" >> "$GITHUB_OUTPUT"
 
       - name: Cache the Go Build Cache
         uses: actions/cache@27d5ce7f107fe9357f9df03efb73ab90386fccae # v5.0.5
@@ -304,3 +309,33 @@ jobs:
         with:
           name: output
           path: _output/**
+
+  # Aggregates every CI job into the single required status context the org
+  # rulesets gate on ("CI - Required Checks"). Without it that context is never
+  # reported and PRs stay BLOCKED even when all checks pass.
+  require-checks-in-pr:
+    name: CI - Required Checks
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    needs:
+      [
+        detect-noop,
+        report-breaking-changes,
+        lint,
+        check-diff,
+        unit-tests,
+        local-deploy,
+        publish-artifacts,
+      ]
+    if: ${{ always() }}
+    steps:
+      - uses: devantler-tech/actions/aggregate-job-checks@9d98cb8be059537ec1e82f71c90d75ecba321713 # v6.1.0
+        with:
+          job-results: >-
+            ${{ needs.detect-noop.result }}
+            ${{ needs.report-breaking-changes.result }}
+            ${{ needs.lint.result }}
+            ${{ needs.check-diff.result }}
+            ${{ needs.unit-tests.result }}
+            ${{ needs.local-deploy.result }}
+            ${{ needs.publish-artifacts.result }}
