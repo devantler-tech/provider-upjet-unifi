@@ -226,7 +226,15 @@ crddiff: $(UPTEST)
 
 schema-version-diff:
 	@$(INFO) Checking for native state schema version changes
-	@export PREV_PROVIDER_VERSION=$$(git cat-file -p "${GITHUB_BASE_REF}:Makefile" | sed -nr 's/^export[[:space:]]*TERRAFORM_PROVIDER_VERSION[[:space:]]*:=[[:space:]]*(.+)/\1/p'); \
+	@if [ ! -f config/generated.lst ]; then \
+		echo "config/generated.lst not present (run 'make generate'); skipping native schema version diff"; \
+		exit 0; \
+	fi; \
+	if ! git cat-file -e "$${GITHUB_BASE_REF}:config/schema.json" 2>/dev/null; then \
+		echo "No base config/schema.json on $${GITHUB_BASE_REF} to diff against; skipping native schema version diff"; \
+		exit 0; \
+	fi; \
+	export PREV_PROVIDER_VERSION=$$(git cat-file -p "$${GITHUB_BASE_REF}:Makefile" | sed -nr 's/^export[[:space:]]*TERRAFORM_PROVIDER_VERSION[[:space:]]*:=[[:space:]]*(.+)/\1/p'); \
 	echo Detected previous Terraform provider version: $${PREV_PROVIDER_VERSION}; \
 	echo Current Terraform provider version: $${TERRAFORM_PROVIDER_VERSION}; \
 	mkdir -p $(WORK_DIR); \
