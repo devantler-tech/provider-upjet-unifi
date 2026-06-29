@@ -152,7 +152,16 @@ type TrafficRouteInitParameters struct {
 	KillSwitchEnabled *bool `json:"killSwitchEnabled,omitempty" tf:"kill_switch_enabled,omitempty"`
 
 	// The ID of the network or VPN to route matching traffic through. Defaults to the primary WAN network.
+	// +crossplane:generate:reference:type=github.com/devantler-tech/provider-upjet-unifi/apis/namespaced/vpn/v1alpha1.Client
 	NetworkID *string `json:"networkId,omitempty" tf:"network_id,omitempty"`
+
+	// Reference to a Client in vpn to populate networkId.
+	// +kubebuilder:validation:Optional
+	NetworkIDRef *v1.NamespacedReference `json:"networkIdRef,omitempty" tf:"-"`
+
+	// Selector for a Client in vpn to populate networkId.
+	// +kubebuilder:validation:Optional
+	NetworkIDSelector *v1.NamespacedSelector `json:"networkIdSelector,omitempty" tf:"-"`
 
 	// The next hop for the traffic route.
 	NextHop *string `json:"nextHop,omitempty" tf:"next_hop,omitempty"`
@@ -212,8 +221,17 @@ type TrafficRouteParameters struct {
 	KillSwitchEnabled *bool `json:"killSwitchEnabled,omitempty" tf:"kill_switch_enabled,omitempty"`
 
 	// The ID of the network or VPN to route matching traffic through. Defaults to the primary WAN network.
+	// +crossplane:generate:reference:type=github.com/devantler-tech/provider-upjet-unifi/apis/namespaced/vpn/v1alpha1.Client
 	// +kubebuilder:validation:Optional
 	NetworkID *string `json:"networkId,omitempty" tf:"network_id,omitempty"`
+
+	// Reference to a Client in vpn to populate networkId.
+	// +kubebuilder:validation:Optional
+	NetworkIDRef *v1.NamespacedReference `json:"networkIdRef,omitempty" tf:"-"`
+
+	// Selector for a Client in vpn to populate networkId.
+	// +kubebuilder:validation:Optional
+	NetworkIDSelector *v1.NamespacedSelector `json:"networkIdSelector,omitempty" tf:"-"`
 
 	// The next hop for the traffic route.
 	// +kubebuilder:validation:Optional

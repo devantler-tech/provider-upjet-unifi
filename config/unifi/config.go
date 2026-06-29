@@ -71,6 +71,26 @@ var kindOverrides = map[string]string{
 	"unifi_traffic_route": "TrafficRoute",
 }
 
+// references declares Upjet cross-resource references: for each Terraform
+// resource it maps a Terraform field name to the resource that field should be
+// able to reference. The generator then emits <field>Ref/<field>Selector
+// alongside the raw field, and (by default) resolves the value from the
+// referenced managed resource's external name.
+//
+// unifi_traffic_route.network_id can be hard to wire declaratively because a VPN
+// client's UniFi network id is only known after the unifi_vpn_client managed
+// resource first reconciles. Referencing the unifi_vpn_client lets a consumer
+// point a TrafficRoute at a Client by name (networkIdRef/networkIdSelector)
+// instead of hard-coding a post-create id. A plain unifi_network id can still be
+// supplied directly via the raw networkId field.
+var references = map[string]ujconfig.References{
+	"unifi_traffic_route": {
+		"network_id": {
+			TerraformName: "unifi_vpn_client",
+		},
+	},
+}
+
 // Configure assigns each UniFi resource to its API ShortGroup and pins Kinds
 // where the default derivation would collide. Kinds not overridden are left to
 // upjet's default derivation (CamelCase of the resource suffix), which gives
@@ -79,10 +99,14 @@ func Configure(p *ujconfig.Provider) {
 	for name, group := range shortGroups {
 		group := group
 		kind := kindOverrides[name]
+		refs := references[name]
 		p.AddResourceConfigurator(name, func(r *ujconfig.Resource) {
 			r.ShortGroup = group
 			if kind != "" {
 				r.Kind = kind
+			}
+			for field, ref := range refs {
+				r.References[field] = ref
 			}
 		})
 	}
