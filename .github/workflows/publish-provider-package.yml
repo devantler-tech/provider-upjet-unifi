@@ -28,6 +28,10 @@ jobs:
     uses: crossplane-contrib/provider-workflows/.github/workflows/publish-provider.yml@451c4dc6ad3691b0a702a997a0ac24e8bbc8bbaa # main
     with:
       repository: provider-upjet-unifi
+      # Publish to ghcr.io/devantler-tech. The reusable workflow defaults
+      # registry_org to "crossplane-contrib" (which we cannot push to → the
+      # publish 403s with "permission_denied"), so it must be set explicitly.
+      registry_org: devantler-tech
       version: ${{ github.event.inputs.version }}
       go-version: ${{ github.event.inputs.go-version }}
       cleanup-disk: true
