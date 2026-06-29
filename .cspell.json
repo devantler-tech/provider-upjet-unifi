@@ -62,6 +62,7 @@
     "errcheck",
     "errchkjson",
     "errorlint",
+    "esac",
     "euox",
     "fkirc",
     "GOCACHE",
