@@ -18,6 +18,13 @@ ARG TERRAFORM_PROVIDER_DOWNLOAD_NAME
 ARG TERRAFORM_NATIVE_PROVIDER_BINARY
 ARG TERRAFORM_PROVIDER_DOWNLOAD_URL_PREFIX
 
+## Pinned SHA256 checksums of the downloaded archives (per arch), verified before
+## extraction so a compromised mirror or MITM cannot inject a malicious archive.
+ARG TERRAFORM_SHA256_LINUX_AMD64
+ARG TERRAFORM_SHA256_LINUX_ARM64
+ARG TERRAFORM_PROVIDER_SHA256_LINUX_AMD64
+ARG TERRAFORM_PROVIDER_SHA256_LINUX_ARM64
+
 ## End of - Provider-dependent configuration
 
 ENV PLUGIN_DIR=/terraform/provider-mirror/registry.terraform.io/${TERRAFORM_PROVIDER_SOURCE}/${TERRAFORM_PROVIDER_VERSION}/${TARGETOS}_${TARGETARCH}
@@ -35,13 +42,27 @@ ADD https://releases.hashicorp.com/terraform/${TERRAFORM_VERSION}/terraform_${TE
 ADD ${TERRAFORM_PROVIDER_DOWNLOAD_URL_PREFIX}/${TERRAFORM_PROVIDER_DOWNLOAD_NAME}_${TERRAFORM_PROVIDER_VERSION}_${TARGETOS}_${TARGETARCH}.zip /tmp
 COPY terraformrc.hcl ${TF_CLI_CONFIG_FILE}
 
-RUN unzip /tmp/terraform_${TERRAFORM_VERSION}_${TARGETOS}_${TARGETARCH}.zip -d /usr/local/bin \
-  && chmod +x /usr/local/bin/terraform \
-  && rm /tmp/terraform_${TERRAFORM_VERSION}_${TARGETOS}_${TARGETARCH}.zip \
-  && unzip /tmp/${TERRAFORM_PROVIDER_DOWNLOAD_NAME}_${TERRAFORM_PROVIDER_VERSION}_${TARGETOS}_${TARGETARCH}.zip -d ${PLUGIN_DIR} \
-  && chmod +x ${PLUGIN_DIR}/* \
-  && rm /tmp/${TERRAFORM_PROVIDER_DOWNLOAD_NAME}_${TERRAFORM_PROVIDER_VERSION}_${TARGETOS}_${TARGETARCH}.zip \
-  && chown -R ${USER_ID}:${USER_ID} /terraform
+# Verify the SHA256 of each archive against its pinned, per-arch checksum BEFORE
+# extracting it (fails closed: an empty or mismatched checksum aborts the build).
+RUN set -eu; \
+  tf_zip="/tmp/terraform_${TERRAFORM_VERSION}_${TARGETOS}_${TARGETARCH}.zip"; \
+  prov_zip="/tmp/${TERRAFORM_PROVIDER_DOWNLOAD_NAME}_${TERRAFORM_PROVIDER_VERSION}_${TARGETOS}_${TARGETARCH}.zip"; \
+  case "${TARGETARCH}" in \
+    amd64) tf_sha="${TERRAFORM_SHA256_LINUX_AMD64}"; prov_sha="${TERRAFORM_PROVIDER_SHA256_LINUX_AMD64}" ;; \
+    arm64) tf_sha="${TERRAFORM_SHA256_LINUX_ARM64}"; prov_sha="${TERRAFORM_PROVIDER_SHA256_LINUX_ARM64}" ;; \
+    *) echo "unsupported TARGETARCH: ${TARGETARCH}" >&2; exit 1 ;; \
+  esac; \
+  echo "${tf_sha}  ${tf_zip}" > /tmp/checksums.sha256; \
+  echo "${prov_sha}  ${prov_zip}" >> /tmp/checksums.sha256; \
+  sha256sum -c /tmp/checksums.sha256; \
+  rm /tmp/checksums.sha256; \
+  unzip "${tf_zip}" -d /usr/local/bin; \
+  chmod +x /usr/local/bin/terraform; \
+  rm "${tf_zip}"; \
+  unzip "${prov_zip}" -d "${PLUGIN_DIR}"; \
+  chmod +x "${PLUGIN_DIR}"/*; \
+  rm "${prov_zip}"; \
+  chown -R "${USER_ID}:${USER_ID}" /terraform
 # End of - Setup Terraform environment
 
 # Provider controller needs these environment variable at runtime

@@ -18,6 +18,17 @@ export TERRAFORM_PROVIDER_DOWNLOAD_URL_PREFIX ?= https://github.com/ubiquiti-com
 export TERRAFORM_NATIVE_PROVIDER_BINARY ?= terraform-provider-unifi_v0.53.0
 export TERRAFORM_DOCS_PATH ?= docs/resources
 
+# SHA256 checksums of the downloaded archives, verified in the Dockerfile before
+# extraction (supply-chain integrity). Pinned per arch so a compromised mirror or
+# MITM cannot substitute a malicious archive into the published image.
+# Sources (bump in lockstep with the versions above):
+#   terraform:        https://releases.hashicorp.com/terraform/$(TERRAFORM_VERSION)/terraform_$(TERRAFORM_VERSION)_SHA256SUMS
+#   native provider:  $(TERRAFORM_PROVIDER_DOWNLOAD_URL_PREFIX)/$(TERRAFORM_PROVIDER_DOWNLOAD_NAME)_$(TERRAFORM_PROVIDER_VERSION)_SHA256SUMS
+export TERRAFORM_SHA256_LINUX_AMD64 ?= c0ed7bc32ee52ae255af9982c8c88a7a4c610485cf1d55feeb037eab75fa082c
+export TERRAFORM_SHA256_LINUX_ARM64 ?= f4b4ad7c6b6088960a667e34495cae490fb072947a9ff266bf5929f5333565e4
+export TERRAFORM_PROVIDER_SHA256_LINUX_AMD64 ?= 7595095286283bda0afb40434e4904b416cad67440833355299f12f354263d80
+export TERRAFORM_PROVIDER_SHA256_LINUX_ARM64 ?= 4df88c90e7676ab3494693ec3de8611b6c33d629f36f40b892e077cc76c37448
+
 
 PLATFORMS ?= linux_amd64 linux_arm64
 

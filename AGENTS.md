@@ -72,8 +72,10 @@ Repo-specific watch-list for the daily engineer:
 - **Track upstream provider releases.** When
   [`ubiquiti-community/terraform-provider-unifi`](https://github.com/ubiquiti-community/terraform-provider-unifi)
   ships a release, bump `TERRAFORM_PROVIDER_VERSION` (+ `TERRAFORM_NATIVE_PROVIDER_BINARY`) in the
-  `Makefile`, `make generate`, and open a draft PR with the regenerated tree. New upstream resources →
-  add `config/external_name.go` entries so they generate.
+  `Makefile`, **refresh the `TERRAFORM_PROVIDER_SHA256_LINUX_{AMD64,ARM64}` pins** from the release's
+  `*_SHA256SUMS` (the Dockerfile verifies them before unzip), `make generate`, and open a draft PR with
+  the regenerated tree. Bump `TERRAFORM_VERSION`'s `TERRAFORM_SHA256_LINUX_{AMD64,ARM64}` the same way.
+  New upstream resources → add `config/external_name.go` entries so they generate.
 - **Resource coverage.** All resources the upstream provider exposes should have an external-name config.
   A new opaque-ID resource defaults to `config.IdentifierFromProvider`; refine to
   `NameAsIdentifier`/`TemplatedStringAsIdentifier` only when the upstream identity warrants it.
