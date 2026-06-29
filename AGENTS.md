@@ -32,7 +32,7 @@ a pure Kubernetes API.
 | `internal/controller/**`       | **generated** controllers                                                                   |
 | `package/crds/**`              | **generated** CRDs                                                                          |
 | `examples/**`                  | example `ProviderConfig` + managed-resource manifests                                       |
-| `Makefile`                     | `TERRAFORM_PROVIDER_*` pins (source/version) + Upjet build wiring                           |
+| `Makefile`                     | `TERRAFORM_*`/`TERRAFORM_PROVIDER_*` pins (source/version + per-arch SHA256) + Upjet wiring |
 
 ## Authentication
 
