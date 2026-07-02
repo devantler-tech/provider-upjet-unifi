@@ -74,5 +74,9 @@ jobs:
           password: ${{ secrets.GITHUB_TOKEN }}
       - name: Sign the package image (keyless)
         # --yes resolves the tag to its digest and signs the digest, so the
-        # signature stays valid even if the tag is later moved.
-        run: cosign sign --yes "ghcr.io/devantler-tech/provider-upjet-unifi:${{ github.event.inputs.version }}"
+        # signature stays valid even if the tag is later moved. The version
+        # input reaches the shell via env (never inline ${{ }} in run:) so a
+        # crafted input cannot inject shell syntax (zizmor template-injection).
+        env:
+          VERSION: ${{ github.event.inputs.version }}
+        run: cosign sign --yes "ghcr.io/devantler-tech/provider-upjet-unifi:${VERSION}"
