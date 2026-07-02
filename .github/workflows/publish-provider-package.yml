@@ -20,8 +20,9 @@ jobs:
   publish-provider-package:
     # The reusable workflow pushes the xpkg to GHCR (docker login + crane copy)
     # using GHCR_PAT (the job's GITHUB_TOKEN), so it needs packages:write to
-    # publish and contents:read to check out. It uses no OIDC/cosign keyless
-    # signing, so id-token:write is intentionally omitted.
+    # publish and contents:read to check out. It does no OIDC/cosign keyless
+    # signing itself, so id-token:write is intentionally omitted HERE — the
+    # signature is attached by the sign-provider-package job below.
     permissions:
       contents: read
       packages: write
@@ -39,3 +40,39 @@ jobs:
       GHCR_PAT: ${{ secrets.GITHUB_TOKEN }}
       XPKG_MIRROR_TOKEN: ${{ secrets.XPKG_MIRROR_TOKEN }}
       XPKG_MIRROR_ACCESS_ID: ${{ secrets.XPKG_MIRROR_ACCESS_ID }}
+
+  sign-provider-package:
+    # Keyless cosign signature over the published package image — REQUIRED for
+    # prod admission. The platform's verify-app-images ImageValidatingPolicy
+    # (Kyverno) denies any unsigned ghcr.io/devantler-tech/* pod image, and the
+    # ProviderRevision's package-runtime Deployment runs THIS image: v0.1.0
+    # shipped unsigned and its pods were rejected at admission on prod
+    # (2026-07-02), leaving the provider Deployment at 0/1. The upstream
+    # reusable publish workflow does not sign, so the signature is attached
+    # here right after it pushes. The Fulcio certificate identity this
+    # produces is
+    #   https://github.com/devantler-tech/provider-upjet-unifi/.github/workflows/publish-provider-package.yml@<ref>
+    # which the platform policy accepts alongside its publish-app identity.
+    #
+    # Skipped when no explicit version is passed (the reusable workflow then
+    # derives one this job cannot know) — always dispatch releases WITH the
+    # version input so the package is signed and admissible.
+    needs: publish-provider-package
+    if: ${{ github.event.inputs.version != '' }}
+    runs-on: ubuntu-latest
+    permissions:
+      id-token: write # Fulcio keyless certificate (OIDC)
+      packages: write # push the signature to GHCR
+    steps:
+      - name: Install cosign
+        uses: sigstore/cosign-installer@6f9f17788090df1f26f669e9d70d6ae9567deba6 # v4.1.2
+      - name: Log in to GHCR
+        uses: docker/login-action@650006c6eb7dba73a995cc03b0b2d7f5ca915bee # v4.2.0
+        with:
+          registry: ghcr.io
+          username: ${{ github.actor }}
+          password: ${{ secrets.GITHUB_TOKEN }}
+      - name: Sign the package image (keyless)
+        # --yes resolves the tag to its digest and signs the digest, so the
+        # signature stays valid even if the tag is later moved.
+        run: cosign sign --yes "ghcr.io/devantler-tech/provider-upjet-unifi:${{ github.event.inputs.version }}"
