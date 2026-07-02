@@ -116,6 +116,7 @@
     "resourcelock",
     "rowserrcheck",
     "scopelint",
+    "sigstore",
     "spancheck",
     "sqlclosecheck",
     "statemetrics",
