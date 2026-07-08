@@ -23,15 +23,15 @@ var shortGroups = map[string]string{
 	"unifi_power_supervisor": "device",
 
 	// firewall
-	"unifi_firewall_group":  "firewall",
+	resFirewallGroup:        "firewall",
 	"unifi_firewall_policy": "firewall",
 	"unifi_firewall_rule":   "firewall",
-	"unifi_firewall_zone":   "firewall",
+	resFirewallZone:         "firewall",
 
 	// network
-	"unifi_network": "network",
-	"unifi_wan":     "network",
-	"unifi_bgp":     "network",
+	resNetwork:  "network",
+	"unifi_wan": "network",
+	"unifi_bgp": "network",
 
 	// port
 	"unifi_port_forward": "port",
@@ -54,7 +54,7 @@ var shortGroups = map[string]string{
 
 	// vpn
 	"unifi_site_to_site_vpn": "vpn",
-	"unifi_vpn_client":       "vpn",
+	resVPNClient:             "vpn",
 	"unifi_vpn_server":       "vpn",
 	"unifi_wireguard_peer":   "vpn",
 
