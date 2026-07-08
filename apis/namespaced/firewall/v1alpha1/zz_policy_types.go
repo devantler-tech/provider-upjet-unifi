@@ -29,7 +29,16 @@ type DestinationInitParameters struct {
 	MatchingTarget *string `json:"matchingTarget,omitempty" tf:"matching_target,omitempty"`
 
 	// List of UniFi network IDs to match. Used when `matching_target` is `NETWORK`.
+	// +crossplane:generate:reference:type=github.com/devantler-tech/provider-upjet-unifi/apis/namespaced/network/v1alpha1.Network
 	NetworkIds []*string `json:"networkIds,omitempty" tf:"network_ids,omitempty"`
+
+	// References to Network in network to populate networkIds.
+	// +kubebuilder:validation:Optional
+	NetworkIdsRefs []v1.NamespacedReference `json:"networkIdsRefs,omitempty" tf:"-"`
+
+	// Selector for a list of Network in network to populate networkIds.
+	// +kubebuilder:validation:Optional
+	NetworkIdsSelector *v1.NamespacedSelector `json:"networkIdsSelector,omitempty" tf:"-"`
 
 	// Port(s) to match when `port_matching_type` is `SPECIFIC`. A single port (`161`) or a comma-separated list of ports/ranges (`80,443`, `8000-8100`). Leave unset for no port match.
 	Port *string `json:"port,omitempty" tf:"port,omitempty"`
@@ -44,7 +53,16 @@ type DestinationInitParameters struct {
 	WebDomains []*string `json:"webDomains,omitempty" tf:"web_domains,omitempty"`
 
 	// The ID of the firewall zone this endpoint belongs to. Use the `unifi_firewall_zone` data source to look up zone IDs by name.
+	// +crossplane:generate:reference:type=github.com/devantler-tech/provider-upjet-unifi/apis/namespaced/firewall/v1alpha1.Zone
 	ZoneID *string `json:"zoneId,omitempty" tf:"zone_id,omitempty"`
+
+	// Reference to a Zone in firewall to populate zoneId.
+	// +kubebuilder:validation:Optional
+	ZoneIDRef *v1.NamespacedReference `json:"zoneIdRef,omitempty" tf:"-"`
+
+	// Selector for a Zone in firewall to populate zoneId.
+	// +kubebuilder:validation:Optional
+	ZoneIDSelector *v1.NamespacedSelector `json:"zoneIdSelector,omitempty" tf:"-"`
 }
 
 type DestinationObservation struct {
@@ -102,8 +120,17 @@ type DestinationParameters struct {
 	MatchingTarget *string `json:"matchingTarget" tf:"matching_target,omitempty"`
 
 	// List of UniFi network IDs to match. Used when `matching_target` is `NETWORK`.
+	// +crossplane:generate:reference:type=github.com/devantler-tech/provider-upjet-unifi/apis/namespaced/network/v1alpha1.Network
 	// +kubebuilder:validation:Optional
 	NetworkIds []*string `json:"networkIds,omitempty" tf:"network_ids,omitempty"`
+
+	// References to Network in network to populate networkIds.
+	// +kubebuilder:validation:Optional
+	NetworkIdsRefs []v1.NamespacedReference `json:"networkIdsRefs,omitempty" tf:"-"`
+
+	// Selector for a list of Network in network to populate networkIds.
+	// +kubebuilder:validation:Optional
+	NetworkIdsSelector *v1.NamespacedSelector `json:"networkIdsSelector,omitempty" tf:"-"`
 
 	// Port(s) to match when `port_matching_type` is `SPECIFIC`. A single port (`161`) or a comma-separated list of ports/ranges (`80,443`, `8000-8100`). Leave unset for no port match.
 	// +kubebuilder:validation:Optional
@@ -122,8 +149,17 @@ type DestinationParameters struct {
 	WebDomains []*string `json:"webDomains,omitempty" tf:"web_domains,omitempty"`
 
 	// The ID of the firewall zone this endpoint belongs to. Use the `unifi_firewall_zone` data source to look up zone IDs by name.
+	// +crossplane:generate:reference:type=github.com/devantler-tech/provider-upjet-unifi/apis/namespaced/firewall/v1alpha1.Zone
 	// +kubebuilder:validation:Optional
-	ZoneID *string `json:"zoneId" tf:"zone_id,omitempty"`
+	ZoneID *string `json:"zoneId,omitempty" tf:"zone_id,omitempty"`
+
+	// Reference to a Zone in firewall to populate zoneId.
+	// +kubebuilder:validation:Optional
+	ZoneIDRef *v1.NamespacedReference `json:"zoneIdRef,omitempty" tf:"-"`
+
+	// Selector for a Zone in firewall to populate zoneId.
+	// +kubebuilder:validation:Optional
+	ZoneIDSelector *v1.NamespacedSelector `json:"zoneIdSelector,omitempty" tf:"-"`
 }
 
 type PolicyInitParameters struct {
@@ -334,7 +370,16 @@ type SourceInitParameters struct {
 	MatchingTarget *string `json:"matchingTarget,omitempty" tf:"matching_target,omitempty"`
 
 	// List of UniFi network IDs to match. Used when `matching_target` is `NETWORK`.
+	// +crossplane:generate:reference:type=github.com/devantler-tech/provider-upjet-unifi/apis/namespaced/network/v1alpha1.Network
 	NetworkIds []*string `json:"networkIds,omitempty" tf:"network_ids,omitempty"`
+
+	// References to Network in network to populate networkIds.
+	// +kubebuilder:validation:Optional
+	NetworkIdsRefs []v1.NamespacedReference `json:"networkIdsRefs,omitempty" tf:"-"`
+
+	// Selector for a list of Network in network to populate networkIds.
+	// +kubebuilder:validation:Optional
+	NetworkIdsSelector *v1.NamespacedSelector `json:"networkIdsSelector,omitempty" tf:"-"`
 
 	// Port(s) to match when `port_matching_type` is `SPECIFIC`. A single port (`161`) or a comma-separated list of ports/ranges (`80,443`, `8000-8100`). Leave unset for no port match.
 	Port *string `json:"port,omitempty" tf:"port,omitempty"`
@@ -349,7 +394,16 @@ type SourceInitParameters struct {
 	WebDomains []*string `json:"webDomains,omitempty" tf:"web_domains,omitempty"`
 
 	// The ID of the firewall zone this endpoint belongs to. Use the `unifi_firewall_zone` data source to look up zone IDs by name.
+	// +crossplane:generate:reference:type=github.com/devantler-tech/provider-upjet-unifi/apis/namespaced/firewall/v1alpha1.Zone
 	ZoneID *string `json:"zoneId,omitempty" tf:"zone_id,omitempty"`
+
+	// Reference to a Zone in firewall to populate zoneId.
+	// +kubebuilder:validation:Optional
+	ZoneIDRef *v1.NamespacedReference `json:"zoneIdRef,omitempty" tf:"-"`
+
+	// Selector for a Zone in firewall to populate zoneId.
+	// +kubebuilder:validation:Optional
+	ZoneIDSelector *v1.NamespacedSelector `json:"zoneIdSelector,omitempty" tf:"-"`
 }
 
 type SourceObservation struct {
@@ -407,8 +461,17 @@ type SourceParameters struct {
 	MatchingTarget *string `json:"matchingTarget" tf:"matching_target,omitempty"`
 
 	// List of UniFi network IDs to match. Used when `matching_target` is `NETWORK`.
+	// +crossplane:generate:reference:type=github.com/devantler-tech/provider-upjet-unifi/apis/namespaced/network/v1alpha1.Network
 	// +kubebuilder:validation:Optional
 	NetworkIds []*string `json:"networkIds,omitempty" tf:"network_ids,omitempty"`
+
+	// References to Network in network to populate networkIds.
+	// +kubebuilder:validation:Optional
+	NetworkIdsRefs []v1.NamespacedReference `json:"networkIdsRefs,omitempty" tf:"-"`
+
+	// Selector for a list of Network in network to populate networkIds.
+	// +kubebuilder:validation:Optional
+	NetworkIdsSelector *v1.NamespacedSelector `json:"networkIdsSelector,omitempty" tf:"-"`
 
 	// Port(s) to match when `port_matching_type` is `SPECIFIC`. A single port (`161`) or a comma-separated list of ports/ranges (`80,443`, `8000-8100`). Leave unset for no port match.
 	// +kubebuilder:validation:Optional
@@ -427,8 +490,17 @@ type SourceParameters struct {
 	WebDomains []*string `json:"webDomains,omitempty" tf:"web_domains,omitempty"`
 
 	// The ID of the firewall zone this endpoint belongs to. Use the `unifi_firewall_zone` data source to look up zone IDs by name.
+	// +crossplane:generate:reference:type=github.com/devantler-tech/provider-upjet-unifi/apis/namespaced/firewall/v1alpha1.Zone
 	// +kubebuilder:validation:Optional
-	ZoneID *string `json:"zoneId" tf:"zone_id,omitempty"`
+	ZoneID *string `json:"zoneId,omitempty" tf:"zone_id,omitempty"`
+
+	// Reference to a Zone in firewall to populate zoneId.
+	// +kubebuilder:validation:Optional
+	ZoneIDRef *v1.NamespacedReference `json:"zoneIdRef,omitempty" tf:"-"`
+
+	// Selector for a Zone in firewall to populate zoneId.
+	// +kubebuilder:validation:Optional
+	ZoneIDSelector *v1.NamespacedSelector `json:"zoneIdSelector,omitempty" tf:"-"`
 }
 
 // PolicySpec defines the desired state of Policy

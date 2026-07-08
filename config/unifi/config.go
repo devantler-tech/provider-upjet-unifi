@@ -23,15 +23,15 @@ var shortGroups = map[string]string{
 	"unifi_power_supervisor": "device",
 
 	// firewall
-	"unifi_firewall_group":  "firewall",
+	resFirewallGroup:        "firewall",
 	"unifi_firewall_policy": "firewall",
 	"unifi_firewall_rule":   "firewall",
-	"unifi_firewall_zone":   "firewall",
+	resFirewallZone:         "firewall",
 
 	// network
-	"unifi_network": "network",
-	"unifi_wan":     "network",
-	"unifi_bgp":     "network",
+	resNetwork:  "network",
+	"unifi_wan": "network",
+	"unifi_bgp": "network",
 
 	// port
 	"unifi_port_forward": "port",
@@ -54,7 +54,7 @@ var shortGroups = map[string]string{
 
 	// vpn
 	"unifi_site_to_site_vpn": "vpn",
-	"unifi_vpn_client":       "vpn",
+	resVPNClient:             "vpn",
 	"unifi_vpn_server":       "vpn",
 	"unifi_wireguard_peer":   "vpn",
 
@@ -71,6 +71,17 @@ var kindOverrides = map[string]string{
 	"unifi_traffic_route": "TrafficRoute",
 }
 
+// Terraform resource names used as cross-resource reference targets, pulled out
+// as constants because several are referenced from multiple fields (and also
+// appear as shortGroups keys), which the goconst linter flags as repeated
+// string literals.
+const (
+	resVPNClient     = "unifi_vpn_client"
+	resFirewallGroup = "unifi_firewall_group"
+	resFirewallZone  = "unifi_firewall_zone"
+	resNetwork       = "unifi_network"
+)
+
 // references declares Upjet cross-resource references: for each Terraform
 // resource it maps a Terraform field name to the resource that field should be
 // able to reference. The generator then emits <field>Ref/<field>Selector
@@ -86,7 +97,47 @@ var kindOverrides = map[string]string{
 var references = map[string]ujconfig.References{
 	"unifi_traffic_route": {
 		"network_id": {
-			TerraformName: "unifi_vpn_client",
+			TerraformName: resVPNClient,
+		},
+	},
+
+	// A firewall rule points at firewall groups and networks by their UniFi ids,
+	// which are only known after those objects reconcile. Referencing them lets a
+	// consumer wire a rule to a FirewallGroup/Network by name via the generated
+	// *Ref/*Selector companions; the raw id fields stay settable directly. The
+	// *_firewall_group_ids/*network* list fields resolve as slice references.
+	"unifi_firewall_rule": {
+		"src_firewall_group_ids": {
+			TerraformName: resFirewallGroup,
+		},
+		"dst_firewall_group_ids": {
+			TerraformName: resFirewallGroup,
+		},
+		"src_network_id": {
+			TerraformName: resNetwork,
+		},
+		"dst_network_id": {
+			TerraformName: resNetwork,
+		},
+	},
+
+	// A firewall policy references networks and a firewall zone on each side of
+	// the match; the network_ids/zone_id fields live inside the single-nested
+	// source and destination blocks, so the references are keyed by their nested
+	// paths. Both are post-reconcile UniFi ids, so referencing Network and
+	// FirewallZone by name mirrors the firewall_rule wiring above.
+	"unifi_firewall_policy": {
+		"source.network_ids": {
+			TerraformName: resNetwork,
+		},
+		"source.zone_id": {
+			TerraformName: resFirewallZone,
+		},
+		"destination.network_ids": {
+			TerraformName: resNetwork,
+		},
+		"destination.zone_id": {
+			TerraformName: resFirewallZone,
 		},
 	},
 }
