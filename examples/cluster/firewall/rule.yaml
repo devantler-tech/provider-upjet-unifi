@@ -1,0 +1,50 @@
+# A firewall Rule that references a firewall Group and a Network by name via the
+# generated *Ref companions, instead of hard-coding UniFi ids that are only known
+# after those objects reconcile. The raw srcFirewallGroupIds/dstNetworkId fields
+# stay settable directly if you already know the ids.
+apiVersion: firewall.unifi.crossplane.io/v1alpha1
+kind: Group
+metadata:
+  name: example-blocklist
+spec:
+  forProvider:
+    name: example-blocklist
+    type: address-group
+    members:
+      - 203.0.113.10
+      - 203.0.113.11
+  providerConfigRef:
+    name: default
+---
+apiVersion: network.unifi.crossplane.io/v1alpha1
+kind: Network
+metadata:
+  name: example-lan
+spec:
+  forProvider:
+    name: example-lan
+    subnet: 10.0.42.1/24
+    vlan: 42
+  providerConfigRef:
+    name: default
+---
+apiVersion: firewall.unifi.crossplane.io/v1alpha1
+kind: Rule
+metadata:
+  name: example-block-rule
+spec:
+  forProvider:
+    name: example-block-rule
+    action: drop
+    ruleset: LAN_IN
+    ruleIndex: 2000
+    protocol: all
+    # Reference the source firewall Group(s) by name; the resolver fills
+    # srcFirewallGroupIds from the referenced Group's UniFi id.
+    srcFirewallGroupIdsRefs:
+      - name: example-blocklist
+    # Reference the destination Network by name.
+    dstNetworkIdRef:
+      name: example-lan
+  providerConfigRef:
+    name: default

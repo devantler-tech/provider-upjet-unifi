@@ -89,6 +89,46 @@ var references = map[string]ujconfig.References{
 			TerraformName: "unifi_vpn_client",
 		},
 	},
+
+	// A firewall rule points at firewall groups and networks by their UniFi ids,
+	// which are only known after those objects reconcile. Referencing them lets a
+	// consumer wire a rule to a FirewallGroup/Network by name via the generated
+	// *Ref/*Selector companions; the raw id fields stay settable directly. The
+	// *_firewall_group_ids/*network* list fields resolve as slice references.
+	"unifi_firewall_rule": {
+		"src_firewall_group_ids": {
+			TerraformName: "unifi_firewall_group",
+		},
+		"dst_firewall_group_ids": {
+			TerraformName: "unifi_firewall_group",
+		},
+		"src_network_id": {
+			TerraformName: "unifi_network",
+		},
+		"dst_network_id": {
+			TerraformName: "unifi_network",
+		},
+	},
+
+	// A firewall policy references networks and a firewall zone on each side of
+	// the match; the network_ids/zone_id fields live inside the single-nested
+	// source and destination blocks, so the references are keyed by their nested
+	// paths. Both are post-reconcile UniFi ids, so referencing Network and
+	// FirewallZone by name mirrors the firewall_rule wiring above.
+	"unifi_firewall_policy": {
+		"source.network_ids": {
+			TerraformName: "unifi_network",
+		},
+		"source.zone_id": {
+			TerraformName: "unifi_firewall_zone",
+		},
+		"destination.network_ids": {
+			TerraformName: "unifi_network",
+		},
+		"destination.zone_id": {
+			TerraformName: "unifi_firewall_zone",
+		},
+	},
 }
 
 // Configure assigns each UniFi resource to its API ShortGroup and pins Kinds

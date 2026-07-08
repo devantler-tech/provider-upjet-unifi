@@ -9,6 +9,7 @@
 package v1alpha1
 
 import (
+	"github.com/crossplane/crossplane-runtime/v2/apis/common/v1"
 	runtime "k8s.io/apimachinery/pkg/runtime"
 )
 
@@ -58,6 +59,18 @@ func (in *DestinationInitParameters) DeepCopyInto(out *DestinationInitParameters
 			}
 		}
 	}
+	if in.NetworkIdsRefs != nil {
+		in, out := &in.NetworkIdsRefs, &out.NetworkIdsRefs
+		*out = make([]v1.NamespacedReference, len(*in))
+		for i := range *in {
+			(*in)[i].DeepCopyInto(&(*out)[i])
+		}
+	}
+	if in.NetworkIdsSelector != nil {
+		in, out := &in.NetworkIdsSelector, &out.NetworkIdsSelector
+		*out = new(v1.NamespacedSelector)
+		(*in).DeepCopyInto(*out)
+	}
 	if in.Port != nil {
 		in, out := &in.Port, &out.Port
 		*out = new(string)
@@ -88,6 +101,16 @@ func (in *DestinationInitParameters) DeepCopyInto(out *DestinationInitParameters
 		in, out := &in.ZoneID, &out.ZoneID
 		*out = new(string)
 		**out = **in
+	}
+	if in.ZoneIDRef != nil {
+		in, out := &in.ZoneIDRef, &out.ZoneIDRef
+		*out = new(v1.NamespacedReference)
+		(*in).DeepCopyInto(*out)
+	}
+	if in.ZoneIDSelector != nil {
+		in, out := &in.ZoneIDSelector, &out.ZoneIDSelector
+		*out = new(v1.NamespacedSelector)
+		(*in).DeepCopyInto(*out)
 	}
 }
 
@@ -241,6 +264,18 @@ func (in *DestinationParameters) DeepCopyInto(out *DestinationParameters) {
 			}
 		}
 	}
+	if in.NetworkIdsRefs != nil {
+		in, out := &in.NetworkIdsRefs, &out.NetworkIdsRefs
+		*out = make([]v1.NamespacedReference, len(*in))
+		for i := range *in {
+			(*in)[i].DeepCopyInto(&(*out)[i])
+		}
+	}
+	if in.NetworkIdsSelector != nil {
+		in, out := &in.NetworkIdsSelector, &out.NetworkIdsSelector
+		*out = new(v1.NamespacedSelector)
+		(*in).DeepCopyInto(*out)
+	}
 	if in.Port != nil {
 		in, out := &in.Port, &out.Port
 		*out = new(string)
@@ -271,6 +306,16 @@ func (in *DestinationParameters) DeepCopyInto(out *DestinationParameters) {
 		in, out := &in.ZoneID, &out.ZoneID
 		*out = new(string)
 		**out = **in
+	}
+	if in.ZoneIDRef != nil {
+		in, out := &in.ZoneIDRef, &out.ZoneIDRef
+		*out = new(v1.NamespacedReference)
+		(*in).DeepCopyInto(*out)
+	}
+	if in.ZoneIDSelector != nil {
+		in, out := &in.ZoneIDSelector, &out.ZoneIDSelector
+		*out = new(v1.NamespacedSelector)
+		(*in).DeepCopyInto(*out)
 	}
 }
 
@@ -1047,10 +1092,32 @@ func (in *RuleInitParameters) DeepCopyInto(out *RuleInitParameters) {
 			}
 		}
 	}
+	if in.DstFirewallGroupIdsRefs != nil {
+		in, out := &in.DstFirewallGroupIdsRefs, &out.DstFirewallGroupIdsRefs
+		*out = make([]v1.NamespacedReference, len(*in))
+		for i := range *in {
+			(*in)[i].DeepCopyInto(&(*out)[i])
+		}
+	}
+	if in.DstFirewallGroupIdsSelector != nil {
+		in, out := &in.DstFirewallGroupIdsSelector, &out.DstFirewallGroupIdsSelector
+		*out = new(v1.NamespacedSelector)
+		(*in).DeepCopyInto(*out)
+	}
 	if in.DstNetworkID != nil {
 		in, out := &in.DstNetworkID, &out.DstNetworkID
 		*out = new(string)
 		**out = **in
+	}
+	if in.DstNetworkIDRef != nil {
+		in, out := &in.DstNetworkIDRef, &out.DstNetworkIDRef
+		*out = new(v1.NamespacedReference)
+		(*in).DeepCopyInto(*out)
+	}
+	if in.DstNetworkIDSelector != nil {
+		in, out := &in.DstNetworkIDSelector, &out.DstNetworkIDSelector
+		*out = new(v1.NamespacedSelector)
+		(*in).DeepCopyInto(*out)
 	}
 	if in.DstNetworkType != nil {
 		in, out := &in.DstNetworkType, &out.DstNetworkType
@@ -1148,6 +1215,18 @@ func (in *RuleInitParameters) DeepCopyInto(out *RuleInitParameters) {
 			}
 		}
 	}
+	if in.SrcFirewallGroupIdsRefs != nil {
+		in, out := &in.SrcFirewallGroupIdsRefs, &out.SrcFirewallGroupIdsRefs
+		*out = make([]v1.NamespacedReference, len(*in))
+		for i := range *in {
+			(*in)[i].DeepCopyInto(&(*out)[i])
+		}
+	}
+	if in.SrcFirewallGroupIdsSelector != nil {
+		in, out := &in.SrcFirewallGroupIdsSelector, &out.SrcFirewallGroupIdsSelector
+		*out = new(v1.NamespacedSelector)
+		(*in).DeepCopyInto(*out)
+	}
 	if in.SrcMac != nil {
 		in, out := &in.SrcMac, &out.SrcMac
 		*out = new(string)
@@ -1157,6 +1236,16 @@ func (in *RuleInitParameters) DeepCopyInto(out *RuleInitParameters) {
 		in, out := &in.SrcNetworkID, &out.SrcNetworkID
 		*out = new(string)
 		**out = **in
+	}
+	if in.SrcNetworkIDRef != nil {
+		in, out := &in.SrcNetworkIDRef, &out.SrcNetworkIDRef
+		*out = new(v1.NamespacedReference)
+		(*in).DeepCopyInto(*out)
+	}
+	if in.SrcNetworkIDSelector != nil {
+		in, out := &in.SrcNetworkIDSelector, &out.SrcNetworkIDSelector
+		*out = new(v1.NamespacedSelector)
+		(*in).DeepCopyInto(*out)
 	}
 	if in.SrcNetworkType != nil {
 		in, out := &in.SrcNetworkType, &out.SrcNetworkType
@@ -1458,10 +1547,32 @@ func (in *RuleParameters) DeepCopyInto(out *RuleParameters) {
 			}
 		}
 	}
+	if in.DstFirewallGroupIdsRefs != nil {
+		in, out := &in.DstFirewallGroupIdsRefs, &out.DstFirewallGroupIdsRefs
+		*out = make([]v1.NamespacedReference, len(*in))
+		for i := range *in {
+			(*in)[i].DeepCopyInto(&(*out)[i])
+		}
+	}
+	if in.DstFirewallGroupIdsSelector != nil {
+		in, out := &in.DstFirewallGroupIdsSelector, &out.DstFirewallGroupIdsSelector
+		*out = new(v1.NamespacedSelector)
+		(*in).DeepCopyInto(*out)
+	}
 	if in.DstNetworkID != nil {
 		in, out := &in.DstNetworkID, &out.DstNetworkID
 		*out = new(string)
 		**out = **in
+	}
+	if in.DstNetworkIDRef != nil {
+		in, out := &in.DstNetworkIDRef, &out.DstNetworkIDRef
+		*out = new(v1.NamespacedReference)
+		(*in).DeepCopyInto(*out)
+	}
+	if in.DstNetworkIDSelector != nil {
+		in, out := &in.DstNetworkIDSelector, &out.DstNetworkIDSelector
+		*out = new(v1.NamespacedSelector)
+		(*in).DeepCopyInto(*out)
 	}
 	if in.DstNetworkType != nil {
 		in, out := &in.DstNetworkType, &out.DstNetworkType
@@ -1559,6 +1670,18 @@ func (in *RuleParameters) DeepCopyInto(out *RuleParameters) {
 			}
 		}
 	}
+	if in.SrcFirewallGroupIdsRefs != nil {
+		in, out := &in.SrcFirewallGroupIdsRefs, &out.SrcFirewallGroupIdsRefs
+		*out = make([]v1.NamespacedReference, len(*in))
+		for i := range *in {
+			(*in)[i].DeepCopyInto(&(*out)[i])
+		}
+	}
+	if in.SrcFirewallGroupIdsSelector != nil {
+		in, out := &in.SrcFirewallGroupIdsSelector, &out.SrcFirewallGroupIdsSelector
+		*out = new(v1.NamespacedSelector)
+		(*in).DeepCopyInto(*out)
+	}
 	if in.SrcMac != nil {
 		in, out := &in.SrcMac, &out.SrcMac
 		*out = new(string)
@@ -1568,6 +1691,16 @@ func (in *RuleParameters) DeepCopyInto(out *RuleParameters) {
 		in, out := &in.SrcNetworkID, &out.SrcNetworkID
 		*out = new(string)
 		**out = **in
+	}
+	if in.SrcNetworkIDRef != nil {
+		in, out := &in.SrcNetworkIDRef, &out.SrcNetworkIDRef
+		*out = new(v1.NamespacedReference)
+		(*in).DeepCopyInto(*out)
+	}
+	if in.SrcNetworkIDSelector != nil {
+		in, out := &in.SrcNetworkIDSelector, &out.SrcNetworkIDSelector
+		*out = new(v1.NamespacedSelector)
+		(*in).DeepCopyInto(*out)
 	}
 	if in.SrcNetworkType != nil {
 		in, out := &in.SrcNetworkType, &out.SrcNetworkType
@@ -1802,6 +1935,18 @@ func (in *SourceInitParameters) DeepCopyInto(out *SourceInitParameters) {
 			}
 		}
 	}
+	if in.NetworkIdsRefs != nil {
+		in, out := &in.NetworkIdsRefs, &out.NetworkIdsRefs
+		*out = make([]v1.NamespacedReference, len(*in))
+		for i := range *in {
+			(*in)[i].DeepCopyInto(&(*out)[i])
+		}
+	}
+	if in.NetworkIdsSelector != nil {
+		in, out := &in.NetworkIdsSelector, &out.NetworkIdsSelector
+		*out = new(v1.NamespacedSelector)
+		(*in).DeepCopyInto(*out)
+	}
 	if in.Port != nil {
 		in, out := &in.Port, &out.Port
 		*out = new(string)
@@ -1832,6 +1977,16 @@ func (in *SourceInitParameters) DeepCopyInto(out *SourceInitParameters) {
 		in, out := &in.ZoneID, &out.ZoneID
 		*out = new(string)
 		**out = **in
+	}
+	if in.ZoneIDRef != nil {
+		in, out := &in.ZoneIDRef, &out.ZoneIDRef
+		*out = new(v1.NamespacedReference)
+		(*in).DeepCopyInto(*out)
+	}
+	if in.ZoneIDSelector != nil {
+		in, out := &in.ZoneIDSelector, &out.ZoneIDSelector
+		*out = new(v1.NamespacedSelector)
+		(*in).DeepCopyInto(*out)
 	}
 }
 
@@ -1985,6 +2140,18 @@ func (in *SourceParameters) DeepCopyInto(out *SourceParameters) {
 			}
 		}
 	}
+	if in.NetworkIdsRefs != nil {
+		in, out := &in.NetworkIdsRefs, &out.NetworkIdsRefs
+		*out = make([]v1.NamespacedReference, len(*in))
+		for i := range *in {
+			(*in)[i].DeepCopyInto(&(*out)[i])
+		}
+	}
+	if in.NetworkIdsSelector != nil {
+		in, out := &in.NetworkIdsSelector, &out.NetworkIdsSelector
+		*out = new(v1.NamespacedSelector)
+		(*in).DeepCopyInto(*out)
+	}
 	if in.Port != nil {
 		in, out := &in.Port, &out.Port
 		*out = new(string)
@@ -2015,6 +2182,16 @@ func (in *SourceParameters) DeepCopyInto(out *SourceParameters) {
 		in, out := &in.ZoneID, &out.ZoneID
 		*out = new(string)
 		**out = **in
+	}
+	if in.ZoneIDRef != nil {
+		in, out := &in.ZoneIDRef, &out.ZoneIDRef
+		*out = new(v1.NamespacedReference)
+		(*in).DeepCopyInto(*out)
+	}
+	if in.ZoneIDSelector != nil {
+		in, out := &in.ZoneIDSelector, &out.ZoneIDSelector
+		*out = new(v1.NamespacedSelector)
+		(*in).DeepCopyInto(*out)
 	}
 }
 

@@ -26,11 +26,29 @@ type RuleInitParameters struct {
 	DstAddressIPv6 *string `json:"dstAddressIpv6,omitempty" tf:"dst_address_ipv6,omitempty"`
 
 	// The destination firewall group IDs of the firewall rule.
+	// +crossplane:generate:reference:type=github.com/devantler-tech/provider-upjet-unifi/apis/namespaced/firewall/v1alpha1.Group
 	// +listType=set
 	DstFirewallGroupIds []*string `json:"dstFirewallGroupIds,omitempty" tf:"dst_firewall_group_ids,omitempty"`
 
+	// References to Group in firewall to populate dstFirewallGroupIds.
+	// +kubebuilder:validation:Optional
+	DstFirewallGroupIdsRefs []v1.NamespacedReference `json:"dstFirewallGroupIdsRefs,omitempty" tf:"-"`
+
+	// Selector for a list of Group in firewall to populate dstFirewallGroupIds.
+	// +kubebuilder:validation:Optional
+	DstFirewallGroupIdsSelector *v1.NamespacedSelector `json:"dstFirewallGroupIdsSelector,omitempty" tf:"-"`
+
 	// The destination network ID of the firewall rule.
+	// +crossplane:generate:reference:type=github.com/devantler-tech/provider-upjet-unifi/apis/namespaced/network/v1alpha1.Network
 	DstNetworkID *string `json:"dstNetworkId,omitempty" tf:"dst_network_id,omitempty"`
+
+	// Reference to a Network in network to populate dstNetworkId.
+	// +kubebuilder:validation:Optional
+	DstNetworkIDRef *v1.NamespacedReference `json:"dstNetworkIdRef,omitempty" tf:"-"`
+
+	// Selector for a Network in network to populate dstNetworkId.
+	// +kubebuilder:validation:Optional
+	DstNetworkIDSelector *v1.NamespacedSelector `json:"dstNetworkIdSelector,omitempty" tf:"-"`
 
 	// The destination network type of the firewall rule. Can be one of `ADDRv4` or `NETv4`.
 	DstNetworkType *string `json:"dstNetworkType,omitempty" tf:"dst_network_type,omitempty"`
@@ -84,14 +102,32 @@ type RuleInitParameters struct {
 	SrcAddressIPv6 *string `json:"srcAddressIpv6,omitempty" tf:"src_address_ipv6,omitempty"`
 
 	// The source firewall group IDs for the firewall rule.
+	// +crossplane:generate:reference:type=github.com/devantler-tech/provider-upjet-unifi/apis/namespaced/firewall/v1alpha1.Group
 	// +listType=set
 	SrcFirewallGroupIds []*string `json:"srcFirewallGroupIds,omitempty" tf:"src_firewall_group_ids,omitempty"`
+
+	// References to Group in firewall to populate srcFirewallGroupIds.
+	// +kubebuilder:validation:Optional
+	SrcFirewallGroupIdsRefs []v1.NamespacedReference `json:"srcFirewallGroupIdsRefs,omitempty" tf:"-"`
+
+	// Selector for a list of Group in firewall to populate srcFirewallGroupIds.
+	// +kubebuilder:validation:Optional
+	SrcFirewallGroupIdsSelector *v1.NamespacedSelector `json:"srcFirewallGroupIdsSelector,omitempty" tf:"-"`
 
 	// The source MAC address of the firewall rule.
 	SrcMac *string `json:"srcMac,omitempty" tf:"src_mac,omitempty"`
 
 	// The source network ID for the firewall rule.
+	// +crossplane:generate:reference:type=github.com/devantler-tech/provider-upjet-unifi/apis/namespaced/network/v1alpha1.Network
 	SrcNetworkID *string `json:"srcNetworkId,omitempty" tf:"src_network_id,omitempty"`
+
+	// Reference to a Network in network to populate srcNetworkId.
+	// +kubebuilder:validation:Optional
+	SrcNetworkIDRef *v1.NamespacedReference `json:"srcNetworkIdRef,omitempty" tf:"-"`
+
+	// Selector for a Network in network to populate srcNetworkId.
+	// +kubebuilder:validation:Optional
+	SrcNetworkIDSelector *v1.NamespacedSelector `json:"srcNetworkIdSelector,omitempty" tf:"-"`
 
 	// The source network type of the firewall rule. Can be one of `ADDRv4` or `NETv4`.
 	SrcNetworkType *string `json:"srcNetworkType,omitempty" tf:"src_network_type,omitempty"`
@@ -231,13 +267,31 @@ type RuleParameters struct {
 	DstAddressIPv6 *string `json:"dstAddressIpv6,omitempty" tf:"dst_address_ipv6,omitempty"`
 
 	// The destination firewall group IDs of the firewall rule.
+	// +crossplane:generate:reference:type=github.com/devantler-tech/provider-upjet-unifi/apis/namespaced/firewall/v1alpha1.Group
 	// +kubebuilder:validation:Optional
 	// +listType=set
 	DstFirewallGroupIds []*string `json:"dstFirewallGroupIds,omitempty" tf:"dst_firewall_group_ids,omitempty"`
 
+	// References to Group in firewall to populate dstFirewallGroupIds.
+	// +kubebuilder:validation:Optional
+	DstFirewallGroupIdsRefs []v1.NamespacedReference `json:"dstFirewallGroupIdsRefs,omitempty" tf:"-"`
+
+	// Selector for a list of Group in firewall to populate dstFirewallGroupIds.
+	// +kubebuilder:validation:Optional
+	DstFirewallGroupIdsSelector *v1.NamespacedSelector `json:"dstFirewallGroupIdsSelector,omitempty" tf:"-"`
+
 	// The destination network ID of the firewall rule.
+	// +crossplane:generate:reference:type=github.com/devantler-tech/provider-upjet-unifi/apis/namespaced/network/v1alpha1.Network
 	// +kubebuilder:validation:Optional
 	DstNetworkID *string `json:"dstNetworkId,omitempty" tf:"dst_network_id,omitempty"`
+
+	// Reference to a Network in network to populate dstNetworkId.
+	// +kubebuilder:validation:Optional
+	DstNetworkIDRef *v1.NamespacedReference `json:"dstNetworkIdRef,omitempty" tf:"-"`
+
+	// Selector for a Network in network to populate dstNetworkId.
+	// +kubebuilder:validation:Optional
+	DstNetworkIDSelector *v1.NamespacedSelector `json:"dstNetworkIdSelector,omitempty" tf:"-"`
 
 	// The destination network type of the firewall rule. Can be one of `ADDRv4` or `NETv4`.
 	// +kubebuilder:validation:Optional
@@ -308,17 +362,35 @@ type RuleParameters struct {
 	SrcAddressIPv6 *string `json:"srcAddressIpv6,omitempty" tf:"src_address_ipv6,omitempty"`
 
 	// The source firewall group IDs for the firewall rule.
+	// +crossplane:generate:reference:type=github.com/devantler-tech/provider-upjet-unifi/apis/namespaced/firewall/v1alpha1.Group
 	// +kubebuilder:validation:Optional
 	// +listType=set
 	SrcFirewallGroupIds []*string `json:"srcFirewallGroupIds,omitempty" tf:"src_firewall_group_ids,omitempty"`
+
+	// References to Group in firewall to populate srcFirewallGroupIds.
+	// +kubebuilder:validation:Optional
+	SrcFirewallGroupIdsRefs []v1.NamespacedReference `json:"srcFirewallGroupIdsRefs,omitempty" tf:"-"`
+
+	// Selector for a list of Group in firewall to populate srcFirewallGroupIds.
+	// +kubebuilder:validation:Optional
+	SrcFirewallGroupIdsSelector *v1.NamespacedSelector `json:"srcFirewallGroupIdsSelector,omitempty" tf:"-"`
 
 	// The source MAC address of the firewall rule.
 	// +kubebuilder:validation:Optional
 	SrcMac *string `json:"srcMac,omitempty" tf:"src_mac,omitempty"`
 
 	// The source network ID for the firewall rule.
+	// +crossplane:generate:reference:type=github.com/devantler-tech/provider-upjet-unifi/apis/namespaced/network/v1alpha1.Network
 	// +kubebuilder:validation:Optional
 	SrcNetworkID *string `json:"srcNetworkId,omitempty" tf:"src_network_id,omitempty"`
+
+	// Reference to a Network in network to populate srcNetworkId.
+	// +kubebuilder:validation:Optional
+	SrcNetworkIDRef *v1.NamespacedReference `json:"srcNetworkIdRef,omitempty" tf:"-"`
+
+	// Selector for a Network in network to populate srcNetworkId.
+	// +kubebuilder:validation:Optional
+	SrcNetworkIDSelector *v1.NamespacedSelector `json:"srcNetworkIdSelector,omitempty" tf:"-"`
 
 	// The source network type of the firewall rule. Can be one of `ADDRv4` or `NETv4`.
 	// +kubebuilder:validation:Optional
