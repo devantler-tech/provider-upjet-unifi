@@ -298,6 +298,17 @@ spec:
                   networkIsolation:
                     description: Specifies whether network isolation is enabled.
                     type: boolean
+                  purpose:
+                    description: 'The network purpose: `corporate` (default), `guest`,
+                      or `vlan-only`. Leave unset to let the controller manage it
+                      (a `third_party_gateway` network is always `vlan-only`). **Note:**
+                      on Zone-Based-Firewall controllers the purpose is coupled to
+                      the firewall zone — a `guest` network only keeps `purpose =
+                      "guest"` while it belongs to the guest/Hotspot zone (assign
+                      it there via `unifi_firewall_zone`), otherwise the controller
+                      rewrites it back to `corporate` and the apply fails with an
+                      inconsistent-result error.'
+                    type: string
                   settingPreference:
                     description: Setting preference. Must be one of `auto` or `manual`.
                     type: string
@@ -606,6 +617,17 @@ spec:
                   networkIsolation:
                     description: Specifies whether network isolation is enabled.
                     type: boolean
+                  purpose:
+                    description: 'The network purpose: `corporate` (default), `guest`,
+                      or `vlan-only`. Leave unset to let the controller manage it
+                      (a `third_party_gateway` network is always `vlan-only`). **Note:**
+                      on Zone-Based-Firewall controllers the purpose is coupled to
+                      the firewall zone — a `guest` network only keeps `purpose =
+                      "guest"` while it belongs to the guest/Hotspot zone (assign
+                      it there via `unifi_firewall_zone`), otherwise the controller
+                      rewrites it back to `corporate` and the apply fails with an
+                      inconsistent-result error.'
+                    type: string
                   settingPreference:
                     description: Setting preference. Must be one of `auto` or `manual`.
                     type: string
@@ -971,6 +993,17 @@ spec:
                   networkIsolation:
                     description: Specifies whether network isolation is enabled.
                     type: boolean
+                  purpose:
+                    description: 'The network purpose: `corporate` (default), `guest`,
+                      or `vlan-only`. Leave unset to let the controller manage it
+                      (a `third_party_gateway` network is always `vlan-only`). **Note:**
+                      on Zone-Based-Firewall controllers the purpose is coupled to
+                      the firewall zone — a `guest` network only keeps `purpose =
+                      "guest"` while it belongs to the guest/Hotspot zone (assign
+                      it there via `unifi_firewall_zone`), otherwise the controller
+                      rewrites it back to `corporate` and the apply fails with an
+                      inconsistent-result error.'
+                    type: string
                   settingPreference:
                     description: Setting preference. Must be one of `auto` or `manual`.
                     type: string

@@ -1983,6 +1983,11 @@ func (in *NetworkInitParameters) DeepCopyInto(out *NetworkInitParameters) {
 		*out = new(bool)
 		**out = **in
 	}
+	if in.Purpose != nil {
+		in, out := &in.Purpose, &out.Purpose
+		*out = new(string)
+		**out = **in
+	}
 	if in.SettingPreference != nil {
 		in, out := &in.SettingPreference, &out.SettingPreference
 		*out = new(string)
@@ -2224,6 +2229,11 @@ func (in *NetworkObservation) DeepCopyInto(out *NetworkObservation) {
 		*out = new(bool)
 		**out = **in
 	}
+	if in.Purpose != nil {
+		in, out := &in.Purpose, &out.Purpose
+		*out = new(string)
+		**out = **in
+	}
 	if in.SettingPreference != nil {
 		in, out := &in.SettingPreference, &out.SettingPreference
 		*out = new(string)
@@ -2426,6 +2436,11 @@ func (in *NetworkParameters) DeepCopyInto(out *NetworkParameters) {
 	if in.NetworkIsolation != nil {
 		in, out := &in.NetworkIsolation, &out.NetworkIsolation
 		*out = new(bool)
+		**out = **in
+	}
+	if in.Purpose != nil {
+		in, out := &in.Purpose, &out.Purpose
+		*out = new(string)
 		**out = **in
 	}
 	if in.SettingPreference != nil {
@@ -3349,6 +3364,11 @@ func (in *WanInitParameters) DeepCopyInto(out *WanInitParameters) {
 		*out = new(string)
 		**out = **in
 	}
+	if in.Networkgroup != nil {
+		in, out := &in.Networkgroup, &out.Networkgroup
+		*out = new(string)
+		**out = **in
+	}
 	if in.ProviderCapabilities != nil {
 		in, out := &in.ProviderCapabilities, &out.ProviderCapabilities
 		*out = new(ProviderCapabilitiesInitParameters)
@@ -3527,6 +3547,11 @@ func (in *WanObservation) DeepCopyInto(out *WanObservation) {
 		*out = new(string)
 		**out = **in
 	}
+	if in.Networkgroup != nil {
+		in, out := &in.Networkgroup, &out.Networkgroup
+		*out = new(string)
+		**out = **in
+	}
 	if in.ProviderCapabilities != nil {
 		in, out := &in.ProviderCapabilities, &out.ProviderCapabilities
 		*out = new(ProviderCapabilitiesObservation)
@@ -3665,6 +3690,11 @@ func (in *WanParameters) DeepCopyInto(out *WanParameters) {
 	}
 	if in.Name != nil {
 		in, out := &in.Name, &out.Name
+		*out = new(string)
+		**out = **in
+	}
+	if in.Networkgroup != nil {
+		in, out := &in.Networkgroup, &out.Networkgroup
 		*out = new(string)
 		**out = **in
 	}

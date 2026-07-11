@@ -494,6 +494,9 @@ type WanInitParameters struct {
 	// The name of the WAN network
 	Name *string `json:"name,omitempty" tf:"name,omitempty"`
 
+	// The WAN network group this interface belongs to (`WAN`, `WAN2`, …). The primary uplink is `WAN`; a secondary/SFP uplink is `WAN2`. Computed from the controller when unset (so an imported `WAN2` is preserved), defaulting to `WAN` on create. Required to manage multi-WAN (WAN2+) setups, where a hard-coded `WAN` collides with the primary (`api.err.WanConfigurationForNetworkGroupAlreadyExists`).
+	Networkgroup *string `json:"networkgroup,omitempty" tf:"networkgroup,omitempty"`
+
 	ProviderCapabilities *ProviderCapabilitiesInitParameters `json:"providerCapabilities,omitempty" tf:"provider_capabilities,omitempty"`
 
 	// Whether to report WAN events
@@ -558,6 +561,9 @@ type WanObservation struct {
 
 	// The name of the WAN network
 	Name *string `json:"name,omitempty" tf:"name,omitempty"`
+
+	// The WAN network group this interface belongs to (`WAN`, `WAN2`, …). The primary uplink is `WAN`; a secondary/SFP uplink is `WAN2`. Computed from the controller when unset (so an imported `WAN2` is preserved), defaulting to `WAN` on create. Required to manage multi-WAN (WAN2+) setups, where a hard-coded `WAN` collides with the primary (`api.err.WanConfigurationForNetworkGroupAlreadyExists`).
+	Networkgroup *string `json:"networkgroup,omitempty" tf:"networkgroup,omitempty"`
 
 	ProviderCapabilities *ProviderCapabilitiesObservation `json:"providerCapabilities,omitempty" tf:"provider_capabilities,omitempty"`
 
@@ -633,6 +639,10 @@ type WanParameters struct {
 	// The name of the WAN network
 	// +kubebuilder:validation:Optional
 	Name *string `json:"name,omitempty" tf:"name,omitempty"`
+
+	// The WAN network group this interface belongs to (`WAN`, `WAN2`, …). The primary uplink is `WAN`; a secondary/SFP uplink is `WAN2`. Computed from the controller when unset (so an imported `WAN2` is preserved), defaulting to `WAN` on create. Required to manage multi-WAN (WAN2+) setups, where a hard-coded `WAN` collides with the primary (`api.err.WanConfigurationForNetworkGroupAlreadyExists`).
+	// +kubebuilder:validation:Optional
+	Networkgroup *string `json:"networkgroup,omitempty" tf:"networkgroup,omitempty"`
 
 	// +kubebuilder:validation:Optional
 	ProviderCapabilities *ProviderCapabilitiesParameters `json:"providerCapabilities,omitempty" tf:"provider_capabilities,omitempty"`
