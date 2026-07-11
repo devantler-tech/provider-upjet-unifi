@@ -695,6 +695,11 @@ func (in *DeviceInitParameters) DeepCopyInto(out *DeviceInitParameters) {
 		*out = new(string)
 		**out = **in
 	}
+	if in.MeshStaVapEnabled != nil {
+		in, out := &in.MeshStaVapEnabled, &out.MeshStaVapEnabled
+		*out = new(bool)
+		**out = **in
+	}
 	if in.MgmtNetworkID != nil {
 		in, out := &in.MgmtNetworkID, &out.MgmtNetworkID
 		*out = new(string)
@@ -923,6 +928,11 @@ func (in *DeviceObservation) DeepCopyInto(out *DeviceObservation) {
 		*out = new(string)
 		**out = **in
 	}
+	if in.MeshStaVapEnabled != nil {
+		in, out := &in.MeshStaVapEnabled, &out.MeshStaVapEnabled
+		*out = new(bool)
+		**out = **in
+	}
 	if in.MgmtNetworkID != nil {
 		in, out := &in.MgmtNetworkID, &out.MgmtNetworkID
 		*out = new(string)
@@ -1117,6 +1127,11 @@ func (in *DeviceParameters) DeepCopyInto(out *DeviceParameters) {
 	if in.Mac != nil {
 		in, out := &in.Mac, &out.Mac
 		*out = new(string)
+		**out = **in
+	}
+	if in.MeshStaVapEnabled != nil {
+		in, out := &in.MeshStaVapEnabled, &out.MeshStaVapEnabled
+		*out = new(bool)
 		**out = **in
 	}
 	if in.MgmtNetworkID != nil {

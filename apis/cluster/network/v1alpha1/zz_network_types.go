@@ -463,6 +463,9 @@ type NetworkInitParameters struct {
 	// Specifies whether network isolation is enabled.
 	NetworkIsolation *bool `json:"networkIsolation,omitempty" tf:"network_isolation,omitempty"`
 
+	// The network purpose: `corporate` (default), `guest`, or `vlan-only`. Leave unset to let the controller manage it (a `third_party_gateway` network is always `vlan-only`). **Note:** on Zone-Based-Firewall controllers the purpose is coupled to the firewall zone — a `guest` network only keeps `purpose = "guest"` while it belongs to the guest/Hotspot zone (assign it there via `unifi_firewall_zone`), otherwise the controller rewrites it back to `corporate` and the apply fails with an inconsistent-result error.
+	Purpose *string `json:"purpose,omitempty" tf:"purpose,omitempty"`
+
 	// Setting preference. Must be one of `auto` or `manual`.
 	SettingPreference *string `json:"settingPreference,omitempty" tf:"setting_preference,omitempty"`
 
@@ -566,6 +569,9 @@ type NetworkObservation struct {
 
 	// Specifies whether network isolation is enabled.
 	NetworkIsolation *bool `json:"networkIsolation,omitempty" tf:"network_isolation,omitempty"`
+
+	// The network purpose: `corporate` (default), `guest`, or `vlan-only`. Leave unset to let the controller manage it (a `third_party_gateway` network is always `vlan-only`). **Note:** on Zone-Based-Firewall controllers the purpose is coupled to the firewall zone — a `guest` network only keeps `purpose = "guest"` while it belongs to the guest/Hotspot zone (assign it there via `unifi_firewall_zone`), otherwise the controller rewrites it back to `corporate` and the apply fails with an inconsistent-result error.
+	Purpose *string `json:"purpose,omitempty" tf:"purpose,omitempty"`
 
 	// Setting preference. Must be one of `auto` or `manual`.
 	SettingPreference *string `json:"settingPreference,omitempty" tf:"setting_preference,omitempty"`
@@ -697,6 +703,10 @@ type NetworkParameters struct {
 	// Specifies whether network isolation is enabled.
 	// +kubebuilder:validation:Optional
 	NetworkIsolation *bool `json:"networkIsolation,omitempty" tf:"network_isolation,omitempty"`
+
+	// The network purpose: `corporate` (default), `guest`, or `vlan-only`. Leave unset to let the controller manage it (a `third_party_gateway` network is always `vlan-only`). **Note:** on Zone-Based-Firewall controllers the purpose is coupled to the firewall zone — a `guest` network only keeps `purpose = "guest"` while it belongs to the guest/Hotspot zone (assign it there via `unifi_firewall_zone`), otherwise the controller rewrites it back to `corporate` and the apply fails with an inconsistent-result error.
+	// +kubebuilder:validation:Optional
+	Purpose *string `json:"purpose,omitempty" tf:"purpose,omitempty"`
 
 	// Setting preference. Must be one of `auto` or `manual`.
 	// +kubebuilder:validation:Optional

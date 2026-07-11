@@ -59,7 +59,8 @@ var shortGroups = map[string]string{
 	"unifi_wireguard_peer":   "vpn",
 
 	// wlan
-	"unifi_wlan": "wlan",
+	"unifi_wlan":     "wlan",
+	"unifi_ap_group": "wlan",
 }
 
 // kindOverrides pins the Kind for resources whose upjet-derived Kind would
@@ -69,6 +70,9 @@ var shortGroups = map[string]string{
 var kindOverrides = map[string]string{
 	"unifi_static_route":  "StaticRoute",
 	"unifi_traffic_route": "TrafficRoute",
+	// unifi_ap_group would otherwise derive to the meaninglessly generic Kind
+	// "Group" in the wlan group.
+	"unifi_ap_group": "ApGroup",
 }
 
 // Terraform resource names used as cross-resource reference targets, pulled out
@@ -126,6 +130,17 @@ var references = map[string]ujconfig.References{
 	// source and destination blocks, so the references are keyed by their nested
 	// paths. Both are post-reconcile UniFi ids, so referencing Network and
 	// FirewallZone by name mirrors the firewall_rule wiring above.
+	// A WLAN broadcasts on the access points selected by ap_group_ids — UniFi ids
+	// only known after the ApGroup reconciles (unifi_ap_group is new in the
+	// wrapped provider v0.55.0). Referencing it lets a consumer wire a Wlan to an
+	// ApGroup by name via the generated companions, mirroring the firewall
+	// wiring above; raw ids stay settable directly.
+	"unifi_wlan": {
+		"ap_group_ids": {
+			TerraformName: "unifi_ap_group",
+		},
+	},
+
 	"unifi_firewall_policy": {
 		"source.network_ids": {
 			TerraformName: resNetwork,

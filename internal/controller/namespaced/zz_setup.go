@@ -36,6 +36,7 @@ import (
 	peer "github.com/devantler-tech/provider-upjet-unifi/internal/controller/namespaced/vpn/peer"
 	server "github.com/devantler-tech/provider-upjet-unifi/internal/controller/namespaced/vpn/server"
 	tositevpn "github.com/devantler-tech/provider-upjet-unifi/internal/controller/namespaced/vpn/tositevpn"
+	apgroup "github.com/devantler-tech/provider-upjet-unifi/internal/controller/namespaced/wlan/apgroup"
 	wlan "github.com/devantler-tech/provider-upjet-unifi/internal/controller/namespaced/wlan/wlan"
 )
 
@@ -70,6 +71,7 @@ func Setup(mgr ctrl.Manager, o controller.Options) error {
 		peer.Setup,
 		server.Setup,
 		tositevpn.Setup,
+		apgroup.Setup,
 		wlan.Setup,
 	} {
 		if err := setup(mgr, o); err != nil {
@@ -110,6 +112,7 @@ func SetupGated(mgr ctrl.Manager, o controller.Options) error {
 		peer.SetupGated,
 		server.SetupGated,
 		tositevpn.SetupGated,
+		apgroup.SetupGated,
 		wlan.SetupGated,
 	} {
 		if err := setup(mgr, o); err != nil {

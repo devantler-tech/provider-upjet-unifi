@@ -166,6 +166,12 @@ type PolicyInitParameters struct {
 	// The action to take when the policy matches: `ALLOW`, `BLOCK`, or `REJECT`.
 	Action *string `json:"action,omitempty" tf:"action,omitempty"`
 
+	// Connection-state matching mode: `ALL` (any state), `RESPOND_ONLY` (established/related returns), or `CUSTOM` (match the states listed in `connection_states`). Optional: if omitted the controller assigns it (defaults to `ALL`) and the provider round-trips the value so updates are accepted.
+	ConnectionStateType *string `json:"connectionStateType,omitempty" tf:"connection_state_type,omitempty"`
+
+	// Connection states matched when `connection_state_type` is `CUSTOM` (`NEW`, `ESTABLISHED`, `RELATED`, `INVALID`). Optional: leave unset for `ALL`/`RESPOND_ONLY` and the controller manages it; the provider round-trips the value so a `CUSTOM` policy's states are not dropped on update (which the firmware rejects with HTTP 400).
+	ConnectionStates []*string `json:"connectionStates,omitempty" tf:"connection_states,omitempty"`
+
 	// When `true`, UniFi automatically creates a matching rule to allow established/related return traffic. Recommended for `ALLOW` policies. Defaults to `false`.
 	CreateAllowRespond *bool `json:"createAllowRespond,omitempty" tf:"create_allow_respond,omitempty"`
 
@@ -179,9 +185,6 @@ type PolicyInitParameters struct {
 
 	// The IP version to match: `BOTH`, `IPV4`, or `IPV6`. Defaults to `IPV4`.
 	IPVersion *string `json:"ipVersion,omitempty" tf:"ip_version,omitempty"`
-
-	// The ordering index of the policy. UniFi auto-assigns this if not set.
-	Index *float64 `json:"index,omitempty" tf:"index,omitempty"`
 
 	// Whether to log packets matching this policy. Defaults to `false`.
 	Logging *bool `json:"logging,omitempty" tf:"logging,omitempty"`
@@ -205,10 +208,10 @@ type PolicyObservation struct {
 	// The action to take when the policy matches: `ALLOW`, `BLOCK`, or `REJECT`.
 	Action *string `json:"action,omitempty" tf:"action,omitempty"`
 
-	// Connection-state matching mode (`ALL`, `RESPOND_ONLY`, or `CUSTOM`). Managed by the UniFi controller; the provider round-trips it so updates are accepted.
+	// Connection-state matching mode: `ALL` (any state), `RESPOND_ONLY` (established/related returns), or `CUSTOM` (match the states listed in `connection_states`). Optional: if omitted the controller assigns it (defaults to `ALL`) and the provider round-trips the value so updates are accepted.
 	ConnectionStateType *string `json:"connectionStateType,omitempty" tf:"connection_state_type,omitempty"`
 
-	// Connection states matched when `connection_state_type` is `CUSTOM` (e.g. `NEW`, `ESTABLISHED`, `RELATED`, `INVALID`). Managed by the UniFi controller; the provider round-trips it so a `CUSTOM` policy's states are not dropped on update (which the firmware rejects with HTTP 400).
+	// Connection states matched when `connection_state_type` is `CUSTOM` (`NEW`, `ESTABLISHED`, `RELATED`, `INVALID`). Optional: leave unset for `ALL`/`RESPOND_ONLY` and the controller manages it; the provider round-trips the value so a `CUSTOM` policy's states are not dropped on update (which the firmware rejects with HTTP 400).
 	ConnectionStates []*string `json:"connectionStates,omitempty" tf:"connection_states,omitempty"`
 
 	// When `true`, UniFi automatically creates a matching rule to allow established/related return traffic. Recommended for `ALLOW` policies. Defaults to `false`.
@@ -233,7 +236,7 @@ type PolicyObservation struct {
 	// ICMPv6 type matching mode. Managed by the UniFi controller; the provider round-trips it so updates are accepted.
 	IcmpV6Typename *string `json:"icmpV6Typename,omitempty" tf:"icmp_v6_typename,omitempty"`
 
-	// The ordering index of the policy. UniFi auto-assigns this if not set.
+	// The ordering index of the policy within its zone-pair, assigned by the controller. **Read-only:** UniFi does not accept a client-supplied index on create or update (the policy is always appended to the end of its source/destination zone-pair), and the supported API exposes no reorder operation, so policy ordering cannot be managed through this provider. Reorder policies in the UniFi UI if needed.
 	Index *float64 `json:"index,omitempty" tf:"index,omitempty"`
 
 	// Whether to log packets matching this policy. Defaults to `false`.
@@ -259,6 +262,14 @@ type PolicyParameters struct {
 	// +kubebuilder:validation:Optional
 	Action *string `json:"action,omitempty" tf:"action,omitempty"`
 
+	// Connection-state matching mode: `ALL` (any state), `RESPOND_ONLY` (established/related returns), or `CUSTOM` (match the states listed in `connection_states`). Optional: if omitted the controller assigns it (defaults to `ALL`) and the provider round-trips the value so updates are accepted.
+	// +kubebuilder:validation:Optional
+	ConnectionStateType *string `json:"connectionStateType,omitempty" tf:"connection_state_type,omitempty"`
+
+	// Connection states matched when `connection_state_type` is `CUSTOM` (`NEW`, `ESTABLISHED`, `RELATED`, `INVALID`). Optional: leave unset for `ALL`/`RESPOND_ONLY` and the controller manages it; the provider round-trips the value so a `CUSTOM` policy's states are not dropped on update (which the firmware rejects with HTTP 400).
+	// +kubebuilder:validation:Optional
+	ConnectionStates []*string `json:"connectionStates,omitempty" tf:"connection_states,omitempty"`
+
 	// When `true`, UniFi automatically creates a matching rule to allow established/related return traffic. Recommended for `ALLOW` policies. Defaults to `false`.
 	// +kubebuilder:validation:Optional
 	CreateAllowRespond *bool `json:"createAllowRespond,omitempty" tf:"create_allow_respond,omitempty"`
@@ -277,10 +288,6 @@ type PolicyParameters struct {
 	// The IP version to match: `BOTH`, `IPV4`, or `IPV6`. Defaults to `IPV4`.
 	// +kubebuilder:validation:Optional
 	IPVersion *string `json:"ipVersion,omitempty" tf:"ip_version,omitempty"`
-
-	// The ordering index of the policy. UniFi auto-assigns this if not set.
-	// +kubebuilder:validation:Optional
-	Index *float64 `json:"index,omitempty" tf:"index,omitempty"`
 
 	// Whether to log packets matching this policy. Defaults to `false`.
 	// +kubebuilder:validation:Optional

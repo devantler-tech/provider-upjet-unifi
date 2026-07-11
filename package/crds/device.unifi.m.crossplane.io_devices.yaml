@@ -143,6 +143,10 @@ spec:
                       so that the provider can take control of a device (since devices
                       are created through adoption).
                     type: string
+                  meshStaVapEnabled:
+                    description: Enable the mesh station VAP (the UI "Mesh Connect"
+                      toggle), letting this AP uplink wirelessly to a mesh parent.
+                    type: boolean
                   mgmtNetworkId:
                     description: 'Management network ID. The network this device uses
                       for its own management traffic (the UI''s Network Override).
@@ -573,6 +577,10 @@ spec:
                       so that the provider can take control of a device (since devices
                       are created through adoption).
                     type: string
+                  meshStaVapEnabled:
+                    description: Enable the mesh station VAP (the UI "Mesh Connect"
+                      toggle), letting this AP uplink wirelessly to a mesh parent.
+                    type: boolean
                   mgmtNetworkId:
                     description: 'Management network ID. The network this device uses
                       for its own management traffic (the UI''s Network Override).
@@ -1058,6 +1066,10 @@ spec:
                       so that the provider can take control of a device (since devices
                       are created through adoption).
                     type: string
+                  meshStaVapEnabled:
+                    description: Enable the mesh station VAP (the UI "Mesh Connect"
+                      toggle), letting this AP uplink wirelessly to a mesh parent.
+                    type: boolean
                   mgmtNetworkId:
                     description: 'Management network ID. The network this device uses
                       for its own management traffic (the UI''s Network Override).

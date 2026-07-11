@@ -4,18 +4,18 @@ kind: CustomResourceDefinition
 metadata:
   annotations:
     controller-gen.kubebuilder.io/version: v0.20.1
-  name: profiles.radius.unifi.m.crossplane.io
+  name: apgroups.wlan.unifi.m.crossplane.io
 spec:
-  group: radius.unifi.m.crossplane.io
+  group: wlan.unifi.m.crossplane.io
   names:
     categories:
     - crossplane
     - managed
     - unifi
-    kind: Profile
-    listKind: ProfileList
-    plural: profiles
-    singular: profile
+    kind: ApGroup
+    listKind: ApGroupList
+    plural: apgroups
+    singular: apgroup
   scope: Namespaced
   versions:
   - additionalPrinterColumns:
@@ -34,7 +34,7 @@ spec:
     name: v1alpha1
     schema:
       openAPIV3Schema:
-        description: Profile is the Schema for the Profiles API. <no value>
+        description: ApGroup is the Schema for the ApGroups API. <no value>
         properties:
           apiVersion:
             description: |-
@@ -54,79 +54,23 @@ spec:
           metadata:
             type: object
           spec:
-            description: ProfileSpec defines the desired state of Profile
+            description: ApGroupSpec defines the desired state of ApGroup
             properties:
               forProvider:
                 properties:
-                  accountingEnabled:
-                    description: Specifies whether to use RADIUS accounting.
-                    type: boolean
-                  acctServer:
-                    description: RADIUS accounting servers.
+                  deviceMacs:
+                    description: The MAC addresses of the access points that are members
+                      of the group. May be empty — the controller accepts a group
+                      with no members.
                     items:
-                      properties:
-                        ip:
-                          description: 'IP address of the accounting server. Optional:
-                            the controller-managed default profile returns a server
-                            entry without an IP, so importing it must not force one.'
-                          type: string
-                        port:
-                          description: Port of accounting service.
-                          type: number
-                        secretSecretRef:
-                          description: Shared secret for accounting server.
-                          properties:
-                            key:
-                              type: string
-                            name:
-                              description: Name of the secret.
-                              type: string
-                          required:
-                          - key
-                          - name
-                          type: object
-                      type: object
+                      type: string
                     type: array
-                  authServer:
-                    description: RADIUS authentication servers.
-                    items:
-                      properties:
-                        ip:
-                          description: 'IP address of the authentication server. Optional:
-                            the controller-managed default profile (e.g. the one created
-                            when a gateway RADIUS/VPN service is enabled, with `use_usg_auth_server
-                            = true`) returns a server entry without an IP, so importing
-                            it must not force one.'
-                          type: string
-                        port:
-                          description: Port of authentication service.
-                          type: number
-                        secretSecretRef:
-                          description: Shared secret for authentication server.
-                          properties:
-                            key:
-                              type: string
-                            name:
-                              description: Name of the secret.
-                              type: string
-                          required:
-                          - key
-                          - name
-                          type: object
-                      type: object
-                    type: array
-                  interimUpdateEnabled:
-                    description: Specifies whether to use interim_update.
-                    type: boolean
-                  interimUpdateInterval:
-                    description: Specifies the RADIUS interim update interval, as
-                      a Go duration string (e.g. `1h`, `3600s`). Defaults to `1h0m0s`.
-                    type: string
+                    x-kubernetes-list-type: set
                   name:
-                    description: The name of the profile.
+                    description: The name of the AP group.
                     type: string
                   site:
-                    description: The name of the site to associate the settings with.
+                    description: The name of the site to associate the AP group with.
                     type: string
                   timeouts:
                     properties:
@@ -158,21 +102,6 @@ spec:
                           "h" (hours).
                         type: string
                     type: object
-                  useUsgAcctServer:
-                    description: Specifies whether to use usg as a RADIUS accounting
-                      server.
-                    type: boolean
-                  useUsgAuthServer:
-                    description: Specifies whether to use usg as a RADIUS authentication
-                      server.
-                    type: boolean
-                  vlanEnabled:
-                    description: Specifies whether to use vlan on wired connections.
-                    type: boolean
-                  vlanWlanMode:
-                    description: Specifies whether to use vlan on wireless connections.
-                      Must be one of `disabled`, `optional`, or `required`.
-                    type: string
                 type: object
               initProvider:
                 description: |-
@@ -187,79 +116,19 @@ spec:
                   for example because of an external controller is managing them, like an
                   autoscaler.
                 properties:
-                  accountingEnabled:
-                    description: Specifies whether to use RADIUS accounting.
-                    type: boolean
-                  acctServer:
-                    description: RADIUS accounting servers.
+                  deviceMacs:
+                    description: The MAC addresses of the access points that are members
+                      of the group. May be empty — the controller accepts a group
+                      with no members.
                     items:
-                      properties:
-                        ip:
-                          description: 'IP address of the accounting server. Optional:
-                            the controller-managed default profile returns a server
-                            entry without an IP, so importing it must not force one.'
-                          type: string
-                        port:
-                          description: Port of accounting service.
-                          type: number
-                        secretSecretRef:
-                          description: Shared secret for accounting server.
-                          properties:
-                            key:
-                              type: string
-                            name:
-                              description: Name of the secret.
-                              type: string
-                          required:
-                          - key
-                          - name
-                          type: object
-                      required:
-                      - secretSecretRef
-                      type: object
+                      type: string
                     type: array
-                  authServer:
-                    description: RADIUS authentication servers.
-                    items:
-                      properties:
-                        ip:
-                          description: 'IP address of the authentication server. Optional:
-                            the controller-managed default profile (e.g. the one created
-                            when a gateway RADIUS/VPN service is enabled, with `use_usg_auth_server
-                            = true`) returns a server entry without an IP, so importing
-                            it must not force one.'
-                          type: string
-                        port:
-                          description: Port of authentication service.
-                          type: number
-                        secretSecretRef:
-                          description: Shared secret for authentication server.
-                          properties:
-                            key:
-                              type: string
-                            name:
-                              description: Name of the secret.
-                              type: string
-                          required:
-                          - key
-                          - name
-                          type: object
-                      required:
-                      - secretSecretRef
-                      type: object
-                    type: array
-                  interimUpdateEnabled:
-                    description: Specifies whether to use interim_update.
-                    type: boolean
-                  interimUpdateInterval:
-                    description: Specifies the RADIUS interim update interval, as
-                      a Go duration string (e.g. `1h`, `3600s`). Defaults to `1h0m0s`.
-                    type: string
+                    x-kubernetes-list-type: set
                   name:
-                    description: The name of the profile.
+                    description: The name of the AP group.
                     type: string
                   site:
-                    description: The name of the site to associate the settings with.
+                    description: The name of the site to associate the AP group with.
                     type: string
                   timeouts:
                     properties:
@@ -291,21 +160,6 @@ spec:
                           "h" (hours).
                         type: string
                     type: object
-                  useUsgAcctServer:
-                    description: Specifies whether to use usg as a RADIUS accounting
-                      server.
-                    type: boolean
-                  useUsgAuthServer:
-                    description: Specifies whether to use usg as a RADIUS authentication
-                      server.
-                    type: boolean
-                  vlanEnabled:
-                    description: Specifies whether to use vlan on wired connections.
-                    type: boolean
-                  vlanWlanMode:
-                    description: Specifies whether to use vlan on wireless connections.
-                      Must be one of `disabled`, `optional`, or `required`.
-                    type: string
                 type: object
               managementPolicies:
                 default:
@@ -366,62 +220,34 @@ spec:
             - forProvider
             type: object
             x-kubernetes-validations:
+            - message: spec.forProvider.deviceMacs is a required parameter
+              rule: '!(''*'' in self.managementPolicies || ''Create'' in self.managementPolicies
+                || ''Update'' in self.managementPolicies) || has(self.forProvider.deviceMacs)
+                || (has(self.initProvider) && has(self.initProvider.deviceMacs))'
             - message: spec.forProvider.name is a required parameter
               rule: '!(''*'' in self.managementPolicies || ''Create'' in self.managementPolicies
                 || ''Update'' in self.managementPolicies) || has(self.forProvider.name)
                 || (has(self.initProvider) && has(self.initProvider.name))'
           status:
-            description: ProfileStatus defines the observed state of Profile.
+            description: ApGroupStatus defines the observed state of ApGroup.
             properties:
               atProvider:
                 properties:
-                  accountingEnabled:
-                    description: Specifies whether to use RADIUS accounting.
-                    type: boolean
-                  acctServer:
-                    description: RADIUS accounting servers.
+                  deviceMacs:
+                    description: The MAC addresses of the access points that are members
+                      of the group. May be empty — the controller accepts a group
+                      with no members.
                     items:
-                      properties:
-                        ip:
-                          description: 'IP address of the accounting server. Optional:
-                            the controller-managed default profile returns a server
-                            entry without an IP, so importing it must not force one.'
-                          type: string
-                        port:
-                          description: Port of accounting service.
-                          type: number
-                      type: object
+                      type: string
                     type: array
-                  authServer:
-                    description: RADIUS authentication servers.
-                    items:
-                      properties:
-                        ip:
-                          description: 'IP address of the authentication server. Optional:
-                            the controller-managed default profile (e.g. the one created
-                            when a gateway RADIUS/VPN service is enabled, with `use_usg_auth_server
-                            = true`) returns a server entry without an IP, so importing
-                            it must not force one.'
-                          type: string
-                        port:
-                          description: Port of authentication service.
-                          type: number
-                      type: object
-                    type: array
+                    x-kubernetes-list-type: set
                   id:
                     type: string
-                  interimUpdateEnabled:
-                    description: Specifies whether to use interim_update.
-                    type: boolean
-                  interimUpdateInterval:
-                    description: Specifies the RADIUS interim update interval, as
-                      a Go duration string (e.g. `1h`, `3600s`). Defaults to `1h0m0s`.
-                    type: string
                   name:
-                    description: The name of the profile.
+                    description: The name of the AP group.
                     type: string
                   site:
-                    description: The name of the site to associate the settings with.
+                    description: The name of the site to associate the AP group with.
                     type: string
                   timeouts:
                     properties:
@@ -453,21 +279,6 @@ spec:
                           "h" (hours).
                         type: string
                     type: object
-                  useUsgAcctServer:
-                    description: Specifies whether to use usg as a RADIUS accounting
-                      server.
-                    type: boolean
-                  useUsgAuthServer:
-                    description: Specifies whether to use usg as a RADIUS authentication
-                      server.
-                    type: boolean
-                  vlanEnabled:
-                    description: Specifies whether to use vlan on wired connections.
-                    type: boolean
-                  vlanWlanMode:
-                    description: Specifies whether to use vlan on wireless connections.
-                      Must be one of `disabled`, `optional`, or `required`.
-                    type: string
                 type: object
               conditions:
                 description: Conditions of the resource.

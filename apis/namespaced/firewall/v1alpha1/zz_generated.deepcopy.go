@@ -601,6 +601,22 @@ func (in *PolicyInitParameters) DeepCopyInto(out *PolicyInitParameters) {
 		*out = new(string)
 		**out = **in
 	}
+	if in.ConnectionStateType != nil {
+		in, out := &in.ConnectionStateType, &out.ConnectionStateType
+		*out = new(string)
+		**out = **in
+	}
+	if in.ConnectionStates != nil {
+		in, out := &in.ConnectionStates, &out.ConnectionStates
+		*out = make([]*string, len(*in))
+		for i := range *in {
+			if (*in)[i] != nil {
+				in, out := &(*in)[i], &(*out)[i]
+				*out = new(string)
+				**out = **in
+			}
+		}
+	}
 	if in.CreateAllowRespond != nil {
 		in, out := &in.CreateAllowRespond, &out.CreateAllowRespond
 		*out = new(bool)
@@ -624,11 +640,6 @@ func (in *PolicyInitParameters) DeepCopyInto(out *PolicyInitParameters) {
 	if in.IPVersion != nil {
 		in, out := &in.IPVersion, &out.IPVersion
 		*out = new(string)
-		**out = **in
-	}
-	if in.Index != nil {
-		in, out := &in.Index, &out.Index
-		*out = new(float64)
 		**out = **in
 	}
 	if in.Logging != nil {
@@ -824,6 +835,22 @@ func (in *PolicyParameters) DeepCopyInto(out *PolicyParameters) {
 		*out = new(string)
 		**out = **in
 	}
+	if in.ConnectionStateType != nil {
+		in, out := &in.ConnectionStateType, &out.ConnectionStateType
+		*out = new(string)
+		**out = **in
+	}
+	if in.ConnectionStates != nil {
+		in, out := &in.ConnectionStates, &out.ConnectionStates
+		*out = make([]*string, len(*in))
+		for i := range *in {
+			if (*in)[i] != nil {
+				in, out := &(*in)[i], &(*out)[i]
+				*out = new(string)
+				**out = **in
+			}
+		}
+	}
 	if in.CreateAllowRespond != nil {
 		in, out := &in.CreateAllowRespond, &out.CreateAllowRespond
 		*out = new(bool)
@@ -847,11 +874,6 @@ func (in *PolicyParameters) DeepCopyInto(out *PolicyParameters) {
 	if in.IPVersion != nil {
 		in, out := &in.IPVersion, &out.IPVersion
 		*out = new(string)
-		**out = **in
-	}
-	if in.Index != nil {
-		in, out := &in.Index, &out.Index
-		*out = new(float64)
 		**out = **in
 	}
 	if in.Logging != nil {

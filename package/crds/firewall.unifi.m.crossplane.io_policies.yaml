@@ -62,6 +62,23 @@ spec:
                     description: 'The action to take when the policy matches: `ALLOW`,
                       `BLOCK`, or `REJECT`.'
                     type: string
+                  connectionStateType:
+                    description: 'Connection-state matching mode: `ALL` (any state),
+                      `RESPOND_ONLY` (established/related returns), or `CUSTOM` (match
+                      the states listed in `connection_states`). Optional: if omitted
+                      the controller assigns it (defaults to `ALL`) and the provider
+                      round-trips the value so updates are accepted.'
+                    type: string
+                  connectionStates:
+                    description: 'Connection states matched when `connection_state_type`
+                      is `CUSTOM` (`NEW`, `ESTABLISHED`, `RELATED`, `INVALID`). Optional:
+                      leave unset for `ALL`/`RESPOND_ONLY` and the controller manages
+                      it; the provider round-trips the value so a `CUSTOM` policy''s
+                      states are not dropped on update (which the firmware rejects
+                      with HTTP 400).'
+                    items:
+                      type: string
+                    type: array
                   createAllowRespond:
                     description: When `true`, UniFi automatically creates a matching
                       rule to allow established/related return traffic. Recommended
@@ -293,10 +310,6 @@ spec:
                   enabled:
                     description: Whether the policy is enabled. Defaults to `true`.
                     type: boolean
-                  index:
-                    description: The ordering index of the policy. UniFi auto-assigns
-                      this if not set.
-                    type: number
                   ipVersion:
                     description: 'The IP version to match: `BOTH`, `IPV4`, or `IPV6`.
                       Defaults to `IPV4`.'
@@ -588,6 +601,23 @@ spec:
                     description: 'The action to take when the policy matches: `ALLOW`,
                       `BLOCK`, or `REJECT`.'
                     type: string
+                  connectionStateType:
+                    description: 'Connection-state matching mode: `ALL` (any state),
+                      `RESPOND_ONLY` (established/related returns), or `CUSTOM` (match
+                      the states listed in `connection_states`). Optional: if omitted
+                      the controller assigns it (defaults to `ALL`) and the provider
+                      round-trips the value so updates are accepted.'
+                    type: string
+                  connectionStates:
+                    description: 'Connection states matched when `connection_state_type`
+                      is `CUSTOM` (`NEW`, `ESTABLISHED`, `RELATED`, `INVALID`). Optional:
+                      leave unset for `ALL`/`RESPOND_ONLY` and the controller manages
+                      it; the provider round-trips the value so a `CUSTOM` policy''s
+                      states are not dropped on update (which the firmware rejects
+                      with HTTP 400).'
+                    items:
+                      type: string
+                    type: array
                   createAllowRespond:
                     description: When `true`, UniFi automatically creates a matching
                       rule to allow established/related return traffic. Recommended
@@ -819,10 +849,6 @@ spec:
                   enabled:
                     description: Whether the policy is enabled. Defaults to `true`.
                     type: boolean
-                  index:
-                    description: The ordering index of the policy. UniFi auto-assigns
-                      this if not set.
-                    type: number
                   ipVersion:
                     description: 'The IP version to match: `BOTH`, `IPV4`, or `IPV6`.
                       Defaults to `IPV4`.'
@@ -1182,16 +1208,19 @@ spec:
                       `BLOCK`, or `REJECT`.'
                     type: string
                   connectionStateType:
-                    description: Connection-state matching mode (`ALL`, `RESPOND_ONLY`,
-                      or `CUSTOM`). Managed by the UniFi controller; the provider
-                      round-trips it so updates are accepted.
+                    description: 'Connection-state matching mode: `ALL` (any state),
+                      `RESPOND_ONLY` (established/related returns), or `CUSTOM` (match
+                      the states listed in `connection_states`). Optional: if omitted
+                      the controller assigns it (defaults to `ALL`) and the provider
+                      round-trips the value so updates are accepted.'
                     type: string
                   connectionStates:
-                    description: Connection states matched when `connection_state_type`
-                      is `CUSTOM` (e.g. `NEW`, `ESTABLISHED`, `RELATED`, `INVALID`).
-                      Managed by the UniFi controller; the provider round-trips it
-                      so a `CUSTOM` policy's states are not dropped on update (which
-                      the firmware rejects with HTTP 400).
+                    description: 'Connection states matched when `connection_state_type`
+                      is `CUSTOM` (`NEW`, `ESTABLISHED`, `RELATED`, `INVALID`). Optional:
+                      leave unset for `ALL`/`RESPOND_ONLY` and the controller manages
+                      it; the provider round-trips the value so a `CUSTOM` policy''s
+                      states are not dropped on update (which the firmware rejects
+                      with HTTP 400).'
                     items:
                       type: string
                     type: array
@@ -1277,8 +1306,13 @@ spec:
                   id:
                     type: string
                   index:
-                    description: The ordering index of the policy. UniFi auto-assigns
-                      this if not set.
+                    description: The ordering index of the policy within its zone-pair,
+                      assigned by the controller. **Read-only:** UniFi does not accept
+                      a client-supplied index on create or update (the policy is always
+                      appended to the end of its source/destination zone-pair), and
+                      the supported API exposes no reorder operation, so policy ordering
+                      cannot be managed through this provider. Reorder policies in
+                      the UniFi UI if needed.
                     type: number
                   ipVersion:
                     description: 'The IP version to match: `BOTH`, `IPV4`, or `IPV6`.
