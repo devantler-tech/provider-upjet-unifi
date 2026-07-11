@@ -17,6 +17,7 @@ import (
 // so no NameAsIdentifier / TemplatedStringAsIdentifier refinements apply.
 var ExternalNameConfigs = map[string]config.ExternalName{
 	"unifi_account":          config.IdentifierFromProvider,
+	"unifi_ap_group":         config.IdentifierFromProvider,
 	"unifi_bgp":              config.IdentifierFromProvider,
 	"unifi_client":           config.IdentifierFromProvider,
 	"unifi_client_qos_rate":  config.IdentifierFromProvider,

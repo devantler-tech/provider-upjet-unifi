@@ -141,60 +141,20 @@ type ScheduleParameters struct {
 	StartMinute *float64 `json:"startMinute,omitempty" tf:"start_minute,omitempty"`
 }
 
-type TimeoutsInitParameters struct {
-
-	// A string that can be [parsed as a duration](https://pkg.go.dev/time#ParseDuration) consisting of numbers and unit suffixes, such as "30s" or "2h45m". Valid time units are "s" (seconds), "m" (minutes), "h" (hours).
-	Create *string `json:"create,omitempty" tf:"create,omitempty"`
-
-	// A string that can be [parsed as a duration](https://pkg.go.dev/time#ParseDuration) consisting of numbers and unit suffixes, such as "30s" or "2h45m". Valid time units are "s" (seconds), "m" (minutes), "h" (hours). Setting a timeout for a Delete operation is only applicable if changes are saved into state before the destroy operation occurs.
-	Delete *string `json:"delete,omitempty" tf:"delete,omitempty"`
-
-	// A string that can be [parsed as a duration](https://pkg.go.dev/time#ParseDuration) consisting of numbers and unit suffixes, such as "30s" or "2h45m". Valid time units are "s" (seconds), "m" (minutes), "h" (hours). Read operations occur during any refresh or planning operation when refresh is enabled.
-	Read *string `json:"read,omitempty" tf:"read,omitempty"`
-
-	// A string that can be [parsed as a duration](https://pkg.go.dev/time#ParseDuration) consisting of numbers and unit suffixes, such as "30s" or "2h45m". Valid time units are "s" (seconds), "m" (minutes), "h" (hours).
-	Update *string `json:"update,omitempty" tf:"update,omitempty"`
-}
-
-type TimeoutsObservation struct {
-
-	// A string that can be [parsed as a duration](https://pkg.go.dev/time#ParseDuration) consisting of numbers and unit suffixes, such as "30s" or "2h45m". Valid time units are "s" (seconds), "m" (minutes), "h" (hours).
-	Create *string `json:"create,omitempty" tf:"create,omitempty"`
-
-	// A string that can be [parsed as a duration](https://pkg.go.dev/time#ParseDuration) consisting of numbers and unit suffixes, such as "30s" or "2h45m". Valid time units are "s" (seconds), "m" (minutes), "h" (hours). Setting a timeout for a Delete operation is only applicable if changes are saved into state before the destroy operation occurs.
-	Delete *string `json:"delete,omitempty" tf:"delete,omitempty"`
-
-	// A string that can be [parsed as a duration](https://pkg.go.dev/time#ParseDuration) consisting of numbers and unit suffixes, such as "30s" or "2h45m". Valid time units are "s" (seconds), "m" (minutes), "h" (hours). Read operations occur during any refresh or planning operation when refresh is enabled.
-	Read *string `json:"read,omitempty" tf:"read,omitempty"`
-
-	// A string that can be [parsed as a duration](https://pkg.go.dev/time#ParseDuration) consisting of numbers and unit suffixes, such as "30s" or "2h45m". Valid time units are "s" (seconds), "m" (minutes), "h" (hours).
-	Update *string `json:"update,omitempty" tf:"update,omitempty"`
-}
-
-type TimeoutsParameters struct {
-
-	// A string that can be [parsed as a duration](https://pkg.go.dev/time#ParseDuration) consisting of numbers and unit suffixes, such as "30s" or "2h45m". Valid time units are "s" (seconds), "m" (minutes), "h" (hours).
-	// +kubebuilder:validation:Optional
-	Create *string `json:"create,omitempty" tf:"create,omitempty"`
-
-	// A string that can be [parsed as a duration](https://pkg.go.dev/time#ParseDuration) consisting of numbers and unit suffixes, such as "30s" or "2h45m". Valid time units are "s" (seconds), "m" (minutes), "h" (hours). Setting a timeout for a Delete operation is only applicable if changes are saved into state before the destroy operation occurs.
-	// +kubebuilder:validation:Optional
-	Delete *string `json:"delete,omitempty" tf:"delete,omitempty"`
-
-	// A string that can be [parsed as a duration](https://pkg.go.dev/time#ParseDuration) consisting of numbers and unit suffixes, such as "30s" or "2h45m". Valid time units are "s" (seconds), "m" (minutes), "h" (hours). Read operations occur during any refresh or planning operation when refresh is enabled.
-	// +kubebuilder:validation:Optional
-	Read *string `json:"read,omitempty" tf:"read,omitempty"`
-
-	// A string that can be [parsed as a duration](https://pkg.go.dev/time#ParseDuration) consisting of numbers and unit suffixes, such as "30s" or "2h45m". Valid time units are "s" (seconds), "m" (minutes), "h" (hours).
-	// +kubebuilder:validation:Optional
-	Update *string `json:"update,omitempty" tf:"update,omitempty"`
-}
-
 type WlanInitParameters struct {
 
 	// List of AP group IDs to apply this WLAN to.
+	// +crossplane:generate:reference:type=github.com/devantler-tech/provider-upjet-unifi/apis/namespaced/wlan/v1alpha1.ApGroup
 	// +listType=set
 	ApGroupIds []*string `json:"apGroupIds,omitempty" tf:"ap_group_ids,omitempty"`
+
+	// References to ApGroup in wlan to populate apGroupIds.
+	// +kubebuilder:validation:Optional
+	ApGroupIdsRefs []v1.NamespacedReference `json:"apGroupIdsRefs,omitempty" tf:"-"`
+
+	// Selector for a list of ApGroup in wlan to populate apGroupIds.
+	// +kubebuilder:validation:Optional
+	ApGroupIdsSelector *v1.NamespacedSelector `json:"apGroupIdsSelector,omitempty" tf:"-"`
 
 	// Access point group mode.
 	ApGroupMode *string `json:"apGroupMode,omitempty" tf:"ap_group_mode,omitempty"`
@@ -306,7 +266,7 @@ type WlanInitParameters struct {
 	// The name of the site to associate the WLAN with.
 	Site *string `json:"site,omitempty" tf:"site,omitempty"`
 
-	Timeouts *TimeoutsInitParameters `json:"timeouts,omitempty" tf:"timeouts,omitempty"`
+	Timeouts *WlanTimeoutsInitParameters `json:"timeouts,omitempty" tf:"timeouts,omitempty"`
 
 	// Enable Unscheduled Automatic Power Save Delivery.
 	Uapsd *bool `json:"uapsd,omitempty" tf:"uapsd,omitempty"`
@@ -458,7 +418,7 @@ type WlanObservation struct {
 	// The name of the site to associate the WLAN with.
 	Site *string `json:"site,omitempty" tf:"site,omitempty"`
 
-	Timeouts *TimeoutsObservation `json:"timeouts,omitempty" tf:"timeouts,omitempty"`
+	Timeouts *WlanTimeoutsObservation `json:"timeouts,omitempty" tf:"timeouts,omitempty"`
 
 	// Enable Unscheduled Automatic Power Save Delivery.
 	Uapsd *bool `json:"uapsd,omitempty" tf:"uapsd,omitempty"`
@@ -501,9 +461,18 @@ type WlanObservation struct {
 type WlanParameters struct {
 
 	// List of AP group IDs to apply this WLAN to.
+	// +crossplane:generate:reference:type=github.com/devantler-tech/provider-upjet-unifi/apis/namespaced/wlan/v1alpha1.ApGroup
 	// +kubebuilder:validation:Optional
 	// +listType=set
 	ApGroupIds []*string `json:"apGroupIds,omitempty" tf:"ap_group_ids,omitempty"`
+
+	// References to ApGroup in wlan to populate apGroupIds.
+	// +kubebuilder:validation:Optional
+	ApGroupIdsRefs []v1.NamespacedReference `json:"apGroupIdsRefs,omitempty" tf:"-"`
+
+	// Selector for a list of ApGroup in wlan to populate apGroupIds.
+	// +kubebuilder:validation:Optional
+	ApGroupIdsSelector *v1.NamespacedSelector `json:"apGroupIdsSelector,omitempty" tf:"-"`
 
 	// Access point group mode.
 	// +kubebuilder:validation:Optional
@@ -653,7 +622,7 @@ type WlanParameters struct {
 	Site *string `json:"site,omitempty" tf:"site,omitempty"`
 
 	// +kubebuilder:validation:Optional
-	Timeouts *TimeoutsParameters `json:"timeouts,omitempty" tf:"timeouts,omitempty"`
+	Timeouts *WlanTimeoutsParameters `json:"timeouts,omitempty" tf:"timeouts,omitempty"`
 
 	// Enable Unscheduled Automatic Power Save Delivery.
 	// +kubebuilder:validation:Optional
@@ -703,6 +672,55 @@ type WlanParameters struct {
 	// WPA mode. Can be one of `auto`, `wpa1`, or `wpa2`.
 	// +kubebuilder:validation:Optional
 	WpaMode *string `json:"wpaMode,omitempty" tf:"wpa_mode,omitempty"`
+}
+
+type WlanTimeoutsInitParameters struct {
+
+	// A string that can be [parsed as a duration](https://pkg.go.dev/time#ParseDuration) consisting of numbers and unit suffixes, such as "30s" or "2h45m". Valid time units are "s" (seconds), "m" (minutes), "h" (hours).
+	Create *string `json:"create,omitempty" tf:"create,omitempty"`
+
+	// A string that can be [parsed as a duration](https://pkg.go.dev/time#ParseDuration) consisting of numbers and unit suffixes, such as "30s" or "2h45m". Valid time units are "s" (seconds), "m" (minutes), "h" (hours). Setting a timeout for a Delete operation is only applicable if changes are saved into state before the destroy operation occurs.
+	Delete *string `json:"delete,omitempty" tf:"delete,omitempty"`
+
+	// A string that can be [parsed as a duration](https://pkg.go.dev/time#ParseDuration) consisting of numbers and unit suffixes, such as "30s" or "2h45m". Valid time units are "s" (seconds), "m" (minutes), "h" (hours). Read operations occur during any refresh or planning operation when refresh is enabled.
+	Read *string `json:"read,omitempty" tf:"read,omitempty"`
+
+	// A string that can be [parsed as a duration](https://pkg.go.dev/time#ParseDuration) consisting of numbers and unit suffixes, such as "30s" or "2h45m". Valid time units are "s" (seconds), "m" (minutes), "h" (hours).
+	Update *string `json:"update,omitempty" tf:"update,omitempty"`
+}
+
+type WlanTimeoutsObservation struct {
+
+	// A string that can be [parsed as a duration](https://pkg.go.dev/time#ParseDuration) consisting of numbers and unit suffixes, such as "30s" or "2h45m". Valid time units are "s" (seconds), "m" (minutes), "h" (hours).
+	Create *string `json:"create,omitempty" tf:"create,omitempty"`
+
+	// A string that can be [parsed as a duration](https://pkg.go.dev/time#ParseDuration) consisting of numbers and unit suffixes, such as "30s" or "2h45m". Valid time units are "s" (seconds), "m" (minutes), "h" (hours). Setting a timeout for a Delete operation is only applicable if changes are saved into state before the destroy operation occurs.
+	Delete *string `json:"delete,omitempty" tf:"delete,omitempty"`
+
+	// A string that can be [parsed as a duration](https://pkg.go.dev/time#ParseDuration) consisting of numbers and unit suffixes, such as "30s" or "2h45m". Valid time units are "s" (seconds), "m" (minutes), "h" (hours). Read operations occur during any refresh or planning operation when refresh is enabled.
+	Read *string `json:"read,omitempty" tf:"read,omitempty"`
+
+	// A string that can be [parsed as a duration](https://pkg.go.dev/time#ParseDuration) consisting of numbers and unit suffixes, such as "30s" or "2h45m". Valid time units are "s" (seconds), "m" (minutes), "h" (hours).
+	Update *string `json:"update,omitempty" tf:"update,omitempty"`
+}
+
+type WlanTimeoutsParameters struct {
+
+	// A string that can be [parsed as a duration](https://pkg.go.dev/time#ParseDuration) consisting of numbers and unit suffixes, such as "30s" or "2h45m". Valid time units are "s" (seconds), "m" (minutes), "h" (hours).
+	// +kubebuilder:validation:Optional
+	Create *string `json:"create,omitempty" tf:"create,omitempty"`
+
+	// A string that can be [parsed as a duration](https://pkg.go.dev/time#ParseDuration) consisting of numbers and unit suffixes, such as "30s" or "2h45m". Valid time units are "s" (seconds), "m" (minutes), "h" (hours). Setting a timeout for a Delete operation is only applicable if changes are saved into state before the destroy operation occurs.
+	// +kubebuilder:validation:Optional
+	Delete *string `json:"delete,omitempty" tf:"delete,omitempty"`
+
+	// A string that can be [parsed as a duration](https://pkg.go.dev/time#ParseDuration) consisting of numbers and unit suffixes, such as "30s" or "2h45m". Valid time units are "s" (seconds), "m" (minutes), "h" (hours). Read operations occur during any refresh or planning operation when refresh is enabled.
+	// +kubebuilder:validation:Optional
+	Read *string `json:"read,omitempty" tf:"read,omitempty"`
+
+	// A string that can be [parsed as a duration](https://pkg.go.dev/time#ParseDuration) consisting of numbers and unit suffixes, such as "30s" or "2h45m". Valid time units are "s" (seconds), "m" (minutes), "h" (hours).
+	// +kubebuilder:validation:Optional
+	Update *string `json:"update,omitempty" tf:"update,omitempty"`
 }
 
 // WlanSpec defines the desired state of Wlan
