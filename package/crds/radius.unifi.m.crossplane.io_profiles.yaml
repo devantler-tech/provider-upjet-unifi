@@ -66,7 +66,9 @@ spec:
                     items:
                       properties:
                         ip:
-                          description: IP address of accounting service server.
+                          description: 'IP address of the accounting server. Optional:
+                            the controller-managed default profile returns a server
+                            entry without an IP, so importing it must not force one.'
                           type: string
                         port:
                           description: Port of accounting service.
@@ -90,7 +92,11 @@ spec:
                     items:
                       properties:
                         ip:
-                          description: IP address of authentication service server.
+                          description: 'IP address of the authentication server. Optional:
+                            the controller-managed default profile (e.g. the one created
+                            when a gateway RADIUS/VPN service is enabled, with `use_usg_auth_server
+                            = true`) returns a server entry without an IP, so importing
+                            it must not force one.'
                           type: string
                         port:
                           description: Port of authentication service.
@@ -189,7 +195,9 @@ spec:
                     items:
                       properties:
                         ip:
-                          description: IP address of accounting service server.
+                          description: 'IP address of the accounting server. Optional:
+                            the controller-managed default profile returns a server
+                            entry without an IP, so importing it must not force one.'
                           type: string
                         port:
                           description: Port of accounting service.
@@ -215,7 +223,11 @@ spec:
                     items:
                       properties:
                         ip:
-                          description: IP address of authentication service server.
+                          description: 'IP address of the authentication server. Optional:
+                            the controller-managed default profile (e.g. the one created
+                            when a gateway RADIUS/VPN service is enabled, with `use_usg_auth_server
+                            = true`) returns a server entry without an IP, so importing
+                            it must not force one.'
                           type: string
                         port:
                           description: Port of authentication service.
@@ -371,7 +383,9 @@ spec:
                     items:
                       properties:
                         ip:
-                          description: IP address of accounting service server.
+                          description: 'IP address of the accounting server. Optional:
+                            the controller-managed default profile returns a server
+                            entry without an IP, so importing it must not force one.'
                           type: string
                         port:
                           description: Port of accounting service.
@@ -383,7 +397,11 @@ spec:
                     items:
                       properties:
                         ip:
-                          description: IP address of authentication service server.
+                          description: 'IP address of the authentication server. Optional:
+                            the controller-managed default profile (e.g. the one created
+                            when a gateway RADIUS/VPN service is enabled, with `use_usg_auth_server
+                            = true`) returns a server entry without an IP, so importing
+                            it must not force one.'
                           type: string
                         port:
                           description: Port of authentication service.

@@ -158,6 +158,9 @@ type DeviceInitParameters struct {
 	// The MAC address of the device. This can be specified so that the provider can take control of a device (since devices are created through adoption).
 	Mac *string `json:"mac,omitempty" tf:"mac,omitempty"`
 
+	// Enable the mesh station VAP (the UI "Mesh Connect" toggle), letting this AP uplink wirelessly to a mesh parent.
+	MeshStaVapEnabled *bool `json:"meshStaVapEnabled,omitempty" tf:"mesh_sta_vap_enabled,omitempty"`
+
 	// Management network ID. The network this device uses for its own management traffic (the UI's Network Override). When set, the device tags its management onto this network's VLAN, so that VLAN must already be tagged on the device's upstream switch port(s) before this attribute is applied. Otherwise the device loses its management path, drops off, and the apply fails with an inconsistent-result error. Apply in two steps: tag the VLAN on the uplink (a port_override tagged_networkconf_ids entry) first, then set mgmt_network_id. Leave unset to manage on the uplink's native (untagged) network.
 	MgmtNetworkID *string `json:"mgmtNetworkId,omitempty" tf:"mgmt_network_id,omitempty"`
 
@@ -260,6 +263,9 @@ type DeviceObservation struct {
 
 	// The MAC address of the device. This can be specified so that the provider can take control of a device (since devices are created through adoption).
 	Mac *string `json:"mac,omitempty" tf:"mac,omitempty"`
+
+	// Enable the mesh station VAP (the UI "Mesh Connect" toggle), letting this AP uplink wirelessly to a mesh parent.
+	MeshStaVapEnabled *bool `json:"meshStaVapEnabled,omitempty" tf:"mesh_sta_vap_enabled,omitempty"`
 
 	// Management network ID. The network this device uses for its own management traffic (the UI's Network Override). When set, the device tags its management onto this network's VLAN, so that VLAN must already be tagged on the device's upstream switch port(s) before this attribute is applied. Otherwise the device loses its management path, drops off, and the apply fails with an inconsistent-result error. Apply in two steps: tag the VLAN on the uplink (a port_override tagged_networkconf_ids entry) first, then set mgmt_network_id. Leave unset to manage on the uplink's native (untagged) network.
 	MgmtNetworkID *string `json:"mgmtNetworkId,omitempty" tf:"mgmt_network_id,omitempty"`
@@ -382,6 +388,10 @@ type DeviceParameters struct {
 	// The MAC address of the device. This can be specified so that the provider can take control of a device (since devices are created through adoption).
 	// +kubebuilder:validation:Optional
 	Mac *string `json:"mac,omitempty" tf:"mac,omitempty"`
+
+	// Enable the mesh station VAP (the UI "Mesh Connect" toggle), letting this AP uplink wirelessly to a mesh parent.
+	// +kubebuilder:validation:Optional
+	MeshStaVapEnabled *bool `json:"meshStaVapEnabled,omitempty" tf:"mesh_sta_vap_enabled,omitempty"`
 
 	// Management network ID. The network this device uses for its own management traffic (the UI's Network Override). When set, the device tags its management onto this network's VLAN, so that VLAN must already be tagged on the device's upstream switch port(s) before this attribute is applied. Otherwise the device loses its management path, drops off, and the apply fails with an inconsistent-result error. Apply in two steps: tag the VLAN on the uplink (a port_override tagged_networkconf_ids entry) first, then set mgmt_network_id. Leave unset to manage on the uplink's native (untagged) network.
 	// +kubebuilder:validation:Optional

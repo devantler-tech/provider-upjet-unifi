@@ -16,7 +16,7 @@ import (
 
 type AcctServerInitParameters struct {
 
-	// IP address of accounting service server.
+	// IP address of the accounting server. Optional: the controller-managed default profile returns a server entry without an IP, so importing it must not force one.
 	IP *string `json:"ip,omitempty" tf:"ip,omitempty"`
 
 	// Port of accounting service.
@@ -28,7 +28,7 @@ type AcctServerInitParameters struct {
 
 type AcctServerObservation struct {
 
-	// IP address of accounting service server.
+	// IP address of the accounting server. Optional: the controller-managed default profile returns a server entry without an IP, so importing it must not force one.
 	IP *string `json:"ip,omitempty" tf:"ip,omitempty"`
 
 	// Port of accounting service.
@@ -37,9 +37,9 @@ type AcctServerObservation struct {
 
 type AcctServerParameters struct {
 
-	// IP address of accounting service server.
+	// IP address of the accounting server. Optional: the controller-managed default profile returns a server entry without an IP, so importing it must not force one.
 	// +kubebuilder:validation:Optional
-	IP *string `json:"ip" tf:"ip,omitempty"`
+	IP *string `json:"ip,omitempty" tf:"ip,omitempty"`
 
 	// Port of accounting service.
 	// +kubebuilder:validation:Optional
@@ -52,7 +52,7 @@ type AcctServerParameters struct {
 
 type AuthServerInitParameters struct {
 
-	// IP address of authentication service server.
+	// IP address of the authentication server. Optional: the controller-managed default profile (e.g. the one created when a gateway RADIUS/VPN service is enabled, with `use_usg_auth_server = true`) returns a server entry without an IP, so importing it must not force one.
 	IP *string `json:"ip,omitempty" tf:"ip,omitempty"`
 
 	// Port of authentication service.
@@ -64,7 +64,7 @@ type AuthServerInitParameters struct {
 
 type AuthServerObservation struct {
 
-	// IP address of authentication service server.
+	// IP address of the authentication server. Optional: the controller-managed default profile (e.g. the one created when a gateway RADIUS/VPN service is enabled, with `use_usg_auth_server = true`) returns a server entry without an IP, so importing it must not force one.
 	IP *string `json:"ip,omitempty" tf:"ip,omitempty"`
 
 	// Port of authentication service.
@@ -73,9 +73,9 @@ type AuthServerObservation struct {
 
 type AuthServerParameters struct {
 
-	// IP address of authentication service server.
+	// IP address of the authentication server. Optional: the controller-managed default profile (e.g. the one created when a gateway RADIUS/VPN service is enabled, with `use_usg_auth_server = true`) returns a server entry without an IP, so importing it must not force one.
 	// +kubebuilder:validation:Optional
-	IP *string `json:"ip" tf:"ip,omitempty"`
+	IP *string `json:"ip,omitempty" tf:"ip,omitempty"`
 
 	// Port of authentication service.
 	// +kubebuilder:validation:Optional

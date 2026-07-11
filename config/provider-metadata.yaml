@@ -21,6 +21,28 @@ resources:
             update: (String) A string that can be parsed as a duration consisting of numbers and unit suffixes, such as "30s" or "2h45m". Valid time units are "s" (seconds), "m" (minutes), "h" (hours).
             vlan: (Number) VLAN assigned to the account. If omitted but network_id is set, it is derived from that network's VLAN. If neither is set, the client falls back to the untagged VLAN.
         importStatements: []
+    Ap Group (Resource):
+        subCategory: ""
+        description: unifi_ap_group manages a group of access points, which can be referenced from wireless networks (unifi_wlan) to control where an SSID is broadcast. The controller's built-in default group ("All APs") is read-only; updating or deleting it through this resource fails with a controller error.
+        name: Ap Group (Resource)
+        title: Ap Group (Resource)
+        argumentDocs:
+            create: (String) A string that can be parsed as a duration consisting of numbers and unit suffixes, such as "30s" or "2h45m". Valid time units are "s" (seconds), "m" (minutes), "h" (hours).
+            delete: (String) A string that can be parsed as a duration consisting of numbers and unit suffixes, such as "30s" or "2h45m". Valid time units are "s" (seconds), "m" (minutes), "h" (hours). Setting a timeout for a Delete operation is only applicable if changes are saved into state before the destroy operation occurs.
+            device_macs: (Set of String) The MAC addresses of the access points that are members of the group. May be empty — the controller accepts a group with no members.
+            id: (String) The ID of the AP group.
+            name: (String) The name of the AP group.
+            read: (String) A string that can be parsed as a duration consisting of numbers and unit suffixes, such as "30s" or "2h45m". Valid time units are "s" (seconds), "m" (minutes), "h" (hours). Read operations occur during any refresh or planning operation when refresh is enabled.
+            site: (String) The name of the site to associate the AP group with.
+            timeouts: (Attributes) (see below for nested schema)
+            update: (String) A string that can be parsed as a duration consisting of numbers and unit suffixes, such as "30s" or "2h45m". Valid time units are "s" (seconds), "m" (minutes), "h" (hours).
+        importStatements:
+            - |-
+              # AP groups can be imported using the group ID, or site:id for a non-default site.
+              terraform import unifi_ap_group.example 5f3e9b2c4ee8cb0f1f4a1234
+
+              # For a non-default site, prefix the ID with the site name and a colon.
+              terraform import unifi_ap_group.example default:5f3e9b2c4ee8cb0f1f4a1234
     Bgp (Resource):
         subCategory: ""
         description: Manages BGP configuration for the UniFi Controller. Configuration can be provided either as a raw FRR config string via config, or via structured attributes (asn, router_id, peers) which render a config from a template.
@@ -156,6 +178,7 @@ resources:
             locked: (Boolean) Specifies whether the device is locked.
             mac: (String) The MAC address of the device. This can be specified so that the provider can take control of a device (since devices are created through adoption).
             maxsta: (Number) Maximum number of stations.
+            mesh_sta_vap_enabled: (Boolean) Enable the mesh station VAP (the UI "Mesh Connect" toggle), letting this AP uplink wirelessly to a mesh parent.
             mgmt_network_id: '(String) Management network ID. The network this device uses for its own management traffic (the UI''s Network Override). When set, the device tags its management onto this network''s VLAN, so that VLAN must already be tagged on the device''s upstream switch port(s) before this attribute is applied. Otherwise the device loses its management path, drops off, and the apply fails with an inconsistent-result error. Apply in two steps: tag the VLAN on the uplink (a port_override tagged_networkconf_ids entry) first, then set mgmt_network_id. Leave unset to manage on the uplink''s native (untagged) network.'
             min_rssi: (Number) Minimum RSSI value.
             min_rssi_enabled: (Boolean) Enable minimum RSSI.
@@ -606,7 +629,7 @@ resources:
             id: (String) The ID of the settings.
             interim_update_enabled: (Boolean) Specifies whether to use interim_update.
             interim_update_interval: (String) Specifies the RADIUS interim update interval, as a Go duration string (e.g. 1h, 3600s). Defaults to 1h0m0s.
-            ip: (String) IP address of accounting service server.
+            ip: '(String) IP address of the accounting server. Optional: the controller-managed default profile returns a server entry without an IP, so importing it must not force one.'
             name: (String) The name of the profile.
             port: (Number) Port of accounting service.
             read: (String) A string that can be parsed as a duration consisting of numbers and unit suffixes, such as "30s" or "2h45m". Valid time units are "s" (seconds), "m" (minutes), "h" (hours). Read operations occur during any refresh or planning operation when refresh is enabled.

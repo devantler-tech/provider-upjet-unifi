@@ -12,10 +12,10 @@ TERRAFORM_VERSION_VALID := $(shell [ "$(TERRAFORM_VERSION)" = "`printf "$(TERRAF
 
 export TERRAFORM_PROVIDER_SOURCE ?= ubiquiti-community/unifi
 export TERRAFORM_PROVIDER_REPO ?= https://github.com/ubiquiti-community/terraform-provider-unifi
-export TERRAFORM_PROVIDER_VERSION ?= 0.54.0
+export TERRAFORM_PROVIDER_VERSION ?= 0.55.0
 export TERRAFORM_PROVIDER_DOWNLOAD_NAME ?= terraform-provider-unifi
 export TERRAFORM_PROVIDER_DOWNLOAD_URL_PREFIX ?= https://github.com/ubiquiti-community/terraform-provider-unifi/releases/download/v$(TERRAFORM_PROVIDER_VERSION)
-export TERRAFORM_NATIVE_PROVIDER_BINARY ?= terraform-provider-unifi_v0.54.0
+export TERRAFORM_NATIVE_PROVIDER_BINARY ?= terraform-provider-unifi_v0.55.0
 export TERRAFORM_DOCS_PATH ?= docs/resources
 
 # SHA256 checksums of the downloaded archives, verified in the Dockerfile before
@@ -26,8 +26,8 @@ export TERRAFORM_DOCS_PATH ?= docs/resources
 #   native provider:  $(TERRAFORM_PROVIDER_DOWNLOAD_URL_PREFIX)/$(TERRAFORM_PROVIDER_DOWNLOAD_NAME)_$(TERRAFORM_PROVIDER_VERSION)_SHA256SUMS
 export TERRAFORM_SHA256_LINUX_AMD64 ?= c0ed7bc32ee52ae255af9982c8c88a7a4c610485cf1d55feeb037eab75fa082c
 export TERRAFORM_SHA256_LINUX_ARM64 ?= f4b4ad7c6b6088960a667e34495cae490fb072947a9ff266bf5929f5333565e4
-export TERRAFORM_PROVIDER_SHA256_LINUX_AMD64 ?= 2134653fbc6c19997fc4b4cb77bc1d4dfc941ff46e6effc95b825816f1cf7c4b
-export TERRAFORM_PROVIDER_SHA256_LINUX_ARM64 ?= 75e09399bda130ddf06a2255a8626c9f3586658a6f3aa1cdca933dd967defc0c
+export TERRAFORM_PROVIDER_SHA256_LINUX_AMD64 ?= f24fd469d0eb2cb38407dfdae30c5278b059f623b39362c46b0bdcd1d5ec615b
+export TERRAFORM_PROVIDER_SHA256_LINUX_ARM64 ?= 46ea0a9d751f439d4e84562acd2dd3b4b464c6089153c3eb3e67a3c900832313
 
 
 PLATFORMS ?= linux_amd64 linux_arm64
