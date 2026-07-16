@@ -16,28 +16,28 @@ failures=0
 
 # assert_output <name> <expected-exit> <expected-stdout> <base-schema>
 assert_output() {
-  local name="$1" want_exit="$2" want_out="$3" base="$4"
-  local got_out got_exit=0
+	local name="$1" want_exit="$2" want_out="$3" base="$4"
+	local got_out got_exit=0
 
-  got_out="$("${version_diff}" \
-    "${testdata}/generated.lst" \
-    "${base}" \
-    "${testdata}/schema.bumped.json" 2>&1)" || got_exit=$?
+	got_out="$("${version_diff}" \
+		"${testdata}/generated.lst" \
+		"${base}" \
+		"${testdata}/schema.bumped.json" 2>&1)" || got_exit=$?
 
-  if [[ "${got_exit}" != "${want_exit}" ]]; then
-    echo "FAIL ${name}: exit ${got_exit}, want ${want_exit}"
-    failures=$((failures + 1))
-    return
-  fi
+	if [[ "${got_exit}" != "${want_exit}" ]]; then
+		echo "FAIL ${name}: exit ${got_exit}, want ${want_exit}"
+		failures=$((failures + 1))
+		return
+	fi
 
-  if [[ "${got_out}" != "${want_out}" ]]; then
-    echo "FAIL ${name}: stdout differs"
-    diff <(printf '%s\n' "${want_out}") <(printf '%s\n' "${got_out}") || true
-    failures=$((failures + 1))
-    return
-  fi
+	if [[ "${got_out}" != "${want_out}" ]]; then
+		echo "FAIL ${name}: stdout differs"
+		diff <(printf '%s\n' "${want_out}") <(printf '%s\n' "${got_out}") || true
+		failures=$((failures + 1))
+		return
+	fi
 
-  echo "ok   ${name}"
+	echo "ok   ${name}"
 }
 
 # Covers all four cases in one pass, as the real invocation does:
@@ -47,23 +47,23 @@ assert_output() {
 #   unifi_gone      absent from both schemas      → named as the missing key
 #   unifi_no_version present, but has no version  → 'version' named as the missing key
 assert_output "reports changed versions, skips unchanged, names missing keys" 0 \
-  "Reporting schema changes between \"${testdata}/schema.base.json\" as base version and \"${testdata}/schema.bumped.json\" as bumped version
+	"Reporting schema changes between \"${testdata}/schema.base.json\" as base version and \"${testdata}/schema.bumped.json\" as bumped version
 unifi_network:0-1
 unifi_site:2-3
 unifi_gone is not found in schema: 'unifi_gone'
 unifi_no_version is not found in schema: 'version'" \
-  "${testdata}/schema.base.json"
+	"${testdata}/schema.base.json"
 
 # A base schema with no provider is unusable: fail loudly rather than report an empty
 # diff, which would read as "nothing changed" on a bump PR.
 assert_output "fails when the base schema has no provider" 255 \
-  "Reporting schema changes between \"${testdata}/schema.no-provider.json\" as base version and \"${testdata}/schema.bumped.json\" as bumped version
+	"Reporting schema changes between \"${testdata}/schema.no-provider.json\" as base version and \"${testdata}/schema.bumped.json\" as bumped version
 Cannot extract the provider name from the base schema: ${testdata}/schema.no-provider.json" \
-  "${testdata}/schema.no-provider.json"
+	"${testdata}/schema.no-provider.json"
 
 if [[ "${failures}" -ne 0 ]]; then
-  echo "${failures} test(s) failed"
-  exit 1
+	echo "${failures} test(s) failed"
+	exit 1
 fi
 
 echo "all version_diff tests passed"

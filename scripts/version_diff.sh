@@ -21,9 +21,9 @@ echo "Reporting schema changes between \"${base_path}\" as base version and \"${
 # document order the Python dict iteration relied on, where `keys` would sort it.
 provider_name="$(jq -r '.provider_schemas | keys_unsorted[0] // empty' "${base_path}")"
 if [[ -z "${provider_name}" ]]; then
-  echo "Cannot extract the provider name from the base schema: ${base_path}"
-  # 255 mirrors the exit status of the replaced script's sys.exit(-1).
-  exit 255
+	echo "Cannot extract the provider name from the base schema: ${base_path}"
+	# 255 mirrors the exit status of the replaced script's sys.exit(-1).
+	exit 255
 fi
 
 # One jq pass over the generated resource list. ' is a literal single quote —
@@ -32,10 +32,10 @@ fi
 # output is expected to read the same. Each branch mirrors one lookup the Python did,
 # in the same order, so the same missing key is named.
 jq -r \
-  --slurpfile base "${base_path}" \
-  --slurpfile bumped "${bumped_path}" \
-  --arg provider "${provider_name}" \
-  '
+	--slurpfile base "${base_path}" \
+	--slurpfile bumped "${bumped_path}" \
+	--arg provider "${provider_name}" \
+	'
     ($base[0].provider_schemas[$provider].resource_schemas // {}) as $b
     | ($bumped[0].provider_schemas[$provider].resource_schemas // {}) as $u
     | .[]
