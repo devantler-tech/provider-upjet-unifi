@@ -45,13 +45,13 @@ assert_output() {
 #   unifi_site      version changed 2 -> 3        → reported
 #   unifi_user      version unchanged             → silent
 #   unifi_gone      absent from both schemas      → named as the missing key
-#   unifi_noversion present, but has no version   → 'version' named as the missing key
+#   unifi_no_version present, but has no version  → 'version' named as the missing key
 assert_output "reports changed versions, skips unchanged, names missing keys" 0 \
   "Reporting schema changes between \"${testdata}/schema.base.json\" as base version and \"${testdata}/schema.bumped.json\" as bumped version
 unifi_network:0-1
 unifi_site:2-3
 unifi_gone is not found in schema: 'unifi_gone'
-unifi_noversion is not found in schema: 'version'" \
+unifi_no_version is not found in schema: 'version'" \
   "${testdata}/schema.base.json"
 
 # A base schema with no provider is unusable: fail loudly rather than report an empty

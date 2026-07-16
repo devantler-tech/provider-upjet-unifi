@@ -122,6 +122,7 @@
     "statemetrics",
     "staticcheck",
     "terraformrc",
+    "testdata",
     "testifylint",
     "tjcontroller",
     "turkenh",
