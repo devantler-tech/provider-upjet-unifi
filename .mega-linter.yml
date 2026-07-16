@@ -2,7 +2,7 @@
 # APPLY_FIXES is intentionally off: the org's validate-go-project workflow runs a
 # git-auto-commit step on MegaLinter's output, and with fixes enabled it committed
 # MegaLinter's own megalinter-reports/ tree back into the branch (and dropped the
-# scripts/version_diff.py exec bit). CI should report findings, not rewrite the tree.
+# scripts/version_diff.sh exec bit). CI should report findings, not rewrite the tree.
 APPLY_FIXES: none
 FLAVOR_SUGGESTIONS: false
 IGNORE_GITIGNORED_FILES: true
