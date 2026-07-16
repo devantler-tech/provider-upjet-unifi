@@ -117,6 +117,7 @@
     "rowserrcheck",
     "scopelint",
     "sigstore",
+    "slurpfile",
     "spancheck",
     "sqlclosecheck",
     "statemetrics",
