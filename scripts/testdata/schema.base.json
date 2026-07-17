@@ -1,0 +1,12 @@
+{
+  "provider_schemas": {
+    "registry.terraform.io/ubiquiti-community/unifi": {
+      "resource_schemas": {
+        "unifi_network": { "version": 0 },
+        "unifi_user": { "version": 1 },
+        "unifi_site": { "version": 2 },
+        "unifi_no_version": {}
+      }
+    }
+  }
+}

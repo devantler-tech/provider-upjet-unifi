@@ -250,10 +250,20 @@ schema-version-diff:
 	echo Current Terraform provider version: $${TERRAFORM_PROVIDER_VERSION}; \
 	mkdir -p $(WORK_DIR); \
 	git cat-file -p "$${GITHUB_BASE_REF}:config/schema.json" > "$(WORK_DIR)/schema.json.$${PREV_PROVIDER_VERSION}"; \
-	./scripts/version_diff.py config/generated.lst "$(WORK_DIR)/schema.json.$${PREV_PROVIDER_VERSION}" config/schema.json
+	./scripts/version_diff.sh config/generated.lst "$(WORK_DIR)/schema.json.$${PREV_PROVIDER_VERSION}" config/schema.json
 	@$(OK) Checking for native state schema version changes
 
-.PHONY: cobertura submodules fallthrough run crds.clean
+# Hook the version_diff regression suite into `make test` (the CI unit-test
+# job) — makelib's test.run accumulates prerequisites, so this runs alongside
+# go.test.unit.
+test.run: version-diff.test
+
+version-diff.test:
+	@$(INFO) running version_diff regression tests
+	@./scripts/version_diff_test.sh || $(FAIL)
+	@$(OK) version_diff regression tests
+
+.PHONY: cobertura submodules fallthrough run crds.clean version-diff.test
 
 # ====================================================================================
 # Special Targets
