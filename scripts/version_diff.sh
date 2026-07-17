@@ -26,6 +26,19 @@ if [[ -z "${provider_name}" ]]; then
 	exit 255
 fi
 
+# Either schema missing the selected provider (e.g. after a provider address
+# change) or its resource_schemas must fail loudly: a silent empty-object
+# fallback would print per-resource "not found" lines yet exit 0, and the
+# Makefile schema-bump path would report success with no valid comparison.
+# The replaced Python failed on the dict lookup instead — this mirrors it.
+for schema_path in "${base_path}" "${bumped_path}"; do
+	if ! jq -e --arg provider "${provider_name}" \
+		'.provider_schemas[$provider].resource_schemas' "${schema_path}" >/dev/null; then
+		echo "Cannot find resource_schemas for provider \"${provider_name}\" in schema: ${schema_path}"
+		exit 255
+	fi
+done
+
 # One jq pass over the generated resource list. ' is a literal single quote —
 # written as an escape so it cannot terminate this single-quoted jq program. Python
 # printed a caught KeyError, which renders as 'the-missing-key', and the Makefile
@@ -36,8 +49,8 @@ jq -r \
 	--slurpfile bumped "${bumped_path}" \
 	--arg provider "${provider_name}" \
 	'
-    ($base[0].provider_schemas[$provider].resource_schemas // {}) as $b
-    | ($bumped[0].provider_schemas[$provider].resource_schemas // {}) as $u
+    $base[0].provider_schemas[$provider].resource_schemas as $b
+    | $bumped[0].provider_schemas[$provider].resource_schemas as $u
     | .[]
     | . as $name
     | if ($b | has($name) | not) then

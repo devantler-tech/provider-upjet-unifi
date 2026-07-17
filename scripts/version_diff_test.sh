@@ -14,15 +14,16 @@ testdata="${script_dir}/testdata"
 
 failures=0
 
-# assert_output <name> <expected-exit> <expected-stdout> <base-schema>
+# assert_output <name> <expected-exit> <expected-stdout> <base-schema> [bumped-schema]
 assert_output() {
 	local name="$1" want_exit="$2" want_out="$3" base="$4"
+	local bumped="${5:-${testdata}/schema.bumped.json}"
 	local got_out got_exit=0
 
 	got_out="$("${version_diff}" \
 		"${testdata}/generated.lst" \
 		"${base}" \
-		"${testdata}/schema.bumped.json" 2>&1)" || got_exit=$?
+		"${bumped}" 2>&1)" || got_exit=$?
 
 	if [[ "${got_exit}" != "${want_exit}" ]]; then
 		echo "FAIL ${name}: exit ${got_exit}, want ${want_exit}"
@@ -59,6 +60,15 @@ unifi_no_version is not found in schema: 'version'" \
 assert_output "fails when the base schema has no provider" 255 \
 	"Reporting schema changes between \"${testdata}/schema.no-provider.json\" as base version and \"${testdata}/schema.bumped.json\" as bumped version
 Cannot extract the provider name from the base schema: ${testdata}/schema.no-provider.json" \
+	"${testdata}/schema.no-provider.json"
+
+# A bumped schema without the base's provider key (e.g. a provider address
+# change) must fail loudly, not print per-resource "not found" lines and exit
+# 0 — that read as a successful empty diff on a bump PR (codex review).
+assert_output "fails when the bumped schema lacks the base's provider" 255 \
+	"Reporting schema changes between \"${testdata}/schema.base.json\" as base version and \"${testdata}/schema.no-provider.json\" as bumped version
+Cannot find resource_schemas for provider \"registry.terraform.io/ubiquiti-community/unifi\" in schema: ${testdata}/schema.no-provider.json" \
+	"${testdata}/schema.base.json" \
 	"${testdata}/schema.no-provider.json"
 
 if [[ "${failures}" -ne 0 ]]; then
