@@ -246,10 +246,12 @@ jobs:
     if: needs.detect-noop.outputs.noop != 'true'
 
     steps:
+      # This job only reads the checked-out tree and talks to a local cluster, so
+      # it needs neither the submodules nor a persisted token.
       - name: Checkout
         uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6.0.2
         with:
-          submodules: true
+          persist-credentials: false
 
       # The examples are what adopters copy-paste, so they must be accepted by a
       # real API server. This needs no UniFi controller and no credentials, which
