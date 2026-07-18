@@ -9,9 +9,9 @@ spec:
     subnet: 10.0.42.1/24
     vlan: 42
     dhcpServer:
-      - enabled: true
-        start: 10.0.42.10
-        stop: 10.0.42.254
+      enabled: true
+      start: 10.0.42.10
+      stop: 10.0.42.254
   providerConfigRef:
     kind: ClusterProviderConfig
     name: default

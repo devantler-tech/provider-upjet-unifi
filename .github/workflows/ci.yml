@@ -240,6 +240,30 @@ jobs:
       - name: Deploying locally built provider package
         run: make local-deploy
 
+  validate-examples:
+    runs-on: ubuntu-24.04
+    needs: detect-noop
+    if: needs.detect-noop.outputs.noop != 'true'
+
+    steps:
+      # This job only reads the checked-out tree and talks to a local cluster, so
+      # it needs neither the submodules nor a persisted token.
+      - name: Checkout
+        uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6.0.2
+        with:
+          persist-credentials: false
+
+      # The examples are what adopters copy-paste, so they must be accepted by a
+      # real API server. This needs no UniFi controller and no credentials, which
+      # is why it can gate ordinary pull requests where e2e.yaml cannot.
+      - name: Create a Throwaway Cluster
+        uses: helm/kind-action@a1b0e391336a6ee6713a0583f8c6240d70863de3 # v1.12.0
+        with:
+          cluster_name: validate-examples
+
+      - name: Validate Example Manifests
+        run: hack/validate-examples.sh
+
   publish-artifacts:
     runs-on: ubuntu-24.04
     needs:
@@ -325,6 +349,7 @@ jobs:
         check-diff,
         unit-tests,
         local-deploy,
+        validate-examples,
         publish-artifacts,
       ]
     if: ${{ always() }}
@@ -338,4 +363,5 @@ jobs:
             ${{ needs.check-diff.result }}
             ${{ needs.unit-tests.result }}
             ${{ needs.local-deploy.result }}
+            ${{ needs.validate-examples.result }}
             ${{ needs.publish-artifacts.result }}
