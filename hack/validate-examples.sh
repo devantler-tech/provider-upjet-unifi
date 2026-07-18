@@ -23,16 +23,19 @@ EXAMPLES_DIR="${REPO_ROOT}/examples"
 # Kept as a plain function rather than an associative array so the script also
 # runs on the bash 3.2 that ships with macOS.
 exclusion_reason() {
-  case "$1" in
-  examples/install.yaml)
-    printf '%s' "pkg.crossplane.io/v1 Provider is owned by Crossplane core, not by this provider's CRDs"
-    ;;
-  *) printf '' ;;
-  esac
+	case "$1" in
+	examples/install.yaml)
+		printf '%s' "pkg.crossplane.io/v1 Provider is owned by Crossplane core, not by this provider's CRDs"
+		;;
+	*) printf '' ;;
+	esac
 }
 
 log() { printf '%s\n' "$*"; }
-fail() { printf 'ERROR: %s\n' "$*" >&2; exit 1; }
+fail() {
+	printf 'ERROR: %s\n' "$*" >&2
+	exit 1
+}
 
 [[ -d "${CRD_DIR}" ]] || fail "CRD directory not found: ${CRD_DIR}"
 [[ -d "${EXAMPLES_DIR}" ]] || fail "examples directory not found: ${EXAMPLES_DIR}"
@@ -57,10 +60,10 @@ log "    $(find "${CRD_DIR}" -name '*.yaml' | wc -l | tr -d ' ') CRDs establishe
 # rather than as an empty loop that exits 0.
 manifests=()
 while IFS= read -r file; do
-  manifests+=("${file}")
+	manifests+=("${file}")
 done < <(cd "${REPO_ROOT}" && find examples -type f -name '*.yaml' | sort)
 
-(( ${#manifests[@]} > 0 )) || fail "no example manifests found under examples/ — enumeration failed"
+((${#manifests[@]} > 0)) || fail "no example manifests found under examples/ — enumeration failed"
 
 log "==> Validating ${#manifests[@]} example manifests with --validate=strict"
 
@@ -69,34 +72,34 @@ skipped=0
 failures=()
 
 for manifest in "${manifests[@]}"; do
-  reason="$(exclusion_reason "${manifest}")"
-  if [[ -n "${reason}" ]]; then
-    log "  SKIP ${manifest} (${reason})"
-    skipped=$(( skipped + 1 ))
-    continue
-  fi
+	reason="$(exclusion_reason "${manifest}")"
+	if [[ -n "${reason}" ]]; then
+		log "  SKIP ${manifest} (${reason})"
+		skipped=$((skipped + 1))
+		continue
+	fi
 
-  if output="$(kubectl apply --dry-run=server --validate=strict -f "${REPO_ROOT}/${manifest}" 2>&1)"; then
-    log "  PASS ${manifest}"
-    validated=$(( validated + 1 ))
-  else
-    log "  FAIL ${manifest}"
-    printf '%s\n' "${output}" | sed 's/^/         /'
-    failures+=("${manifest}")
-  fi
+	if output="$(kubectl apply --dry-run=server --validate=strict -f "${REPO_ROOT}/${manifest}" 2>&1)"; then
+		log "  PASS ${manifest}"
+		validated=$((validated + 1))
+	else
+		log "  FAIL ${manifest}"
+		printf '%s\n' "${output}" | sed 's/^/         /'
+		failures+=("${manifest}")
+	fi
 done
 
 # A run that validated nothing means the gate silently did no work — treat that
 # as a failure, never as success.
-(( validated > 0 )) || fail "no manifests were validated (${skipped} skipped) — the gate did no work"
+((validated > 0)) || fail "no manifests were validated (${skipped} skipped) — the gate did no work"
 
 log ""
 log "==> ${validated} validated, ${skipped} skipped, ${#failures[@]} failed"
 
-if (( ${#failures[@]} > 0 )); then
-  printf 'ERROR: %d example manifest(s) rejected by the API server:\n' "${#failures[@]}" >&2
-  printf '  - %s\n' "${failures[@]}" >&2
-  exit 1
+if ((${#failures[@]} > 0)); then
+	printf 'ERROR: %d example manifest(s) rejected by the API server:\n' "${#failures[@]}" >&2
+	printf '  - %s\n' "${failures[@]}" >&2
+	exit 1
 fi
 
 log "All example manifests are accepted by the API server."
