@@ -121,7 +121,16 @@ type ServerInitParameters struct {
 	Openvpn *OpenvpnInitParameters `json:"openvpn,omitempty" tf:"openvpn,omitempty"`
 
 	// The ID of the RADIUS profile to use for authentication. Applicable to L2TP and OpenVPN server types.
+	// +crossplane:generate:reference:type=github.com/devantler-tech/provider-upjet-unifi/apis/cluster/radius/v1alpha1.Profile
 	RadiusprofileID *string `json:"radiusprofileId,omitempty" tf:"radiusprofile_id,omitempty"`
+
+	// Reference to a Profile in radius to populate radiusprofileId.
+	// +kubebuilder:validation:Optional
+	RadiusprofileIDRef *v1.Reference `json:"radiusprofileIdRef,omitempty" tf:"-"`
+
+	// Selector for a Profile in radius to populate radiusprofileId.
+	// +kubebuilder:validation:Optional
+	RadiusprofileIDSelector *v1.Selector `json:"radiusprofileIdSelector,omitempty" tf:"-"`
 
 	// The name of the site to associate the VPN server with.
 	Site *string `json:"site,omitempty" tf:"site,omitempty"`
@@ -187,8 +196,17 @@ type ServerParameters struct {
 	Openvpn *OpenvpnParameters `json:"openvpn,omitempty" tf:"openvpn,omitempty"`
 
 	// The ID of the RADIUS profile to use for authentication. Applicable to L2TP and OpenVPN server types.
+	// +crossplane:generate:reference:type=github.com/devantler-tech/provider-upjet-unifi/apis/cluster/radius/v1alpha1.Profile
 	// +kubebuilder:validation:Optional
 	RadiusprofileID *string `json:"radiusprofileId,omitempty" tf:"radiusprofile_id,omitempty"`
+
+	// Reference to a Profile in radius to populate radiusprofileId.
+	// +kubebuilder:validation:Optional
+	RadiusprofileIDRef *v1.Reference `json:"radiusprofileIdRef,omitempty" tf:"-"`
+
+	// Selector for a Profile in radius to populate radiusprofileId.
+	// +kubebuilder:validation:Optional
+	RadiusprofileIDSelector *v1.Selector `json:"radiusprofileIdSelector,omitempty" tf:"-"`
 
 	// The name of the site to associate the VPN server with.
 	// +kubebuilder:validation:Optional

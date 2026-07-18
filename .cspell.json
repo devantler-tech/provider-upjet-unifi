@@ -111,6 +111,7 @@
     "prealloc",
     "precheck",
     "protogetter",
+    "radiusprofile",
     "recognised",
     "recvcheck",
     "resourcelock",
