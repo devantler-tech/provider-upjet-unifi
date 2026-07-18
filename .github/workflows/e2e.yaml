@@ -17,6 +17,10 @@ env:
 
 jobs:
   check-permissions:
+    # Only a real `/test-examples="<paths>"` command should start this workflow.
+    # Gating here (rather than only on the downstream jobs) means a comment that
+    # merely mentions the keyword never spawns a runner at all.
+    if: ${{ github.event.issue.pull_request != null && contains(github.event.comment.body, '/test-examples="')}}
     runs-on: ubuntu-latest
     # Only reads the commenter's repo permission via the GitHub API.
     permissions:
@@ -34,7 +38,7 @@ jobs:
           REPO: ${{ github.repository }}
           COMMENTER: ${{ github.event.comment.user.login }}
         run: |
-          echo "Trigger keyword: '/test-examples'"
+          echo "Trigger command: '/test-examples=\"<paths>\"'"
           echo "Go version: $GO_VERSION"
 
           # Fetch the commenter's repo-level permission grant
@@ -48,7 +52,7 @@ jobs:
 
   get-example-list:
     needs: check-permissions
-    if: ${{ (needs.check-permissions.outputs.permission == 'admin' || needs.check-permissions.outputs.permission == 'write') && github.event.issue.pull_request != null && contains(github.event.comment.body, '/test-examples')}}
+    if: ${{ (needs.check-permissions.outputs.permission == 'admin' || needs.check-permissions.outputs.permission == 'write') && github.event.issue.pull_request != null && contains(github.event.comment.body, '/test-examples="')}}
     runs-on: ubuntu-latest
     # Checks out the PR (contents:read) and posts a pending commit status
     # (statuses:write).
@@ -113,7 +117,7 @@ jobs:
     needs:
       - check-permissions
       - get-example-list
-    if: ${{ (needs.check-permissions.outputs.permission == 'admin' || needs.check-permissions.outputs.permission == 'write') && github.event.issue.pull_request != null && contains(github.event.comment.body, '/test-examples')}}
+    if: ${{ (needs.check-permissions.outputs.permission == 'admin' || needs.check-permissions.outputs.permission == 'write') && github.event.issue.pull_request != null && contains(github.event.comment.body, '/test-examples="')}}
     runs-on: ubuntu-latest
     # Checks out the PR (contents:read) and posts pending/success/failure
     # commit statuses (statuses:write).
