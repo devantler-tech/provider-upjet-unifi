@@ -1198,6 +1198,16 @@ func (in *ServerInitParameters) DeepCopyInto(out *ServerInitParameters) {
 		*out = new(string)
 		**out = **in
 	}
+	if in.RadiusprofileIDRef != nil {
+		in, out := &in.RadiusprofileIDRef, &out.RadiusprofileIDRef
+		*out = new(v1.Reference)
+		(*in).DeepCopyInto(*out)
+	}
+	if in.RadiusprofileIDSelector != nil {
+		in, out := &in.RadiusprofileIDSelector, &out.RadiusprofileIDSelector
+		*out = new(v1.Selector)
+		(*in).DeepCopyInto(*out)
+	}
 	if in.Site != nil {
 		in, out := &in.Site, &out.Site
 		*out = new(string)
@@ -1374,6 +1384,16 @@ func (in *ServerParameters) DeepCopyInto(out *ServerParameters) {
 		in, out := &in.RadiusprofileID, &out.RadiusprofileID
 		*out = new(string)
 		**out = **in
+	}
+	if in.RadiusprofileIDRef != nil {
+		in, out := &in.RadiusprofileIDRef, &out.RadiusprofileIDRef
+		*out = new(v1.Reference)
+		(*in).DeepCopyInto(*out)
+	}
+	if in.RadiusprofileIDSelector != nil {
+		in, out := &in.RadiusprofileIDSelector, &out.RadiusprofileIDSelector
+		*out = new(v1.Selector)
+		(*in).DeepCopyInto(*out)
 	}
 	if in.Site != nil {
 		in, out := &in.Site, &out.Site

@@ -154,6 +154,18 @@ var references = map[string]ujconfig.References{
 		},
 	},
 
+	// An L2TP/OpenVPN server authenticates against a RADIUS profile via
+	// radiusprofile_id (no underscore after "radius" — the wrapped provider's
+	// own field name). That id only exists once the RadiusProfile reconciles,
+	// so referencing it lets a consumer wire a VpnServer to a RadiusProfile by
+	// name through the generated *Ref/*Selector companions, mirroring the wlan
+	// wiring above; the raw radiusprofileId stays settable directly.
+	"unifi_vpn_server": {
+		"radiusprofile_id": {
+			TerraformName: "unifi_radius_profile",
+		},
+	},
+
 	// A firewall policy references networks and a firewall zone on each side of
 	// the match; the network_ids/zone_id fields live inside the single-nested
 	// source and destination blocks, so the references are keyed by their nested
