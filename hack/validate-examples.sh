@@ -62,8 +62,8 @@ log "    $(find "${CRD_DIR}" -name '*.yaml' | wc -l | tr -d ' ') CRDs establishe
 # Collect the manifests up front so an enumeration failure surfaces as a failure
 # rather than as an empty loop that exits 0.
 #
-# Every file under examples/ is enumerated, not just *.yaml: the .yaml.tmpl
-# credential examples are complete, appliable manifests that adopters copy just
+# Every file under examples/ is enumerated, not just the YAML ones: the templated
+# credential examples are complete manifests that adopters copy and apply just
 # like the rest, so they are validated too. Narrowing the enumeration by
 # extension would hide them from the validated-or-excluded accounting below.
 manifests=()
