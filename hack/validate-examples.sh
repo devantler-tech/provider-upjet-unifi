@@ -27,6 +27,9 @@ exclusion_reason() {
 	examples/install.yaml)
 		printf '%s' "pkg.crossplane.io/v1 Provider is owned by Crossplane core, not by this provider's CRDs"
 		;;
+	*/.gitignore)
+		printf '%s' "not a manifest"
+		;;
 	*) printf '' ;;
 	esac
 }
@@ -58,10 +61,15 @@ log "    $(find "${CRD_DIR}" -name '*.yaml' | wc -l | tr -d ' ') CRDs establishe
 
 # Collect the manifests up front so an enumeration failure surfaces as a failure
 # rather than as an empty loop that exits 0.
+#
+# Every file under examples/ is enumerated, not just *.yaml: the .yaml.tmpl
+# credential examples are complete, appliable manifests that adopters copy just
+# like the rest, so they are validated too. Narrowing the enumeration by
+# extension would hide them from the validated-or-excluded accounting below.
 manifests=()
 while IFS= read -r file; do
 	manifests+=("${file}")
-done < <(cd "${REPO_ROOT}" && find examples -type f -name '*.yaml' | sort)
+done < <(cd "${REPO_ROOT}" && find examples -type f | sort)
 
 ((${#manifests[@]} > 0)) || fail "no example manifests found under examples/ — enumeration failed"
 
