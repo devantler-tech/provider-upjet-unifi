@@ -814,6 +814,16 @@ func (in *WlanInitParameters) DeepCopyInto(out *WlanInitParameters) {
 		*out = new(string)
 		**out = **in
 	}
+	if in.NetworkIDRef != nil {
+		in, out := &in.NetworkIDRef, &out.NetworkIDRef
+		*out = new(v1.Reference)
+		(*in).DeepCopyInto(*out)
+	}
+	if in.NetworkIDSelector != nil {
+		in, out := &in.NetworkIDSelector, &out.NetworkIDSelector
+		*out = new(v1.Selector)
+		(*in).DeepCopyInto(*out)
+	}
 	if in.No2GhzOui != nil {
 		in, out := &in.No2GhzOui, &out.No2GhzOui
 		*out = new(bool)
@@ -860,6 +870,16 @@ func (in *WlanInitParameters) DeepCopyInto(out *WlanInitParameters) {
 		in, out := &in.RadiusProfileID, &out.RadiusProfileID
 		*out = new(string)
 		**out = **in
+	}
+	if in.RadiusProfileIDRef != nil {
+		in, out := &in.RadiusProfileIDRef, &out.RadiusProfileIDRef
+		*out = new(v1.Reference)
+		(*in).DeepCopyInto(*out)
+	}
+	if in.RadiusProfileIDSelector != nil {
+		in, out := &in.RadiusProfileIDSelector, &out.RadiusProfileIDSelector
+		*out = new(v1.Selector)
+		(*in).DeepCopyInto(*out)
 	}
 	if in.Schedule != nil {
 		in, out := &in.Schedule, &out.Schedule
@@ -1437,6 +1457,16 @@ func (in *WlanParameters) DeepCopyInto(out *WlanParameters) {
 		*out = new(string)
 		**out = **in
 	}
+	if in.NetworkIDRef != nil {
+		in, out := &in.NetworkIDRef, &out.NetworkIDRef
+		*out = new(v1.Reference)
+		(*in).DeepCopyInto(*out)
+	}
+	if in.NetworkIDSelector != nil {
+		in, out := &in.NetworkIDSelector, &out.NetworkIDSelector
+		*out = new(v1.Selector)
+		(*in).DeepCopyInto(*out)
+	}
 	if in.No2GhzOui != nil {
 		in, out := &in.No2GhzOui, &out.No2GhzOui
 		*out = new(bool)
@@ -1483,6 +1513,16 @@ func (in *WlanParameters) DeepCopyInto(out *WlanParameters) {
 		in, out := &in.RadiusProfileID, &out.RadiusProfileID
 		*out = new(string)
 		**out = **in
+	}
+	if in.RadiusProfileIDRef != nil {
+		in, out := &in.RadiusProfileIDRef, &out.RadiusProfileIDRef
+		*out = new(v1.Reference)
+		(*in).DeepCopyInto(*out)
+	}
+	if in.RadiusProfileIDSelector != nil {
+		in, out := &in.RadiusProfileIDSelector, &out.RadiusProfileIDSelector
+		*out = new(v1.Selector)
+		(*in).DeepCopyInto(*out)
 	}
 	if in.Schedule != nil {
 		in, out := &in.Schedule, &out.Schedule

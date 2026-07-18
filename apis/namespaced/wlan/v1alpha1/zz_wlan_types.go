@@ -229,7 +229,16 @@ type WlanInitParameters struct {
 	NasIdentifierType *string `json:"nasIdentifierType,omitempty" tf:"nas_identifier_type,omitempty"`
 
 	// ID of the network for this WLAN.
+	// +crossplane:generate:reference:type=github.com/devantler-tech/provider-upjet-unifi/apis/namespaced/network/v1alpha1.Network
 	NetworkID *string `json:"networkId,omitempty" tf:"network_id,omitempty"`
+
+	// Reference to a Network in network to populate networkId.
+	// +kubebuilder:validation:Optional
+	NetworkIDRef *v1.NamespacedReference `json:"networkIdRef,omitempty" tf:"-"`
+
+	// Selector for a Network in network to populate networkId.
+	// +kubebuilder:validation:Optional
+	NetworkIDSelector *v1.NamespacedSelector `json:"networkIdSelector,omitempty" tf:"-"`
 
 	// Connect high performance clients to 5 GHz only.
 	No2GhzOui *bool `json:"no2ghzOui,omitempty" tf:"no2ghz_oui,omitempty"`
@@ -255,7 +264,16 @@ type WlanInitParameters struct {
 	RadiusMacAuthEnabled *bool `json:"radiusMacAuthEnabled,omitempty" tf:"radius_mac_auth_enabled,omitempty"`
 
 	// ID of the RADIUS profile to use when security `wpaeap`. The controller may assign a default profile, so this is computed when unset.
+	// +crossplane:generate:reference:type=github.com/devantler-tech/provider-upjet-unifi/apis/namespaced/radius/v1alpha1.Profile
 	RadiusProfileID *string `json:"radiusProfileId,omitempty" tf:"radius_profile_id,omitempty"`
+
+	// Reference to a Profile in radius to populate radiusProfileId.
+	// +kubebuilder:validation:Optional
+	RadiusProfileIDRef *v1.NamespacedReference `json:"radiusProfileIdRef,omitempty" tf:"-"`
+
+	// Selector for a Profile in radius to populate radiusProfileId.
+	// +kubebuilder:validation:Optional
+	RadiusProfileIDSelector *v1.NamespacedSelector `json:"radiusProfileIdSelector,omitempty" tf:"-"`
 
 	// Start and stop schedules for the WLAN
 	Schedule []ScheduleInitParameters `json:"schedule,omitempty" tf:"schedule,omitempty"`
@@ -571,8 +589,17 @@ type WlanParameters struct {
 	NasIdentifierType *string `json:"nasIdentifierType,omitempty" tf:"nas_identifier_type,omitempty"`
 
 	// ID of the network for this WLAN.
+	// +crossplane:generate:reference:type=github.com/devantler-tech/provider-upjet-unifi/apis/namespaced/network/v1alpha1.Network
 	// +kubebuilder:validation:Optional
 	NetworkID *string `json:"networkId,omitempty" tf:"network_id,omitempty"`
+
+	// Reference to a Network in network to populate networkId.
+	// +kubebuilder:validation:Optional
+	NetworkIDRef *v1.NamespacedReference `json:"networkIdRef,omitempty" tf:"-"`
+
+	// Selector for a Network in network to populate networkId.
+	// +kubebuilder:validation:Optional
+	NetworkIDSelector *v1.NamespacedSelector `json:"networkIdSelector,omitempty" tf:"-"`
 
 	// Connect high performance clients to 5 GHz only.
 	// +kubebuilder:validation:Optional
@@ -606,8 +633,17 @@ type WlanParameters struct {
 	RadiusMacAuthEnabled *bool `json:"radiusMacAuthEnabled,omitempty" tf:"radius_mac_auth_enabled,omitempty"`
 
 	// ID of the RADIUS profile to use when security `wpaeap`. The controller may assign a default profile, so this is computed when unset.
+	// +crossplane:generate:reference:type=github.com/devantler-tech/provider-upjet-unifi/apis/namespaced/radius/v1alpha1.Profile
 	// +kubebuilder:validation:Optional
 	RadiusProfileID *string `json:"radiusProfileId,omitempty" tf:"radius_profile_id,omitempty"`
+
+	// Reference to a Profile in radius to populate radiusProfileId.
+	// +kubebuilder:validation:Optional
+	RadiusProfileIDRef *v1.NamespacedReference `json:"radiusProfileIdRef,omitempty" tf:"-"`
+
+	// Selector for a Profile in radius to populate radiusProfileId.
+	// +kubebuilder:validation:Optional
+	RadiusProfileIDSelector *v1.NamespacedSelector `json:"radiusProfileIdSelector,omitempty" tf:"-"`
 
 	// Start and stop schedules for the WLAN
 	// +kubebuilder:validation:Optional

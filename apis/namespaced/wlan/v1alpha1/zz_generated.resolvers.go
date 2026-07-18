@@ -9,6 +9,8 @@ package v1alpha1
 import (
 	"context"
 	reference "github.com/crossplane/crossplane-runtime/v2/pkg/reference"
+	v1alpha1 "github.com/devantler-tech/provider-upjet-unifi/apis/namespaced/network/v1alpha1"
+	v1alpha11 "github.com/devantler-tech/provider-upjet-unifi/apis/namespaced/radius/v1alpha1"
 	errors "github.com/pkg/errors"
 	client "sigs.k8s.io/controller-runtime/pkg/client"
 )
@@ -17,6 +19,7 @@ import (
 func (mg *Wlan) ResolveReferences(ctx context.Context, c client.Reader) error {
 	r := reference.NewAPINamespacedResolver(c, mg)
 
+	var rsp reference.NamespacedResolutionResponse
 	var mrsp reference.MultiNamespacedResolutionResponse
 	var err error
 
@@ -37,6 +40,40 @@ func (mg *Wlan) ResolveReferences(ctx context.Context, c client.Reader) error {
 	mg.Spec.ForProvider.ApGroupIds = reference.ToPtrValues(mrsp.ResolvedValues)
 	mg.Spec.ForProvider.ApGroupIdsRefs = mrsp.ResolvedReferences
 
+	rsp, err = r.Resolve(ctx, reference.NamespacedResolutionRequest{
+		CurrentValue: reference.FromPtrValue(mg.Spec.ForProvider.NetworkID),
+		Extract:      reference.ExternalName(),
+		Namespace:    mg.GetNamespace(),
+		Reference:    mg.Spec.ForProvider.NetworkIDRef,
+		Selector:     mg.Spec.ForProvider.NetworkIDSelector,
+		To: reference.To{
+			List:    &v1alpha1.NetworkList{},
+			Managed: &v1alpha1.Network{},
+		},
+	})
+	if err != nil {
+		return errors.Wrap(err, "mg.Spec.ForProvider.NetworkID")
+	}
+	mg.Spec.ForProvider.NetworkID = reference.ToPtrValue(rsp.ResolvedValue)
+	mg.Spec.ForProvider.NetworkIDRef = rsp.ResolvedReference
+
+	rsp, err = r.Resolve(ctx, reference.NamespacedResolutionRequest{
+		CurrentValue: reference.FromPtrValue(mg.Spec.ForProvider.RadiusProfileID),
+		Extract:      reference.ExternalName(),
+		Namespace:    mg.GetNamespace(),
+		Reference:    mg.Spec.ForProvider.RadiusProfileIDRef,
+		Selector:     mg.Spec.ForProvider.RadiusProfileIDSelector,
+		To: reference.To{
+			List:    &v1alpha11.ProfileList{},
+			Managed: &v1alpha11.Profile{},
+		},
+	})
+	if err != nil {
+		return errors.Wrap(err, "mg.Spec.ForProvider.RadiusProfileID")
+	}
+	mg.Spec.ForProvider.RadiusProfileID = reference.ToPtrValue(rsp.ResolvedValue)
+	mg.Spec.ForProvider.RadiusProfileIDRef = rsp.ResolvedReference
+
 	mrsp, err = r.ResolveMultiple(ctx, reference.MultiNamespacedResolutionRequest{
 		CurrentValues: reference.FromPtrValues(mg.Spec.InitProvider.ApGroupIds),
 		Extract:       reference.ExternalName(),
@@ -53,6 +90,40 @@ func (mg *Wlan) ResolveReferences(ctx context.Context, c client.Reader) error {
 	}
 	mg.Spec.InitProvider.ApGroupIds = reference.ToPtrValues(mrsp.ResolvedValues)
 	mg.Spec.InitProvider.ApGroupIdsRefs = mrsp.ResolvedReferences
+
+	rsp, err = r.Resolve(ctx, reference.NamespacedResolutionRequest{
+		CurrentValue: reference.FromPtrValue(mg.Spec.InitProvider.NetworkID),
+		Extract:      reference.ExternalName(),
+		Namespace:    mg.GetNamespace(),
+		Reference:    mg.Spec.InitProvider.NetworkIDRef,
+		Selector:     mg.Spec.InitProvider.NetworkIDSelector,
+		To: reference.To{
+			List:    &v1alpha1.NetworkList{},
+			Managed: &v1alpha1.Network{},
+		},
+	})
+	if err != nil {
+		return errors.Wrap(err, "mg.Spec.InitProvider.NetworkID")
+	}
+	mg.Spec.InitProvider.NetworkID = reference.ToPtrValue(rsp.ResolvedValue)
+	mg.Spec.InitProvider.NetworkIDRef = rsp.ResolvedReference
+
+	rsp, err = r.Resolve(ctx, reference.NamespacedResolutionRequest{
+		CurrentValue: reference.FromPtrValue(mg.Spec.InitProvider.RadiusProfileID),
+		Extract:      reference.ExternalName(),
+		Namespace:    mg.GetNamespace(),
+		Reference:    mg.Spec.InitProvider.RadiusProfileIDRef,
+		Selector:     mg.Spec.InitProvider.RadiusProfileIDSelector,
+		To: reference.To{
+			List:    &v1alpha11.ProfileList{},
+			Managed: &v1alpha11.Profile{},
+		},
+	})
+	if err != nil {
+		return errors.Wrap(err, "mg.Spec.InitProvider.RadiusProfileID")
+	}
+	mg.Spec.InitProvider.RadiusProfileID = reference.ToPtrValue(rsp.ResolvedValue)
+	mg.Spec.InitProvider.RadiusProfileIDRef = rsp.ResolvedReference
 
 	return nil
 }
