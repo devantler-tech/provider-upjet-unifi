@@ -1,0 +1,25 @@
+apiVersion: radius.unifi.crossplane.io/v1alpha1
+kind: Profile
+metadata:
+  name: example-radius
+spec:
+  forProvider:
+    name: example-radius
+    # Shared secrets are read from Kubernetes Secrets, never inlined.
+    authServer:
+      - ip: 10.0.42.5
+        port: 1812
+        secretSecretRef:
+          name: example-radius-shared-secret
+          namespace: crossplane-system
+          key: auth-secret
+    accountingEnabled: true
+    acctServer:
+      - ip: 10.0.42.5
+        port: 1813
+        secretSecretRef:
+          name: example-radius-shared-secret
+          namespace: crossplane-system
+          key: acct-secret
+  providerConfigRef:
+    name: default

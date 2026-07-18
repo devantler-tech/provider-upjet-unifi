@@ -1,0 +1,31 @@
+apiVersion: vpn.unifi.m.crossplane.io/v1alpha1
+kind: Server
+metadata:
+  name: example-l2tp-vpn
+  namespace: default
+spec:
+  forProvider:
+    name: example-l2tp-vpn
+    enabled: true
+    # Use the gateway form: the network address (10.100.0.0/24) is rejected by
+    # the controller with `api.err.IncorrectIPSubnetSpec`.
+    subnet: 10.100.0.1/24
+    wan:
+      interface: wan
+      ip: any
+    l2tp:
+      # IPsec pre-shared key, read from a Secret in this namespace.
+      preSharedKeySecretRef:
+        name: example-l2tp-pre-shared-key
+        key: pre-shared-key
+    # Resolved from the Profile managed resource rather than a raw controller
+    # id, so the profile and the server can be applied together.
+    radiusprofileIdRef:
+      name: example-radius
+    dns:
+      enabled: true
+      servers:
+        - 10.0.42.1
+  providerConfigRef:
+    kind: ClusterProviderConfig
+    name: default

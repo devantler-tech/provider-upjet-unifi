@@ -40,6 +40,24 @@ spec:
       key: credentials
 ```
 
+## Examples
+
+Each example comes in a cluster-scoped and a namespaced flavour under
+[`examples/`](examples/):
+
+| Resource | Cluster | Namespaced |
+|---|---|---|
+| `Network` | [network](examples/cluster/network/network.yaml) | [network](examples/namespaced/network/network.yaml) |
+| `Wlan` | [wlan](examples/cluster/wlan/wlan.yaml) | [wlan](examples/namespaced/wlan/wlan.yaml) |
+| `firewall.Rule` | [rule](examples/cluster/firewall/rule.yaml) | — |
+| `radius.Profile` | [profile](examples/cluster/radius/profile.yaml) | [profile](examples/namespaced/radius/profile.yaml) |
+| `radius.User` | [user](examples/cluster/radius/user.yaml) | [user](examples/namespaced/radius/user.yaml) |
+| `vpn.Server` | [server](examples/cluster/vpn/server.yaml) | [server](examples/namespaced/vpn/server.yaml) |
+
+The RADIUS and VPN examples are meant to be applied together: the VPN server points at the RADIUS
+profile through `radiusprofileIdRef`, and the RADIUS user at its network through `networkIdRef`, so
+neither needs a controller-assigned id pasted in after the fact.
+
 ## Develop
 
 ```console

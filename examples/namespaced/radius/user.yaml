@@ -1,0 +1,24 @@
+apiVersion: radius.unifi.m.crossplane.io/v1alpha1
+kind: User
+metadata:
+  name: example-vpn-user
+  namespace: default
+spec:
+  forProvider:
+    name: example-vpn-user
+    # Account password is read from a Secret in this namespace, never inlined.
+    passwordSecretRef:
+      name: example-vpn-user-password
+      key: password
+    # Resolved from the Network managed resource, so no controller-assigned id
+    # has to be copied in by hand after the network reconciles.
+    networkIdRef:
+      name: example-lan
+    # `vlan` is deliberately omitted: with networkIdRef set, the account
+    # inherits that network's VLAN.
+    tunnelType: 13
+    tunnelMediumType: 6
+    tunnelConfigType: vpn
+  providerConfigRef:
+    kind: ClusterProviderConfig
+    name: default
