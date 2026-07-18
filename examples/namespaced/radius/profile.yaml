@@ -1,0 +1,25 @@
+apiVersion: radius.unifi.m.crossplane.io/v1alpha1
+kind: Profile
+metadata:
+  name: example-radius
+  namespace: default
+spec:
+  forProvider:
+    name: example-radius
+    # Shared secrets are read from Secrets in this namespace, never inlined.
+    authServer:
+      - ip: 10.0.42.5
+        port: 1812
+        secretSecretRef:
+          name: example-radius-shared-secret
+          key: auth-secret
+    accountingEnabled: true
+    acctServer:
+      - ip: 10.0.42.5
+        port: 1813
+        secretSecretRef:
+          name: example-radius-shared-secret
+          key: acct-secret
+  providerConfigRef:
+    kind: ClusterProviderConfig
+    name: default
