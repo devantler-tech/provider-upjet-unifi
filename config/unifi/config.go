@@ -128,7 +128,7 @@ var references = map[string]ujconfig.References{
 	// A WLAN broadcasts on the access points selected by ap_group_ids (UniFi ids
 	// only known after the ApGroup reconciles — unifi_ap_group is new in the
 	// wrapped provider v0.55.0), sits on a network (VLAN) via network_id, and —
-	// when security is wpaeap — authenticates against a RADIUS profile via
+	// under enterprise security — authenticates against a RADIUS profile via
 	// radius_profile_id. All three are post-reconcile UniFi ids, so referencing
 	// ApGroup/Network/RadiusProfile by name lets a consumer wire a Wlan through
 	// the generated *Ref/*Selector companions, mirroring the firewall wiring
