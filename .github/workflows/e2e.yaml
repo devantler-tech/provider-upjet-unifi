@@ -87,7 +87,7 @@ jobs:
           # Anchored to the start of a line, the usual slash-command convention. Unanchored, any
           # comment that merely *quotes* the command — a review note, a table of evidence, a docs
           # snippet — was extracted as an instruction, so writing *about* the command ran it.
-          COMMAND=$(printf '%s\n' "$COMMENT" | grep -oE '^/test-examples="[^"]+"' | head -n1)
+          COMMAND=$(printf '%s\n' "$COMMENT" | grep -oE '^/test-examples="[^"]+"' | head -n1 || true)
           # A comment can satisfy the job gate (`/test-examples="`) and still carry no well-formed
           # command — `/test-examples=""` and an unterminated quote both do. Treat that as nothing to
           # test, not as a failure: exiting non-zero here turns comment prose into red CI that the
