@@ -85,7 +85,16 @@ jobs:
         id: get-example-list-name
         run: |
           COMMAND=$(printf '%s\n' "$COMMENT" | grep -oE '/test-examples="[^"]+"' | head -n1)
-          [ -n "$COMMAND" ] || { echo 'No /test-examples command found'; exit 1; }
+          # A comment can satisfy the job gate (`/test-examples="`) and still carry no well-formed
+          # command — `/test-examples=""` and an unterminated quote both do. Treat that as nothing to
+          # test, not as a failure: exiting non-zero here turns comment prose into red CI that the
+          # runs report against `main`. Empty outputs make `uptest` skip.
+          if [ -z "$COMMAND" ]; then
+            echo 'No well-formed /test-examples="<paths>" command in this comment — nothing to test.'
+            echo "example-list=" >> "$GITHUB_OUTPUT"
+            echo "example-hash=" >> "$GITHUB_OUTPUT"
+            exit 0
+          fi
           PATHS=$(printf '%s\n' "$COMMAND" | cut -d '"' -f 2 | tr ',' ' ')
           EXAMPLE_LIST=""
           for P in $PATHS; do EXAMPLE_LIST="${EXAMPLE_LIST},$(find "$P" -name '*.yaml' | tr '\n' ',')"; done
@@ -101,6 +110,8 @@ jobs:
           echo "example-hash=${EXAMPLE_HASH}" >> "$GITHUB_OUTPUT"
 
       - name: Create Pending Status Check
+        # Nothing was selected, so there is no uptest run for a status to describe.
+        if: ${{ steps.get-example-list-name.outputs.example-list != '' }}
         env:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
@@ -117,7 +128,9 @@ jobs:
     needs:
       - check-permissions
       - get-example-list
-    if: ${{ (needs.check-permissions.outputs.permission == 'admin' || needs.check-permissions.outputs.permission == 'write') && github.event.issue.pull_request != null && contains(github.event.comment.body, '/test-examples="')}}
+    # The last clause is what keeps an empty command (`/test-examples=""`) a no-op: the gate above
+    # matches the substring, so only the resolved example list proves something was actually selected.
+    if: ${{ (needs.check-permissions.outputs.permission == 'admin' || needs.check-permissions.outputs.permission == 'write') && github.event.issue.pull_request != null && contains(github.event.comment.body, '/test-examples="') && needs.get-example-list.outputs.example_list != ''}}
     runs-on: ubuntu-latest
     # Checks out the PR (contents:read) and posts pending/success/failure
     # commit statuses (statuses:write).
