@@ -1,29 +1,47 @@
 #!/bin/sh
-# Hermetic check that go.mod's language floor is not the advisory-laden
-# 1.25.12 pin. CI's setup-go + go test remain the compile proof.
+# Keep every Go toolchain entry point on the same advisory-free release. This
+# catches the configuration split that otherwise fails only after CI starts.
 set -eu
-root=$(CDPATH= cd -- "$(dirname -- "$0")/.." && pwd)
-mod="$root/go.mod"
-[ -f "$mod" ] || {
-	echo "go-floor.test: missing $mod" >&2
+
+root=$(CDPATH='' cd -- "$(dirname -- "$0")/.." && pwd)
+minimum=1.26.6
+
+fail() {
+	echo "go-floor.test: $*" >&2
 	exit 1
 }
-line=$(awk '/^go / { print; exit }' "$mod")
-[ -n "$line" ] || {
-	echo "go-floor.test: no go directive in $mod" >&2
-	exit 1
+
+read_yaml_value() {
+	awk -v key="$2" '$1 == key ":" { gsub(/["'\'' ]/, "", $2); print $2; exit }' "$1"
 }
-case "$line" in
-'go 1.25.12')
-	echo "go-floor.test: floor still 1.25.12 (OSV GO-2026-5026 family)" >&2
-	exit 1
-	;;
-'go 1.25.15')
-	echo "go-floor.test: floor is 1.25.15"
+
+module_version=$(awk '$1 == "go" { print $2; exit }' "$root/go.mod")
+[ -n "$module_version" ] || fail "go.mod has no go directive"
+
+if ! awk -v actual="$module_version" -v minimum="$minimum" 'BEGIN {
+	split(actual, a, ".")
+	split(minimum, m, ".")
+	for (i = 1; i <= 3; i++) {
+		if (a[i] + 0 > m[i] + 0) exit 0
+		if (a[i] + 0 < m[i] + 0) exit 1
+	}
 	exit 0
-	;;
-*)
-	echo "go-floor.test: unexpected go directive: $line" >&2
-	exit 1
-	;;
-esac
+}'; then
+	fail "go.mod requires $module_version; minimum safe release is $minimum"
+fi
+
+ci_version=$(read_yaml_value "$root/.github/workflows/ci.yml" GO_VERSION)
+e2e_version=$(read_yaml_value "$root/.github/workflows/e2e.yaml" GO_VERSION)
+publish_version=$(awk '
+	$1 == "go-version:" { found = 1; next }
+	found && $1 == "default:" { gsub(/["'\'' ]/, "", $2); print $2; exit }
+' "$root/.github/workflows/publish-provider-package.yml")
+
+[ "$ci_version" = "$module_version" ] ||
+	fail "ci.yml installs $ci_version, but go.mod requires $module_version"
+[ "$e2e_version" = "$module_version" ] ||
+	fail "e2e.yaml installs $e2e_version, but go.mod requires $module_version"
+[ "$publish_version" = "$module_version" ] ||
+	fail "publish-provider-package.yml defaults to $publish_version, but go.mod requires $module_version"
+
+echo "go-floor.test: all Go entry points use advisory-free $module_version"

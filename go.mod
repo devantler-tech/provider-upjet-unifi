@@ -1,6 +1,6 @@
 module github.com/devantler-tech/provider-upjet-unifi
 
-go 1.25.15
+go 1.26.6
 
 tool golang.org/x/tools/cmd/goimports
 
