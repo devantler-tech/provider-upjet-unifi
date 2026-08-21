@@ -8,10 +8,6 @@ name: Publish Provider Package
         description: "Version string to use while publishing the package (e.g. v1.0.0-alpha.1)"
         default: ""
         required: false
-      go-version:
-        description: "Go version to use if building needs to be done"
-        default: "1.26.6"
-        required: false
 
 # Deny by default; grant only what the called workflow needs.
 permissions: {}
@@ -34,7 +30,9 @@ jobs:
       # publish 403s with "permission_denied"), so it must be set explicitly.
       registry_org: devantler-tech
       version: ${{ github.event.inputs.version }}
-      go-version: ${{ github.event.inputs.go-version }}
+      # The security floor is deliberately not a dispatch input: a caller must
+      # not be able to publish with an older, advisory-affected toolchain.
+      go-version: "1.26.6"
       cleanup-disk: true
     secrets:
       GHCR_PAT: ${{ secrets.GITHUB_TOKEN }}

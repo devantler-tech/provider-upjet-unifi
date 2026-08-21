@@ -32,16 +32,14 @@ fi
 
 ci_version=$(read_yaml_value "$root/.github/workflows/ci.yml" GO_VERSION)
 e2e_version=$(read_yaml_value "$root/.github/workflows/e2e.yaml" GO_VERSION)
-publish_version=$(awk '
-	$1 == "go-version:" { found = 1; next }
-	found && $1 == "default:" { print $2; exit }
-' "$root/.github/workflows/publish-provider-package.yml" | tr -d '"'\'' ')
+publish_version=$(read_yaml_value \
+	"$root/.github/workflows/publish-provider-package.yml" go-version)
 
 [ "$ci_version" = "$module_version" ] ||
 	fail "ci.yml installs $ci_version, but go.mod requires $module_version"
 [ "$e2e_version" = "$module_version" ] ||
 	fail "e2e.yaml installs $e2e_version, but go.mod requires $module_version"
 [ "$publish_version" = "$module_version" ] ||
-	fail "publish-provider-package.yml defaults to $publish_version, but go.mod requires $module_version"
+	fail "publish-provider-package.yml selects $publish_version, but go.mod requires $module_version"
 
 echo "go-floor.test: all Go entry points use advisory-free $module_version"
