@@ -12,7 +12,7 @@ fail() {
 }
 
 read_yaml_value() {
-	awk -v key="$2" '$1 == key ":" { gsub(/["'\'' ]/, "", $2); print $2; exit }' "$1"
+	awk -v key="$2" '$1 == key ":" { print $2; exit }' "$1" | tr -d '"'\'' '
 }
 
 module_version=$(awk '$1 == "go" { print $2; exit }' "$root/go.mod")
@@ -34,8 +34,8 @@ ci_version=$(read_yaml_value "$root/.github/workflows/ci.yml" GO_VERSION)
 e2e_version=$(read_yaml_value "$root/.github/workflows/e2e.yaml" GO_VERSION)
 publish_version=$(awk '
 	$1 == "go-version:" { found = 1; next }
-	found && $1 == "default:" { gsub(/["'\'' ]/, "", $2); print $2; exit }
-' "$root/.github/workflows/publish-provider-package.yml")
+	found && $1 == "default:" { print $2; exit }
+' "$root/.github/workflows/publish-provider-package.yml" | tr -d '"'\'' ')
 
 [ "$ci_version" = "$module_version" ] ||
 	fail "ci.yml installs $ci_version, but go.mod requires $module_version"
