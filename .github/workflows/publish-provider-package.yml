@@ -2,17 +2,33 @@
 name: Publish Provider Package
 
 "on":
-  workflow_dispatch:
-    inputs:
-      version:
-        description: "Version string to use while publishing the package (e.g. v1.0.0-alpha.1)"
-        default: ""
-        required: false
+  push:
+    tags:
+      - "v*"
+  workflow_dispatch: {}
 
 # Deny by default; grant only what the called workflow needs.
 permissions: {}
 
 jobs:
+  resolve-version:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+    outputs:
+      version: ${{ steps.release-version.outputs.version }}
+    steps:
+      - name: Check out the release ref
+        uses: actions/checkout@de0fac2e4500dabe0009f9d3d218dd2f0d17aa8f # v6.0.2
+        with:
+          persist-credentials: false
+      - name: Resolve and validate the release version
+        id: release-version
+        env:
+          REF_TYPE: ${{ github.ref_type }}
+          REF_NAME: ${{ github.ref_name }}
+        run: ./scripts/release-version.sh "$REF_TYPE" "$REF_NAME" >> "$GITHUB_OUTPUT"
+
   publish-provider-package:
     # The reusable workflow pushes the xpkg to GHCR (docker login + crane copy)
     # using GHCR_PAT (the job's GITHUB_TOKEN), so it needs packages:write to
@@ -22,6 +38,7 @@ jobs:
     permissions:
       contents: read
       packages: write
+    needs: resolve-version
     uses: crossplane-contrib/provider-workflows/.github/workflows/publish-provider.yml@451c4dc6ad3691b0a702a997a0ac24e8bbc8bbaa # main
     with:
       repository: provider-upjet-unifi
@@ -29,7 +46,7 @@ jobs:
       # registry_org to "crossplane-contrib" (which we cannot push to → the
       # publish 403s with "permission_denied"), so it must be set explicitly.
       registry_org: devantler-tech
-      version: ${{ github.event.inputs.version }}
+      version: ${{ needs.resolve-version.outputs.version }}
       # The security floor is deliberately not a dispatch input: a caller must
       # not be able to publish with an older, advisory-affected toolchain.
       go-version: "1.26.6"
@@ -47,16 +64,12 @@ jobs:
     # shipped unsigned and its pods were rejected at admission on prod
     # (2026-07-02), leaving the provider Deployment at 0/1. The upstream
     # reusable publish workflow does not sign, so the signature is attached
-    # here right after it pushes. The Fulcio certificate identity this
-    # produces is
-    #   https://github.com/devantler-tech/provider-upjet-unifi/.github/workflows/publish-provider-package.yml@<ref>
+    # here right after it pushes. The Fulcio certificate identity this produces is
+    #   https://github.com/devantler-tech/provider-upjet-unifi/.github/workflows/publish-provider-package.yml@refs/tags/<version>
     # which the platform policy accepts alongside its publish-app identity.
-    #
-    # Skipped when no explicit version is passed (the reusable workflow then
-    # derives one this job cannot know) — always dispatch releases WITH the
-    # version input so the package is signed and admissible.
-    needs: publish-provider-package
-    if: ${{ github.event.inputs.version != '' }}
+    needs:
+      - resolve-version
+      - publish-provider-package
     runs-on: ubuntu-latest
     permissions:
       id-token: write # Fulcio keyless certificate (OIDC)
@@ -72,9 +85,9 @@ jobs:
           password: ${{ secrets.GITHUB_TOKEN }}
       - name: Sign the package image (keyless)
         # --yes resolves the tag to its digest and signs the digest, so the
-        # signature stays valid even if the tag is later moved. The version
-        # input reaches the shell via env (never inline ${{ }} in run:) so a
-        # crafted input cannot inject shell syntax (zizmor template-injection).
+        # signature stays valid even if the tag is later moved. The validated
+        # tag reaches the shell via env (never inline ${{ }} in run:) so ref
+        # contents cannot inject shell syntax (zizmor template-injection).
         env:
-          VERSION: ${{ github.event.inputs.version }}
+          VERSION: ${{ needs.resolve-version.outputs.version }}
         run: cosign sign --yes "ghcr.io/devantler-tech/provider-upjet-unifi:${VERSION}"
