@@ -256,7 +256,7 @@ schema-version-diff:
 # Hook the version_diff regression suite into `make test` (the CI unit-test
 # job) — makelib's test.run accumulates prerequisites, so this runs alongside
 # go.test.unit.
-test.run: version-diff.test go-floor.test
+test.run: version-diff.test go-floor.test release-version.test publish-workflow.test
 
 version-diff.test:
 	@$(INFO) running version_diff regression tests
@@ -268,7 +268,17 @@ go-floor.test:
 	@./scripts/go-floor.test.sh || $(FAIL)
 	@$(OK) checking the advisory-free Go toolchain floor
 
-.PHONY: cobertura submodules fallthrough run crds.clean version-diff.test go-floor.test
+release-version.test:
+	@$(INFO) checking release ref validation
+	@./scripts/release-version_test.sh || $(FAIL)
+	@$(OK) checking release ref validation
+
+publish-workflow.test:
+	@$(INFO) checking release workflow wiring
+	@./scripts/publish-workflow_test.sh || $(FAIL)
+	@$(OK) checking release workflow wiring
+
+.PHONY: cobertura submodules fallthrough run crds.clean version-diff.test go-floor.test release-version.test publish-workflow.test
 
 # ====================================================================================
 # Special Targets
