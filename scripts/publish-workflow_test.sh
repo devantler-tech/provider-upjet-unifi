@@ -7,7 +7,7 @@ reference_workflow="$root/.github/workflows/ci.yml"
 
 # GitHub expressions are intentionally literal inside the Ruby program.
 # shellcheck disable=SC2016
-ruby -ryaml -e '
+ruby -r yaml -e '
   workflow = YAML.safe_load(File.read(ARGV.fetch(0)))
   triggers = workflow.fetch("on")
   jobs = workflow.fetch("jobs")
