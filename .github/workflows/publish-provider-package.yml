@@ -12,6 +12,7 @@ permissions: {}
 
 jobs:
   resolve-version:
+    if: ${{ github.ref_type == 'tag' }}
     runs-on: ubuntu-latest
     permissions:
       contents: read

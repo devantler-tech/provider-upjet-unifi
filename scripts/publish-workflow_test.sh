@@ -16,6 +16,8 @@ ruby -r yaml -e '
   raise "manual dispatch must not accept a free-text version" unless triggers.fetch("workflow_dispatch") == {}
 
   resolve = jobs.fetch("resolve-version")
+  expected_tag_guard = "${{ github.ref_type == " + 39.chr + "tag" + 39.chr + " }}"
+  raise "resolver must reject non-tag refs before checkout" unless resolve.fetch("if") == expected_tag_guard
   raise "resolver must publish a version output" unless resolve.dig("outputs", "version") == "${{ steps.release-version.outputs.version }}"
 
   checkout = resolve.fetch("steps").find { |step| step.fetch("uses", "").start_with?("actions/checkout@") }
