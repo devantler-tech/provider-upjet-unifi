@@ -65,31 +65,31 @@ ruby -r yaml -e '
 
 # A tag ref is what a release runs from, so the guard must let it through.
 if ! REF_TYPE=tag REF_NAME=v1.2.3 sh "$guard_script" >/dev/null 2>&1; then
-  echo "publish-workflow.test: the guard rejected a tag ref, so no release can publish" >&2
-  exit 1
+	echo "publish-workflow.test: the guard rejected a tag ref, so no release can publish" >&2
+	exit 1
 fi
 
 # A branch ref is the ref the Actions dispatch UI offers by default, and it must
 # fail loudly rather than skip.
 if guard_output=$(REF_TYPE=branch REF_NAME=main sh "$guard_script" 2>&1); then
-  echo "publish-workflow.test: the guard admitted a non-tag ref instead of failing" >&2
-  exit 1
+	echo "publish-workflow.test: the guard admitted a non-tag ref instead of failing" >&2
+	exit 1
 fi
 
 # A rejection an operator cannot act on sends them back to the workflow source.
 case "$guard_output" in
-  *"v* tag"*) ;;
-  *)
-    echo "publish-workflow.test: the rejection omits the v* rerun/push guidance" >&2
-    exit 1
-    ;;
+*"v* tag"*) ;;
+*)
+	echo "publish-workflow.test: the rejection omits the v* rerun/push guidance" >&2
+	exit 1
+	;;
 esac
 case "$guard_output" in
-  *main*) ;;
-  *)
-    echo "publish-workflow.test: the rejection does not name the ref it refused" >&2
-    exit 1
-    ;;
+*main*) ;;
+*)
+	echo "publish-workflow.test: the rejection does not name the ref it refused" >&2
+	exit 1
+	;;
 esac
 
 echo "publish-workflow.test: tag-derived version gates publish and sign"
