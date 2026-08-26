@@ -12,13 +12,31 @@ permissions: {}
 
 jobs:
   resolve-version:
-    if: ${{ github.ref_type == 'tag' }}
     runs-on: ubuntu-latest
     permissions:
       contents: read
     outputs:
       version: ${{ steps.release-version.outputs.version }}
     steps:
+      - name: Reject a non-tag ref before checking anything out
+        id: reject-non-tag-ref
+        # A skipped job reports SUCCESS, so this rejection fails rather than
+        # sitting in an `if:` guard on the job: a dispatch against a branch —
+        # the ref the Actions UI offers by default — would otherwise look like
+        # a publish that produced nothing. It runs first so the rejection still
+        # happens before anything is checked out. The ref reaches the shell via
+        # env, never inline ${{ }}, so ref contents cannot inject shell syntax
+        # (zizmor template-injection).
+        env:
+          REF_TYPE: ${{ github.ref_type }}
+          REF_NAME: ${{ github.ref_name }}
+        run: |
+          if [ "$REF_TYPE" = "tag" ]; then
+            echo "Releasing from tag $REF_NAME"
+            exit 0
+          fi
+          echo "::error::This workflow publishes and signs a release, so it must run from a tag. Got $REF_TYPE '$REF_NAME'. Re-run it selecting a v* tag as the ref, or push a v* tag."
+          exit 1
       - name: Check out the release ref
         uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6.0.2
         with:

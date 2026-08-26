@@ -16,12 +16,20 @@ ruby -r yaml -e '
   raise "manual dispatch must not accept a free-text version" unless triggers.fetch("workflow_dispatch") == {}
 
   resolve = jobs.fetch("resolve-version")
-  expected_tag_guard = "${{ github.ref_type == " + 39.chr + "tag" + 39.chr + " }}"
-  raise "resolver must reject non-tag refs before checkout" unless resolve.fetch("if") == expected_tag_guard
+  raise "resolver must not skip a non-tag ref - a skipped job reports success" if resolve.key?("if")
   raise "resolver must publish a version output" unless resolve.dig("outputs", "version") == "${{ steps.release-version.outputs.version }}"
 
-  checkout = resolve.fetch("steps").find { |step| step.fetch("uses", "").start_with?("actions/checkout@") }
-  raise "resolver checkout is missing" unless checkout
+  steps = resolve.fetch("steps")
+  guard_index = steps.index { |step| step["id"] == "reject-non-tag-ref" }
+  raise "resolver must explicitly reject a non-tag ref" unless guard_index
+  guard = steps.fetch(guard_index)
+  raise "rejection must receive github.ref_type" unless guard.dig("env", "REF_TYPE") == "${{ github.ref_type }}"
+  raise "rejection must exit non-zero on a non-tag ref" unless guard.fetch("run").include?("exit 1")
+
+  checkout_index = steps.index { |step| step.fetch("uses", "").start_with?("actions/checkout@") }
+  raise "resolver checkout is missing" unless checkout_index
+  raise "non-tag rejection must run before checkout" unless guard_index < checkout_index
+  checkout = steps.fetch(checkout_index)
   known_checkout_pins = File.read(ARGV.fetch(1)).scan(%r{actions/checkout@[0-9a-f]{40}}).uniq
   raise "resolver checkout pin must match a repository-validated pin" unless known_checkout_pins.include?(checkout.fetch("uses"))
 
