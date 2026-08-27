@@ -1,0 +1,37 @@
+---
+name: Release
+# Cuts the immutable tag that publish-provider-package.yml signs against.
+#
+# That workflow triggers on `push: tags: ['v*']` and rejects any non-tag ref, so
+# without a tag it never runs and the published package keeps the weaker
+# `refs/heads/main` signing identity. Nothing in this repository created tags,
+# so the trigger had no producer.
+#
+# semantic-release cuts vX.Y.Z only when the merged commits warrant one
+# (fix: -> patch, feat: -> minor, BREAKING CHANGE/! -> major) and no-ops on
+# chore:/docs:/ci:. It pushes the tag with a GitHub App token rather than
+# GITHUB_TOKEN, which is what allows the tag push to trigger the publish
+# workflow at all.
+on:
+  workflow_dispatch:
+  push:
+    branches:
+      - main
+
+concurrency:
+  group: "Release"
+  cancel-in-progress: false
+
+permissions: {}
+
+jobs:
+  release:
+    name: 🎉 Create Release
+    uses: devantler-tech/actions/.github/workflows/create-release.yaml@0de1d284f879d62d6fe316d3997fd3ea8f092fb3 # v13.2.1
+    with:
+      disable-issue-side-effects: true
+    permissions:
+      contents: write # create releases and tags
+      id-token: write # provenance signing
+    secrets:
+      APP_PRIVATE_KEY: ${{ secrets.APP_PRIVATE_KEY }}
