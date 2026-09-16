@@ -105,6 +105,27 @@ jobs:
         with:
           version: ${{ env.GOLANGCI_VERSION }}
 
+  # Renovate ignores a repository whose config has errors, and reports that
+  # nowhere visible here, so an invalid key silently stops every dependency
+  # update. Validate against Renovate's own schema to catch that on the PR.
+  validate-renovate-config:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 10
+    steps:
+      - name: Checkout
+        uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6.0.2
+        with:
+          persist-credentials: false
+
+      - name: Setup Node
+        uses: actions/setup-node@820762786026740c76f36085b0efc47a31fe5020 # v7.0.0
+        with:
+          node-version: "24"
+          package-manager-cache: false
+
+      - name: Validate Renovate config
+        run: npx --yes --package renovate@44.93.8 -- renovate-config-validator --strict
+
   check-diff:
     runs-on: ubuntu-24.04
     needs: detect-noop
@@ -346,6 +367,7 @@ jobs:
         detect-noop,
         report-breaking-changes,
         lint,
+        validate-renovate-config,
         check-diff,
         unit-tests,
         local-deploy,
@@ -360,6 +382,7 @@ jobs:
             ${{ needs.detect-noop.result }}
             ${{ needs.report-breaking-changes.result }}
             ${{ needs.lint.result }}
+            ${{ needs.validate-renovate-config.result }}
             ${{ needs.check-diff.result }}
             ${{ needs.unit-tests.result }}
             ${{ needs.local-deploy.result }}
