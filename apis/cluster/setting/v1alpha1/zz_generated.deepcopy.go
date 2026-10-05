@@ -804,6 +804,16 @@ func (in *HoneypotInitParameters) DeepCopyInto(out *HoneypotInitParameters) {
 		*out = new(string)
 		**out = **in
 	}
+	if in.NetworkIDRef != nil {
+		in, out := &in.NetworkIDRef, &out.NetworkIDRef
+		*out = new(v1.Reference)
+		(*in).DeepCopyInto(*out)
+	}
+	if in.NetworkIDSelector != nil {
+		in, out := &in.NetworkIDSelector, &out.NetworkIDSelector
+		*out = new(v1.Selector)
+		(*in).DeepCopyInto(*out)
+	}
 	if in.Version != nil {
 		in, out := &in.Version, &out.Version
 		*out = new(string)
@@ -864,6 +874,16 @@ func (in *HoneypotParameters) DeepCopyInto(out *HoneypotParameters) {
 		*out = new(string)
 		**out = **in
 	}
+	if in.NetworkIDRef != nil {
+		in, out := &in.NetworkIDRef, &out.NetworkIDRef
+		*out = new(v1.Reference)
+		(*in).DeepCopyInto(*out)
+	}
+	if in.NetworkIDSelector != nil {
+		in, out := &in.NetworkIDSelector, &out.NetworkIDSelector
+		*out = new(v1.Selector)
+		(*in).DeepCopyInto(*out)
+	}
 	if in.Version != nil {
 		in, out := &in.Version, &out.Version
 		*out = new(string)
@@ -899,6 +919,18 @@ func (in *IgmpSnoopingInitParameters) DeepCopyInto(out *IgmpSnoopingInitParamete
 				**out = **in
 			}
 		}
+	}
+	if in.NetworkIdsRefs != nil {
+		in, out := &in.NetworkIdsRefs, &out.NetworkIdsRefs
+		*out = make([]v1.Reference, len(*in))
+		for i := range *in {
+			(*in)[i].DeepCopyInto(&(*out)[i])
+		}
+	}
+	if in.NetworkIdsSelector != nil {
+		in, out := &in.NetworkIdsSelector, &out.NetworkIdsSelector
+		*out = new(v1.Selector)
+		(*in).DeepCopyInto(*out)
 	}
 }
 
@@ -961,6 +993,18 @@ func (in *IgmpSnoopingParameters) DeepCopyInto(out *IgmpSnoopingParameters) {
 				**out = **in
 			}
 		}
+	}
+	if in.NetworkIdsRefs != nil {
+		in, out := &in.NetworkIdsRefs, &out.NetworkIdsRefs
+		*out = make([]v1.Reference, len(*in))
+		for i := range *in {
+			(*in)[i].DeepCopyInto(&(*out)[i])
+		}
+	}
+	if in.NetworkIdsSelector != nil {
+		in, out := &in.NetworkIdsSelector, &out.NetworkIdsSelector
+		*out = new(v1.Selector)
+		(*in).DeepCopyInto(*out)
 	}
 }
 

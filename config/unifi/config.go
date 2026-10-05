@@ -35,7 +35,7 @@ var shortGroups = map[string]string{
 
 	// port
 	"unifi_port_forward": "port",
-	"unifi_port_profile": "port",
+	resPortProfile:       "port",
 
 	// radius
 	"unifi_radius_profile": "radius",
@@ -75,15 +75,15 @@ var kindOverrides = map[string]string{
 	"unifi_ap_group": "ApGroup",
 }
 
-// Terraform resource names used as cross-resource reference targets, pulled out
-// as constants because several are referenced from multiple fields (and also
-// appear as shortGroups keys), which the goconst linter flags as repeated
-// string literals.
+// Terraform resource and field names used across reference declarations, pulled
+// out as constants because the goconst linter flags their repeated literals.
 const (
 	resVPNClient     = "unifi_vpn_client"
 	resFirewallGroup = "unifi_firewall_group"
 	resFirewallZone  = "unifi_firewall_zone"
 	resNetwork       = "unifi_network"
+	resPortProfile   = "unifi_port_profile"
+	fieldNetworkID   = "network_id"
 )
 
 // references declares Upjet cross-resource references: for each Terraform
@@ -99,8 +99,49 @@ const (
 // instead of hard-coding a post-create id. A plain unifi_network id can still be
 // supplied directly via the raw networkId field.
 var references = map[string]ujconfig.References{
+	// Accounts and clients belong to a network whose UniFi id may only be
+	// available after the Network reconciles. The generated reference fields let
+	// consumers express that relationship by managed-resource name.
+	"unifi_account": {
+		fieldNetworkID: {
+			TerraformName: resNetwork,
+		},
+	},
+	"unifi_client": {
+		fieldNetworkID: {
+			TerraformName: resNetwork,
+		},
+	},
+
+	// Device management and individual port overrides can point at networks and
+	// a reusable port profile. All raw id fields remain available for externally
+	// managed dependencies.
+	"unifi_device": {
+		"mgmt_network_id": {
+			TerraformName: resNetwork,
+		},
+		"port_override.excluded_networkconf_ids": {
+			TerraformName: resNetwork,
+		},
+		"port_override.multicast_router_networkconf_ids": {
+			TerraformName: resNetwork,
+		},
+		"port_override.native_networkconf_id": {
+			TerraformName: resNetwork,
+		},
+		"port_override.port_profile_id": {
+			TerraformName: resPortProfile,
+		},
+		"port_override.tagged_networkconf_ids": {
+			TerraformName: resNetwork,
+		},
+		"port_override.voice_networkconf_id": {
+			TerraformName: resNetwork,
+		},
+	},
+
 	"unifi_traffic_route": {
-		"network_id": {
+		fieldNetworkID: {
 			TerraformName: resVPNClient,
 		},
 	},
@@ -129,19 +170,22 @@ var references = map[string]ujconfig.References{
 	// only known after the ApGroup reconciles — unifi_ap_group is new in the
 	// wrapped provider v0.55.0), sits on a network (VLAN) via network_id, and —
 	// under enterprise security — authenticates against a RADIUS profile via
-	// radius_profile_id. All three are post-reconcile UniFi ids, so referencing
-	// ApGroup/Network/RadiusProfile by name lets a consumer wire a Wlan through
-	// the generated *Ref/*Selector companions, mirroring the firewall wiring
-	// above; the raw ids stay settable directly.
+	// radius_profile_id. Private pre-shared keys can independently target a
+	// network as well. These are post-reconcile UniFi ids, so referencing the
+	// managed resources by name lets a consumer wire a Wlan through the generated
+	// *Ref/*Selector companions; the raw ids stay settable directly.
 	"unifi_wlan": {
 		"ap_group_ids": {
 			TerraformName: "unifi_ap_group",
 		},
-		"network_id": {
+		fieldNetworkID: {
 			TerraformName: resNetwork,
 		},
 		"radius_profile_id": {
 			TerraformName: "unifi_radius_profile",
+		},
+		"private_preshared_keys.network_id": {
+			TerraformName: resNetwork,
 		},
 	},
 
@@ -149,7 +193,7 @@ var references = map[string]ujconfig.References{
 	// known once that Network reconciles; referencing it mirrors the wlan wiring
 	// above and leaves the raw networkId settable.
 	"unifi_radius_user": {
-		"network_id": {
+		fieldNetworkID: {
 			TerraformName: resNetwork,
 		},
 	},
@@ -166,23 +210,80 @@ var references = map[string]ujconfig.References{
 		},
 	},
 
-	// A firewall policy references networks and a firewall zone on each side of
-	// the match; the network_ids/zone_id fields live inside the single-nested
-	// source and destination blocks, so the references are keyed by their nested
-	// paths. Both are post-reconcile UniFi ids, so referencing Network and
-	// FirewallZone by name mirrors the firewall_rule wiring above.
+	// A firewall policy references firewall groups, networks and a firewall zone
+	// on each side of the match. The fields live inside the single-nested source
+	// and destination blocks, so the references are keyed by their nested paths.
+	// All are post-reconcile UniFi ids, so managed-resource references avoid
+	// copying those ids into the policy.
 	"unifi_firewall_policy": {
+		"source.ip_group_id": {
+			TerraformName: resFirewallGroup,
+		},
+		"source.port_group_id": {
+			TerraformName: resFirewallGroup,
+		},
 		"source.network_ids": {
 			TerraformName: resNetwork,
 		},
 		"source.zone_id": {
 			TerraformName: resFirewallZone,
 		},
+		"destination.ip_group_id": {
+			TerraformName: resFirewallGroup,
+		},
+		"destination.port_group_id": {
+			TerraformName: resFirewallGroup,
+		},
 		"destination.network_ids": {
 			TerraformName: resNetwork,
 		},
 		"destination.zone_id": {
 			TerraformName: resFirewallZone,
+		},
+	},
+
+	// A firewall zone groups managed networks by their reconciled UniFi ids.
+	"unifi_firewall_zone": {
+		"network_ids": {
+			TerraformName: resNetwork,
+		},
+	},
+
+	// Source limiting for a port-forward rule can reuse a managed firewall group.
+	"unifi_port_forward": {
+		"source_limiting.firewall_group_id": {
+			TerraformName: resFirewallGroup,
+		},
+	},
+
+	// A port profile can classify untagged, tagged, voice, multicast-router and
+	// excluded traffic using managed Networks.
+	resPortProfile: {
+		"excluded_networkconf_ids": {
+			TerraformName: resNetwork,
+		},
+		"multicast_router_networkconf_ids": {
+			TerraformName: resNetwork,
+		},
+		"native_networkconf_id": {
+			TerraformName: resNetwork,
+		},
+		"tagged_networkconf_ids": {
+			TerraformName: resNetwork,
+		},
+		"voice_networkconf_id": {
+			TerraformName: resNetwork,
+		},
+	},
+
+	// Controller-wide IGMP snooping and honeypot settings can target managed
+	// Networks without consumers copying reconciled UniFi ids into settings.
+	"unifi_setting": {
+		"igmp_snooping.network_ids": {
+			TerraformName: resNetwork,
+		},
+		"ips.honeypot.network_id": {
+			TerraformName: resNetwork,
 		},
 	},
 }

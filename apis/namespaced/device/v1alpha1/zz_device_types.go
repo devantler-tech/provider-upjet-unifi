@@ -162,7 +162,16 @@ type DeviceInitParameters struct {
 	MeshStaVapEnabled *bool `json:"meshStaVapEnabled,omitempty" tf:"mesh_sta_vap_enabled,omitempty"`
 
 	// Management network ID. The network this device uses for its own management traffic (the UI's Network Override). When set, the device tags its management onto this network's VLAN, so that VLAN must already be tagged on the device's upstream switch port(s) before this attribute is applied. Otherwise the device loses its management path, drops off, and the apply fails with an inconsistent-result error. Apply in two steps: tag the VLAN on the uplink (a port_override tagged_networkconf_ids entry) first, then set mgmt_network_id. Leave unset to manage on the uplink's native (untagged) network.
+	// +crossplane:generate:reference:type=github.com/devantler-tech/provider-upjet-unifi/apis/namespaced/network/v1alpha1.Network
 	MgmtNetworkID *string `json:"mgmtNetworkId,omitempty" tf:"mgmt_network_id,omitempty"`
+
+	// Reference to a Network in network to populate mgmtNetworkId.
+	// +kubebuilder:validation:Optional
+	MgmtNetworkIDRef *v1.NamespacedReference `json:"mgmtNetworkIdRef,omitempty" tf:"-"`
+
+	// Selector for a Network in network to populate mgmtNetworkId.
+	// +kubebuilder:validation:Optional
+	MgmtNetworkIDSelector *v1.NamespacedSelector `json:"mgmtNetworkIdSelector,omitempty" tf:"-"`
 
 	// The name of the device.
 	Name *string `json:"name,omitempty" tf:"name,omitempty"`
@@ -394,8 +403,17 @@ type DeviceParameters struct {
 	MeshStaVapEnabled *bool `json:"meshStaVapEnabled,omitempty" tf:"mesh_sta_vap_enabled,omitempty"`
 
 	// Management network ID. The network this device uses for its own management traffic (the UI's Network Override). When set, the device tags its management onto this network's VLAN, so that VLAN must already be tagged on the device's upstream switch port(s) before this attribute is applied. Otherwise the device loses its management path, drops off, and the apply fails with an inconsistent-result error. Apply in two steps: tag the VLAN on the uplink (a port_override tagged_networkconf_ids entry) first, then set mgmt_network_id. Leave unset to manage on the uplink's native (untagged) network.
+	// +crossplane:generate:reference:type=github.com/devantler-tech/provider-upjet-unifi/apis/namespaced/network/v1alpha1.Network
 	// +kubebuilder:validation:Optional
 	MgmtNetworkID *string `json:"mgmtNetworkId,omitempty" tf:"mgmt_network_id,omitempty"`
+
+	// Reference to a Network in network to populate mgmtNetworkId.
+	// +kubebuilder:validation:Optional
+	MgmtNetworkIDRef *v1.NamespacedReference `json:"mgmtNetworkIdRef,omitempty" tf:"-"`
+
+	// Selector for a Network in network to populate mgmtNetworkId.
+	// +kubebuilder:validation:Optional
+	MgmtNetworkIDSelector *v1.NamespacedSelector `json:"mgmtNetworkIdSelector,omitempty" tf:"-"`
 
 	// The name of the device.
 	// +kubebuilder:validation:Optional
@@ -570,7 +588,16 @@ type PortOverrideInitParameters struct {
 	EgressRateLimitKbpsEnabled *bool `json:"egressRateLimitKbpsEnabled,omitempty" tf:"egress_rate_limit_kbps_enabled,omitempty"`
 
 	// List of network IDs to exclude from this port.
+	// +crossplane:generate:reference:type=github.com/devantler-tech/provider-upjet-unifi/apis/namespaced/network/v1alpha1.Network
 	ExcludedNetworkconfIds []*string `json:"excludedNetworkconfIds,omitempty" tf:"excluded_networkconf_ids,omitempty"`
+
+	// References to Network in network to populate excludedNetworkconfIds.
+	// +kubebuilder:validation:Optional
+	ExcludedNetworkconfIdsRefs []v1.NamespacedReference `json:"excludedNetworkconfIdsRefs,omitempty" tf:"-"`
+
+	// Selector for a list of Network in network to populate excludedNetworkconfIds.
+	// +kubebuilder:validation:Optional
+	ExcludedNetworkconfIdsSelector *v1.NamespacedSelector `json:"excludedNetworkconfIdsSelector,omitempty" tf:"-"`
 
 	// Forward Error Correction mode.
 	FecMode *string `json:"fecMode,omitempty" tf:"fec_mode,omitempty"`
@@ -600,13 +627,31 @@ type PortOverrideInitParameters struct {
 	MirrorPortIdx *float64 `json:"mirrorPortIdx,omitempty" tf:"mirror_port_idx,omitempty"`
 
 	// List of network IDs for multicast router.
+	// +crossplane:generate:reference:type=github.com/devantler-tech/provider-upjet-unifi/apis/namespaced/network/v1alpha1.Network
 	MulticastRouterNetworkconfIds []*string `json:"multicastRouterNetworkconfIds,omitempty" tf:"multicast_router_networkconf_ids,omitempty"`
+
+	// References to Network in network to populate multicastRouterNetworkconfIds.
+	// +kubebuilder:validation:Optional
+	MulticastRouterNetworkconfIdsRefs []v1.NamespacedReference `json:"multicastRouterNetworkconfIdsRefs,omitempty" tf:"-"`
+
+	// Selector for a list of Network in network to populate multicastRouterNetworkconfIds.
+	// +kubebuilder:validation:Optional
+	MulticastRouterNetworkconfIdsSelector *v1.NamespacedSelector `json:"multicastRouterNetworkconfIdsSelector,omitempty" tf:"-"`
 
 	// Human-readable name of the port.
 	Name *string `json:"name,omitempty" tf:"name,omitempty"`
 
 	// Native network ID (VLAN).
+	// +crossplane:generate:reference:type=github.com/devantler-tech/provider-upjet-unifi/apis/namespaced/network/v1alpha1.Network
 	NativeNetworkconfID *string `json:"nativeNetworkconfId,omitempty" tf:"native_networkconf_id,omitempty"`
+
+	// Reference to a Network in network to populate nativeNetworkconfId.
+	// +kubebuilder:validation:Optional
+	NativeNetworkconfIDRef *v1.NamespacedReference `json:"nativeNetworkconfIdRef,omitempty" tf:"-"`
+
+	// Selector for a Network in network to populate nativeNetworkconfId.
+	// +kubebuilder:validation:Optional
+	NativeNetworkconfIDSelector *v1.NamespacedSelector `json:"nativeNetworkconfIdSelector,omitempty" tf:"-"`
 
 	// Operating mode of the port: `switch` (default), `mirror`, or `aggregate`. Set `aggregate` on the lead port of an SFP+/link-aggregation (LAG) group and list the member ports in `aggregate_members`. Only written when not `switch`, as gateway devices (UDM) reject op_mode on update.
 	OpMode *string `json:"opMode,omitempty" tf:"op_mode,omitempty"`
@@ -618,7 +663,16 @@ type PortOverrideInitParameters struct {
 	PortKeepaliveEnabled *bool `json:"portKeepaliveEnabled,omitempty" tf:"port_keepalive_enabled,omitempty"`
 
 	// ID of the Port Profile used on this port.
+	// +crossplane:generate:reference:type=github.com/devantler-tech/provider-upjet-unifi/apis/namespaced/port/v1alpha1.Profile
 	PortProfileID *string `json:"portProfileId,omitempty" tf:"port_profile_id,omitempty"`
+
+	// Reference to a Profile in port to populate portProfileId.
+	// +kubebuilder:validation:Optional
+	PortProfileIDRef *v1.NamespacedReference `json:"portProfileIdRef,omitempty" tf:"-"`
+
+	// Selector for a Profile in port to populate portProfileId.
+	// +kubebuilder:validation:Optional
+	PortProfileIDSelector *v1.NamespacedSelector `json:"portProfileIdSelector,omitempty" tf:"-"`
 
 	// Enable port security.
 	PortSecurityEnabled *bool `json:"portSecurityEnabled,omitempty" tf:"port_security_enabled,omitempty"`
@@ -678,13 +732,31 @@ type PortOverrideInitParameters struct {
 	StpPortMode *bool `json:"stpPortMode,omitempty" tf:"stp_port_mode,omitempty"`
 
 	// List of network IDs to tag on this port.
+	// +crossplane:generate:reference:type=github.com/devantler-tech/provider-upjet-unifi/apis/namespaced/network/v1alpha1.Network
 	TaggedNetworkconfIds []*string `json:"taggedNetworkconfIds,omitempty" tf:"tagged_networkconf_ids,omitempty"`
+
+	// References to Network in network to populate taggedNetworkconfIds.
+	// +kubebuilder:validation:Optional
+	TaggedNetworkconfIdsRefs []v1.NamespacedReference `json:"taggedNetworkconfIdsRefs,omitempty" tf:"-"`
+
+	// Selector for a list of Network in network to populate taggedNetworkconfIds.
+	// +kubebuilder:validation:Optional
+	TaggedNetworkconfIdsSelector *v1.NamespacedSelector `json:"taggedNetworkconfIdsSelector,omitempty" tf:"-"`
 
 	// Tagged VLAN management.
 	TaggedVlanMgmt *string `json:"taggedVlanMgmt,omitempty" tf:"tagged_vlan_mgmt,omitempty"`
 
 	// Voice network ID.
+	// +crossplane:generate:reference:type=github.com/devantler-tech/provider-upjet-unifi/apis/namespaced/network/v1alpha1.Network
 	VoiceNetworkconfID *string `json:"voiceNetworkconfId,omitempty" tf:"voice_networkconf_id,omitempty"`
+
+	// Reference to a Network in network to populate voiceNetworkconfId.
+	// +kubebuilder:validation:Optional
+	VoiceNetworkconfIDRef *v1.NamespacedReference `json:"voiceNetworkconfIdRef,omitempty" tf:"-"`
+
+	// Selector for a Network in network to populate voiceNetworkconfId.
+	// +kubebuilder:validation:Optional
+	VoiceNetworkconfIDSelector *v1.NamespacedSelector `json:"voiceNetworkconfIdSelector,omitempty" tf:"-"`
 }
 
 type PortOverrideObservation struct {
@@ -852,8 +924,17 @@ type PortOverrideParameters struct {
 	EgressRateLimitKbpsEnabled *bool `json:"egressRateLimitKbpsEnabled,omitempty" tf:"egress_rate_limit_kbps_enabled,omitempty"`
 
 	// List of network IDs to exclude from this port.
+	// +crossplane:generate:reference:type=github.com/devantler-tech/provider-upjet-unifi/apis/namespaced/network/v1alpha1.Network
 	// +kubebuilder:validation:Optional
 	ExcludedNetworkconfIds []*string `json:"excludedNetworkconfIds,omitempty" tf:"excluded_networkconf_ids,omitempty"`
+
+	// References to Network in network to populate excludedNetworkconfIds.
+	// +kubebuilder:validation:Optional
+	ExcludedNetworkconfIdsRefs []v1.NamespacedReference `json:"excludedNetworkconfIdsRefs,omitempty" tf:"-"`
+
+	// Selector for a list of Network in network to populate excludedNetworkconfIds.
+	// +kubebuilder:validation:Optional
+	ExcludedNetworkconfIdsSelector *v1.NamespacedSelector `json:"excludedNetworkconfIdsSelector,omitempty" tf:"-"`
 
 	// Forward Error Correction mode.
 	// +kubebuilder:validation:Optional
@@ -892,16 +973,34 @@ type PortOverrideParameters struct {
 	MirrorPortIdx *float64 `json:"mirrorPortIdx,omitempty" tf:"mirror_port_idx,omitempty"`
 
 	// List of network IDs for multicast router.
+	// +crossplane:generate:reference:type=github.com/devantler-tech/provider-upjet-unifi/apis/namespaced/network/v1alpha1.Network
 	// +kubebuilder:validation:Optional
 	MulticastRouterNetworkconfIds []*string `json:"multicastRouterNetworkconfIds,omitempty" tf:"multicast_router_networkconf_ids,omitempty"`
+
+	// References to Network in network to populate multicastRouterNetworkconfIds.
+	// +kubebuilder:validation:Optional
+	MulticastRouterNetworkconfIdsRefs []v1.NamespacedReference `json:"multicastRouterNetworkconfIdsRefs,omitempty" tf:"-"`
+
+	// Selector for a list of Network in network to populate multicastRouterNetworkconfIds.
+	// +kubebuilder:validation:Optional
+	MulticastRouterNetworkconfIdsSelector *v1.NamespacedSelector `json:"multicastRouterNetworkconfIdsSelector,omitempty" tf:"-"`
 
 	// Human-readable name of the port.
 	// +kubebuilder:validation:Optional
 	Name *string `json:"name,omitempty" tf:"name,omitempty"`
 
 	// Native network ID (VLAN).
+	// +crossplane:generate:reference:type=github.com/devantler-tech/provider-upjet-unifi/apis/namespaced/network/v1alpha1.Network
 	// +kubebuilder:validation:Optional
 	NativeNetworkconfID *string `json:"nativeNetworkconfId,omitempty" tf:"native_networkconf_id,omitempty"`
+
+	// Reference to a Network in network to populate nativeNetworkconfId.
+	// +kubebuilder:validation:Optional
+	NativeNetworkconfIDRef *v1.NamespacedReference `json:"nativeNetworkconfIdRef,omitempty" tf:"-"`
+
+	// Selector for a Network in network to populate nativeNetworkconfId.
+	// +kubebuilder:validation:Optional
+	NativeNetworkconfIDSelector *v1.NamespacedSelector `json:"nativeNetworkconfIdSelector,omitempty" tf:"-"`
 
 	// Operating mode of the port: `switch` (default), `mirror`, or `aggregate`. Set `aggregate` on the lead port of an SFP+/link-aggregation (LAG) group and list the member ports in `aggregate_members`. Only written when not `switch`, as gateway devices (UDM) reject op_mode on update.
 	// +kubebuilder:validation:Optional
@@ -916,8 +1015,17 @@ type PortOverrideParameters struct {
 	PortKeepaliveEnabled *bool `json:"portKeepaliveEnabled,omitempty" tf:"port_keepalive_enabled,omitempty"`
 
 	// ID of the Port Profile used on this port.
+	// +crossplane:generate:reference:type=github.com/devantler-tech/provider-upjet-unifi/apis/namespaced/port/v1alpha1.Profile
 	// +kubebuilder:validation:Optional
 	PortProfileID *string `json:"portProfileId,omitempty" tf:"port_profile_id,omitempty"`
+
+	// Reference to a Profile in port to populate portProfileId.
+	// +kubebuilder:validation:Optional
+	PortProfileIDRef *v1.NamespacedReference `json:"portProfileIdRef,omitempty" tf:"-"`
+
+	// Selector for a Profile in port to populate portProfileId.
+	// +kubebuilder:validation:Optional
+	PortProfileIDSelector *v1.NamespacedSelector `json:"portProfileIdSelector,omitempty" tf:"-"`
 
 	// Enable port security.
 	// +kubebuilder:validation:Optional
@@ -996,16 +1104,34 @@ type PortOverrideParameters struct {
 	StpPortMode *bool `json:"stpPortMode,omitempty" tf:"stp_port_mode,omitempty"`
 
 	// List of network IDs to tag on this port.
+	// +crossplane:generate:reference:type=github.com/devantler-tech/provider-upjet-unifi/apis/namespaced/network/v1alpha1.Network
 	// +kubebuilder:validation:Optional
 	TaggedNetworkconfIds []*string `json:"taggedNetworkconfIds,omitempty" tf:"tagged_networkconf_ids,omitempty"`
+
+	// References to Network in network to populate taggedNetworkconfIds.
+	// +kubebuilder:validation:Optional
+	TaggedNetworkconfIdsRefs []v1.NamespacedReference `json:"taggedNetworkconfIdsRefs,omitempty" tf:"-"`
+
+	// Selector for a list of Network in network to populate taggedNetworkconfIds.
+	// +kubebuilder:validation:Optional
+	TaggedNetworkconfIdsSelector *v1.NamespacedSelector `json:"taggedNetworkconfIdsSelector,omitempty" tf:"-"`
 
 	// Tagged VLAN management.
 	// +kubebuilder:validation:Optional
 	TaggedVlanMgmt *string `json:"taggedVlanMgmt,omitempty" tf:"tagged_vlan_mgmt,omitempty"`
 
 	// Voice network ID.
+	// +crossplane:generate:reference:type=github.com/devantler-tech/provider-upjet-unifi/apis/namespaced/network/v1alpha1.Network
 	// +kubebuilder:validation:Optional
 	VoiceNetworkconfID *string `json:"voiceNetworkconfId,omitempty" tf:"voice_networkconf_id,omitempty"`
+
+	// Reference to a Network in network to populate voiceNetworkconfId.
+	// +kubebuilder:validation:Optional
+	VoiceNetworkconfIDRef *v1.NamespacedReference `json:"voiceNetworkconfIdRef,omitempty" tf:"-"`
+
+	// Selector for a Network in network to populate voiceNetworkconfId.
+	// +kubebuilder:validation:Optional
+	VoiceNetworkconfIDSelector *v1.NamespacedSelector `json:"voiceNetworkconfIdSelector,omitempty" tf:"-"`
 }
 
 type RadioTableInitParameters struct {

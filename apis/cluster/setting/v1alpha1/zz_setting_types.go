@@ -218,7 +218,16 @@ type HoneypotInitParameters struct {
 	IPAddress *string `json:"ipAddress,omitempty" tf:"ip_address,omitempty"`
 
 	// Network ID this honeypot IP belongs to.
+	// +crossplane:generate:reference:type=github.com/devantler-tech/provider-upjet-unifi/apis/cluster/network/v1alpha1.Network
 	NetworkID *string `json:"networkId,omitempty" tf:"network_id,omitempty"`
+
+	// Reference to a Network in network to populate networkId.
+	// +kubebuilder:validation:Optional
+	NetworkIDRef *v1.Reference `json:"networkIdRef,omitempty" tf:"-"`
+
+	// Selector for a Network in network to populate networkId.
+	// +kubebuilder:validation:Optional
+	NetworkIDSelector *v1.Selector `json:"networkIdSelector,omitempty" tf:"-"`
 
 	// IP version: v4 or v6.
 	Version *string `json:"version,omitempty" tf:"version,omitempty"`
@@ -243,8 +252,17 @@ type HoneypotParameters struct {
 	IPAddress *string `json:"ipAddress" tf:"ip_address,omitempty"`
 
 	// Network ID this honeypot IP belongs to.
+	// +crossplane:generate:reference:type=github.com/devantler-tech/provider-upjet-unifi/apis/cluster/network/v1alpha1.Network
 	// +kubebuilder:validation:Optional
-	NetworkID *string `json:"networkId" tf:"network_id,omitempty"`
+	NetworkID *string `json:"networkId,omitempty" tf:"network_id,omitempty"`
+
+	// Reference to a Network in network to populate networkId.
+	// +kubebuilder:validation:Optional
+	NetworkIDRef *v1.Reference `json:"networkIdRef,omitempty" tf:"-"`
+
+	// Selector for a Network in network to populate networkId.
+	// +kubebuilder:validation:Optional
+	NetworkIDSelector *v1.Selector `json:"networkIdSelector,omitempty" tf:"-"`
 
 	// IP version: v4 or v6.
 	// +kubebuilder:validation:Optional
@@ -257,7 +275,16 @@ type IgmpSnoopingInitParameters struct {
 	Enabled *bool `json:"enabled,omitempty" tf:"enabled,omitempty"`
 
 	// IDs of the networks IGMP snooping applies to.
+	// +crossplane:generate:reference:type=github.com/devantler-tech/provider-upjet-unifi/apis/cluster/network/v1alpha1.Network
 	NetworkIds []*string `json:"networkIds,omitempty" tf:"network_ids,omitempty"`
+
+	// References to Network in network to populate networkIds.
+	// +kubebuilder:validation:Optional
+	NetworkIdsRefs []v1.Reference `json:"networkIdsRefs,omitempty" tf:"-"`
+
+	// Selector for a list of Network in network to populate networkIds.
+	// +kubebuilder:validation:Optional
+	NetworkIdsSelector *v1.Selector `json:"networkIdsSelector,omitempty" tf:"-"`
 }
 
 type IgmpSnoopingObservation struct {
@@ -276,8 +303,17 @@ type IgmpSnoopingParameters struct {
 	Enabled *bool `json:"enabled,omitempty" tf:"enabled,omitempty"`
 
 	// IDs of the networks IGMP snooping applies to.
+	// +crossplane:generate:reference:type=github.com/devantler-tech/provider-upjet-unifi/apis/cluster/network/v1alpha1.Network
 	// +kubebuilder:validation:Optional
 	NetworkIds []*string `json:"networkIds,omitempty" tf:"network_ids,omitempty"`
+
+	// References to Network in network to populate networkIds.
+	// +kubebuilder:validation:Optional
+	NetworkIdsRefs []v1.Reference `json:"networkIdsRefs,omitempty" tf:"-"`
+
+	// Selector for a list of Network in network to populate networkIds.
+	// +kubebuilder:validation:Optional
+	NetworkIdsSelector *v1.Selector `json:"networkIdsSelector,omitempty" tf:"-"`
 }
 
 type IpsInitParameters struct {

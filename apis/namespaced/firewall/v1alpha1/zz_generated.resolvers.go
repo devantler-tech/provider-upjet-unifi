@@ -23,6 +23,25 @@ func (mg *Policy) ResolveReferences(ctx context.Context, c client.Reader) error 
 	var err error
 
 	if mg.Spec.ForProvider.Destination != nil {
+		rsp, err = r.Resolve(ctx, reference.NamespacedResolutionRequest{
+			CurrentValue: reference.FromPtrValue(mg.Spec.ForProvider.Destination.IPGroupID),
+			Extract:      reference.ExternalName(),
+			Namespace:    mg.GetNamespace(),
+			Reference:    mg.Spec.ForProvider.Destination.IPGroupIDRef,
+			Selector:     mg.Spec.ForProvider.Destination.IPGroupIDSelector,
+			To: reference.To{
+				List:    &GroupList{},
+				Managed: &Group{},
+			},
+		})
+		if err != nil {
+			return errors.Wrap(err, "mg.Spec.ForProvider.Destination.IPGroupID")
+		}
+		mg.Spec.ForProvider.Destination.IPGroupID = reference.ToPtrValue(rsp.ResolvedValue)
+		mg.Spec.ForProvider.Destination.IPGroupIDRef = rsp.ResolvedReference
+
+	}
+	if mg.Spec.ForProvider.Destination != nil {
 		mrsp, err = r.ResolveMultiple(ctx, reference.MultiNamespacedResolutionRequest{
 			CurrentValues: reference.FromPtrValues(mg.Spec.ForProvider.Destination.NetworkIds),
 			Extract:       reference.ExternalName(),
@@ -43,6 +62,25 @@ func (mg *Policy) ResolveReferences(ctx context.Context, c client.Reader) error 
 	}
 	if mg.Spec.ForProvider.Destination != nil {
 		rsp, err = r.Resolve(ctx, reference.NamespacedResolutionRequest{
+			CurrentValue: reference.FromPtrValue(mg.Spec.ForProvider.Destination.PortGroupID),
+			Extract:      reference.ExternalName(),
+			Namespace:    mg.GetNamespace(),
+			Reference:    mg.Spec.ForProvider.Destination.PortGroupIDRef,
+			Selector:     mg.Spec.ForProvider.Destination.PortGroupIDSelector,
+			To: reference.To{
+				List:    &GroupList{},
+				Managed: &Group{},
+			},
+		})
+		if err != nil {
+			return errors.Wrap(err, "mg.Spec.ForProvider.Destination.PortGroupID")
+		}
+		mg.Spec.ForProvider.Destination.PortGroupID = reference.ToPtrValue(rsp.ResolvedValue)
+		mg.Spec.ForProvider.Destination.PortGroupIDRef = rsp.ResolvedReference
+
+	}
+	if mg.Spec.ForProvider.Destination != nil {
+		rsp, err = r.Resolve(ctx, reference.NamespacedResolutionRequest{
 			CurrentValue: reference.FromPtrValue(mg.Spec.ForProvider.Destination.ZoneID),
 			Extract:      reference.ExternalName(),
 			Namespace:    mg.GetNamespace(),
@@ -58,6 +96,25 @@ func (mg *Policy) ResolveReferences(ctx context.Context, c client.Reader) error 
 		}
 		mg.Spec.ForProvider.Destination.ZoneID = reference.ToPtrValue(rsp.ResolvedValue)
 		mg.Spec.ForProvider.Destination.ZoneIDRef = rsp.ResolvedReference
+
+	}
+	if mg.Spec.ForProvider.Source != nil {
+		rsp, err = r.Resolve(ctx, reference.NamespacedResolutionRequest{
+			CurrentValue: reference.FromPtrValue(mg.Spec.ForProvider.Source.IPGroupID),
+			Extract:      reference.ExternalName(),
+			Namespace:    mg.GetNamespace(),
+			Reference:    mg.Spec.ForProvider.Source.IPGroupIDRef,
+			Selector:     mg.Spec.ForProvider.Source.IPGroupIDSelector,
+			To: reference.To{
+				List:    &GroupList{},
+				Managed: &Group{},
+			},
+		})
+		if err != nil {
+			return errors.Wrap(err, "mg.Spec.ForProvider.Source.IPGroupID")
+		}
+		mg.Spec.ForProvider.Source.IPGroupID = reference.ToPtrValue(rsp.ResolvedValue)
+		mg.Spec.ForProvider.Source.IPGroupIDRef = rsp.ResolvedReference
 
 	}
 	if mg.Spec.ForProvider.Source != nil {
@@ -81,6 +138,25 @@ func (mg *Policy) ResolveReferences(ctx context.Context, c client.Reader) error 
 	}
 	if mg.Spec.ForProvider.Source != nil {
 		rsp, err = r.Resolve(ctx, reference.NamespacedResolutionRequest{
+			CurrentValue: reference.FromPtrValue(mg.Spec.ForProvider.Source.PortGroupID),
+			Extract:      reference.ExternalName(),
+			Namespace:    mg.GetNamespace(),
+			Reference:    mg.Spec.ForProvider.Source.PortGroupIDRef,
+			Selector:     mg.Spec.ForProvider.Source.PortGroupIDSelector,
+			To: reference.To{
+				List:    &GroupList{},
+				Managed: &Group{},
+			},
+		})
+		if err != nil {
+			return errors.Wrap(err, "mg.Spec.ForProvider.Source.PortGroupID")
+		}
+		mg.Spec.ForProvider.Source.PortGroupID = reference.ToPtrValue(rsp.ResolvedValue)
+		mg.Spec.ForProvider.Source.PortGroupIDRef = rsp.ResolvedReference
+
+	}
+	if mg.Spec.ForProvider.Source != nil {
+		rsp, err = r.Resolve(ctx, reference.NamespacedResolutionRequest{
 			CurrentValue: reference.FromPtrValue(mg.Spec.ForProvider.Source.ZoneID),
 			Extract:      reference.ExternalName(),
 			Namespace:    mg.GetNamespace(),
@@ -96,6 +172,25 @@ func (mg *Policy) ResolveReferences(ctx context.Context, c client.Reader) error 
 		}
 		mg.Spec.ForProvider.Source.ZoneID = reference.ToPtrValue(rsp.ResolvedValue)
 		mg.Spec.ForProvider.Source.ZoneIDRef = rsp.ResolvedReference
+
+	}
+	if mg.Spec.InitProvider.Destination != nil {
+		rsp, err = r.Resolve(ctx, reference.NamespacedResolutionRequest{
+			CurrentValue: reference.FromPtrValue(mg.Spec.InitProvider.Destination.IPGroupID),
+			Extract:      reference.ExternalName(),
+			Namespace:    mg.GetNamespace(),
+			Reference:    mg.Spec.InitProvider.Destination.IPGroupIDRef,
+			Selector:     mg.Spec.InitProvider.Destination.IPGroupIDSelector,
+			To: reference.To{
+				List:    &GroupList{},
+				Managed: &Group{},
+			},
+		})
+		if err != nil {
+			return errors.Wrap(err, "mg.Spec.InitProvider.Destination.IPGroupID")
+		}
+		mg.Spec.InitProvider.Destination.IPGroupID = reference.ToPtrValue(rsp.ResolvedValue)
+		mg.Spec.InitProvider.Destination.IPGroupIDRef = rsp.ResolvedReference
 
 	}
 	if mg.Spec.InitProvider.Destination != nil {
@@ -119,6 +214,25 @@ func (mg *Policy) ResolveReferences(ctx context.Context, c client.Reader) error 
 	}
 	if mg.Spec.InitProvider.Destination != nil {
 		rsp, err = r.Resolve(ctx, reference.NamespacedResolutionRequest{
+			CurrentValue: reference.FromPtrValue(mg.Spec.InitProvider.Destination.PortGroupID),
+			Extract:      reference.ExternalName(),
+			Namespace:    mg.GetNamespace(),
+			Reference:    mg.Spec.InitProvider.Destination.PortGroupIDRef,
+			Selector:     mg.Spec.InitProvider.Destination.PortGroupIDSelector,
+			To: reference.To{
+				List:    &GroupList{},
+				Managed: &Group{},
+			},
+		})
+		if err != nil {
+			return errors.Wrap(err, "mg.Spec.InitProvider.Destination.PortGroupID")
+		}
+		mg.Spec.InitProvider.Destination.PortGroupID = reference.ToPtrValue(rsp.ResolvedValue)
+		mg.Spec.InitProvider.Destination.PortGroupIDRef = rsp.ResolvedReference
+
+	}
+	if mg.Spec.InitProvider.Destination != nil {
+		rsp, err = r.Resolve(ctx, reference.NamespacedResolutionRequest{
 			CurrentValue: reference.FromPtrValue(mg.Spec.InitProvider.Destination.ZoneID),
 			Extract:      reference.ExternalName(),
 			Namespace:    mg.GetNamespace(),
@@ -134,6 +248,25 @@ func (mg *Policy) ResolveReferences(ctx context.Context, c client.Reader) error 
 		}
 		mg.Spec.InitProvider.Destination.ZoneID = reference.ToPtrValue(rsp.ResolvedValue)
 		mg.Spec.InitProvider.Destination.ZoneIDRef = rsp.ResolvedReference
+
+	}
+	if mg.Spec.InitProvider.Source != nil {
+		rsp, err = r.Resolve(ctx, reference.NamespacedResolutionRequest{
+			CurrentValue: reference.FromPtrValue(mg.Spec.InitProvider.Source.IPGroupID),
+			Extract:      reference.ExternalName(),
+			Namespace:    mg.GetNamespace(),
+			Reference:    mg.Spec.InitProvider.Source.IPGroupIDRef,
+			Selector:     mg.Spec.InitProvider.Source.IPGroupIDSelector,
+			To: reference.To{
+				List:    &GroupList{},
+				Managed: &Group{},
+			},
+		})
+		if err != nil {
+			return errors.Wrap(err, "mg.Spec.InitProvider.Source.IPGroupID")
+		}
+		mg.Spec.InitProvider.Source.IPGroupID = reference.ToPtrValue(rsp.ResolvedValue)
+		mg.Spec.InitProvider.Source.IPGroupIDRef = rsp.ResolvedReference
 
 	}
 	if mg.Spec.InitProvider.Source != nil {
@@ -153,6 +286,25 @@ func (mg *Policy) ResolveReferences(ctx context.Context, c client.Reader) error 
 		}
 		mg.Spec.InitProvider.Source.NetworkIds = reference.ToPtrValues(mrsp.ResolvedValues)
 		mg.Spec.InitProvider.Source.NetworkIdsRefs = mrsp.ResolvedReferences
+
+	}
+	if mg.Spec.InitProvider.Source != nil {
+		rsp, err = r.Resolve(ctx, reference.NamespacedResolutionRequest{
+			CurrentValue: reference.FromPtrValue(mg.Spec.InitProvider.Source.PortGroupID),
+			Extract:      reference.ExternalName(),
+			Namespace:    mg.GetNamespace(),
+			Reference:    mg.Spec.InitProvider.Source.PortGroupIDRef,
+			Selector:     mg.Spec.InitProvider.Source.PortGroupIDSelector,
+			To: reference.To{
+				List:    &GroupList{},
+				Managed: &Group{},
+			},
+		})
+		if err != nil {
+			return errors.Wrap(err, "mg.Spec.InitProvider.Source.PortGroupID")
+		}
+		mg.Spec.InitProvider.Source.PortGroupID = reference.ToPtrValue(rsp.ResolvedValue)
+		mg.Spec.InitProvider.Source.PortGroupIDRef = rsp.ResolvedReference
 
 	}
 	if mg.Spec.InitProvider.Source != nil {
@@ -321,6 +473,50 @@ func (mg *Rule) ResolveReferences(ctx context.Context, c client.Reader) error {
 	}
 	mg.Spec.InitProvider.SrcNetworkID = reference.ToPtrValue(rsp.ResolvedValue)
 	mg.Spec.InitProvider.SrcNetworkIDRef = rsp.ResolvedReference
+
+	return nil
+}
+
+// ResolveReferences of this Zone.
+func (mg *Zone) ResolveReferences(ctx context.Context, c client.Reader) error {
+	r := reference.NewAPINamespacedResolver(c, mg)
+
+	var mrsp reference.MultiNamespacedResolutionResponse
+	var err error
+
+	mrsp, err = r.ResolveMultiple(ctx, reference.MultiNamespacedResolutionRequest{
+		CurrentValues: reference.FromPtrValues(mg.Spec.ForProvider.NetworkIds),
+		Extract:       reference.ExternalName(),
+		Namespace:     mg.GetNamespace(),
+		References:    mg.Spec.ForProvider.NetworkIdsRefs,
+		Selector:      mg.Spec.ForProvider.NetworkIdsSelector,
+		To: reference.To{
+			List:    &v1alpha1.NetworkList{},
+			Managed: &v1alpha1.Network{},
+		},
+	})
+	if err != nil {
+		return errors.Wrap(err, "mg.Spec.ForProvider.NetworkIds")
+	}
+	mg.Spec.ForProvider.NetworkIds = reference.ToPtrValues(mrsp.ResolvedValues)
+	mg.Spec.ForProvider.NetworkIdsRefs = mrsp.ResolvedReferences
+
+	mrsp, err = r.ResolveMultiple(ctx, reference.MultiNamespacedResolutionRequest{
+		CurrentValues: reference.FromPtrValues(mg.Spec.InitProvider.NetworkIds),
+		Extract:       reference.ExternalName(),
+		Namespace:     mg.GetNamespace(),
+		References:    mg.Spec.InitProvider.NetworkIdsRefs,
+		Selector:      mg.Spec.InitProvider.NetworkIdsSelector,
+		To: reference.To{
+			List:    &v1alpha1.NetworkList{},
+			Managed: &v1alpha1.Network{},
+		},
+	})
+	if err != nil {
+		return errors.Wrap(err, "mg.Spec.InitProvider.NetworkIds")
+	}
+	mg.Spec.InitProvider.NetworkIds = reference.ToPtrValues(mrsp.ResolvedValues)
+	mg.Spec.InitProvider.NetworkIdsRefs = mrsp.ResolvedReferences
 
 	return nil
 }

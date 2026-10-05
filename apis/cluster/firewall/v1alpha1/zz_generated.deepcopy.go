@@ -32,6 +32,16 @@ func (in *DestinationInitParameters) DeepCopyInto(out *DestinationInitParameters
 		*out = new(string)
 		**out = **in
 	}
+	if in.IPGroupIDRef != nil {
+		in, out := &in.IPGroupIDRef, &out.IPGroupIDRef
+		*out = new(v1.Reference)
+		(*in).DeepCopyInto(*out)
+	}
+	if in.IPGroupIDSelector != nil {
+		in, out := &in.IPGroupIDSelector, &out.IPGroupIDSelector
+		*out = new(v1.Selector)
+		(*in).DeepCopyInto(*out)
+	}
 	if in.Ips != nil {
 		in, out := &in.Ips, &out.Ips
 		*out = make([]*string, len(*in))
@@ -80,6 +90,16 @@ func (in *DestinationInitParameters) DeepCopyInto(out *DestinationInitParameters
 		in, out := &in.PortGroupID, &out.PortGroupID
 		*out = new(string)
 		**out = **in
+	}
+	if in.PortGroupIDRef != nil {
+		in, out := &in.PortGroupIDRef, &out.PortGroupIDRef
+		*out = new(v1.Reference)
+		(*in).DeepCopyInto(*out)
+	}
+	if in.PortGroupIDSelector != nil {
+		in, out := &in.PortGroupIDSelector, &out.PortGroupIDSelector
+		*out = new(v1.Selector)
+		(*in).DeepCopyInto(*out)
 	}
 	if in.PortMatchingType != nil {
 		in, out := &in.PortMatchingType, &out.PortMatchingType
@@ -237,6 +257,16 @@ func (in *DestinationParameters) DeepCopyInto(out *DestinationParameters) {
 		*out = new(string)
 		**out = **in
 	}
+	if in.IPGroupIDRef != nil {
+		in, out := &in.IPGroupIDRef, &out.IPGroupIDRef
+		*out = new(v1.Reference)
+		(*in).DeepCopyInto(*out)
+	}
+	if in.IPGroupIDSelector != nil {
+		in, out := &in.IPGroupIDSelector, &out.IPGroupIDSelector
+		*out = new(v1.Selector)
+		(*in).DeepCopyInto(*out)
+	}
 	if in.Ips != nil {
 		in, out := &in.Ips, &out.Ips
 		*out = make([]*string, len(*in))
@@ -285,6 +315,16 @@ func (in *DestinationParameters) DeepCopyInto(out *DestinationParameters) {
 		in, out := &in.PortGroupID, &out.PortGroupID
 		*out = new(string)
 		**out = **in
+	}
+	if in.PortGroupIDRef != nil {
+		in, out := &in.PortGroupIDRef, &out.PortGroupIDRef
+		*out = new(v1.Reference)
+		(*in).DeepCopyInto(*out)
+	}
+	if in.PortGroupIDSelector != nil {
+		in, out := &in.PortGroupIDSelector, &out.PortGroupIDSelector
+		*out = new(v1.Selector)
+		(*in).DeepCopyInto(*out)
 	}
 	if in.PortMatchingType != nil {
 		in, out := &in.PortMatchingType, &out.PortMatchingType
@@ -1930,6 +1970,16 @@ func (in *SourceInitParameters) DeepCopyInto(out *SourceInitParameters) {
 		*out = new(string)
 		**out = **in
 	}
+	if in.IPGroupIDRef != nil {
+		in, out := &in.IPGroupIDRef, &out.IPGroupIDRef
+		*out = new(v1.Reference)
+		(*in).DeepCopyInto(*out)
+	}
+	if in.IPGroupIDSelector != nil {
+		in, out := &in.IPGroupIDSelector, &out.IPGroupIDSelector
+		*out = new(v1.Selector)
+		(*in).DeepCopyInto(*out)
+	}
 	if in.Ips != nil {
 		in, out := &in.Ips, &out.Ips
 		*out = make([]*string, len(*in))
@@ -1978,6 +2028,16 @@ func (in *SourceInitParameters) DeepCopyInto(out *SourceInitParameters) {
 		in, out := &in.PortGroupID, &out.PortGroupID
 		*out = new(string)
 		**out = **in
+	}
+	if in.PortGroupIDRef != nil {
+		in, out := &in.PortGroupIDRef, &out.PortGroupIDRef
+		*out = new(v1.Reference)
+		(*in).DeepCopyInto(*out)
+	}
+	if in.PortGroupIDSelector != nil {
+		in, out := &in.PortGroupIDSelector, &out.PortGroupIDSelector
+		*out = new(v1.Selector)
+		(*in).DeepCopyInto(*out)
 	}
 	if in.PortMatchingType != nil {
 		in, out := &in.PortMatchingType, &out.PortMatchingType
@@ -2135,6 +2195,16 @@ func (in *SourceParameters) DeepCopyInto(out *SourceParameters) {
 		*out = new(string)
 		**out = **in
 	}
+	if in.IPGroupIDRef != nil {
+		in, out := &in.IPGroupIDRef, &out.IPGroupIDRef
+		*out = new(v1.Reference)
+		(*in).DeepCopyInto(*out)
+	}
+	if in.IPGroupIDSelector != nil {
+		in, out := &in.IPGroupIDSelector, &out.IPGroupIDSelector
+		*out = new(v1.Selector)
+		(*in).DeepCopyInto(*out)
+	}
 	if in.Ips != nil {
 		in, out := &in.Ips, &out.Ips
 		*out = make([]*string, len(*in))
@@ -2183,6 +2253,16 @@ func (in *SourceParameters) DeepCopyInto(out *SourceParameters) {
 		in, out := &in.PortGroupID, &out.PortGroupID
 		*out = new(string)
 		**out = **in
+	}
+	if in.PortGroupIDRef != nil {
+		in, out := &in.PortGroupIDRef, &out.PortGroupIDRef
+		*out = new(v1.Reference)
+		(*in).DeepCopyInto(*out)
+	}
+	if in.PortGroupIDSelector != nil {
+		in, out := &in.PortGroupIDSelector, &out.PortGroupIDSelector
+		*out = new(v1.Selector)
+		(*in).DeepCopyInto(*out)
 	}
 	if in.PortMatchingType != nil {
 		in, out := &in.PortMatchingType, &out.PortMatchingType
@@ -2378,6 +2458,18 @@ func (in *ZoneInitParameters) DeepCopyInto(out *ZoneInitParameters) {
 			}
 		}
 	}
+	if in.NetworkIdsRefs != nil {
+		in, out := &in.NetworkIdsRefs, &out.NetworkIdsRefs
+		*out = make([]v1.Reference, len(*in))
+		for i := range *in {
+			(*in)[i].DeepCopyInto(&(*out)[i])
+		}
+	}
+	if in.NetworkIdsSelector != nil {
+		in, out := &in.NetworkIdsSelector, &out.NetworkIdsSelector
+		*out = new(v1.Selector)
+		(*in).DeepCopyInto(*out)
+	}
 	if in.Site != nil {
 		in, out := &in.Site, &out.Site
 		*out = new(string)
@@ -2506,6 +2598,18 @@ func (in *ZoneParameters) DeepCopyInto(out *ZoneParameters) {
 				**out = **in
 			}
 		}
+	}
+	if in.NetworkIdsRefs != nil {
+		in, out := &in.NetworkIdsRefs, &out.NetworkIdsRefs
+		*out = make([]v1.Reference, len(*in))
+		for i := range *in {
+			(*in)[i].DeepCopyInto(&(*out)[i])
+		}
+	}
+	if in.NetworkIdsSelector != nil {
+		in, out := &in.NetworkIdsSelector, &out.NetworkIdsSelector
+		*out = new(v1.Selector)
+		(*in).DeepCopyInto(*out)
 	}
 	if in.Site != nil {
 		in, out := &in.Site, &out.Site

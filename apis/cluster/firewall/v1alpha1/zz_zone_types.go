@@ -19,7 +19,16 @@ type ZoneInitParameters struct {
 	Name *string `json:"name,omitempty" tf:"name,omitempty"`
 
 	// IDs of the networks assigned to this zone.
+	// +crossplane:generate:reference:type=github.com/devantler-tech/provider-upjet-unifi/apis/cluster/network/v1alpha1.Network
 	NetworkIds []*string `json:"networkIds,omitempty" tf:"network_ids,omitempty"`
+
+	// References to Network in network to populate networkIds.
+	// +kubebuilder:validation:Optional
+	NetworkIdsRefs []v1.Reference `json:"networkIdsRefs,omitempty" tf:"-"`
+
+	// Selector for a list of Network in network to populate networkIds.
+	// +kubebuilder:validation:Optional
+	NetworkIdsSelector *v1.Selector `json:"networkIdsSelector,omitempty" tf:"-"`
 
 	// The name of the site the zone belongs to.
 	Site *string `json:"site,omitempty" tf:"site,omitempty"`
@@ -56,8 +65,17 @@ type ZoneParameters struct {
 	Name *string `json:"name,omitempty" tf:"name,omitempty"`
 
 	// IDs of the networks assigned to this zone.
+	// +crossplane:generate:reference:type=github.com/devantler-tech/provider-upjet-unifi/apis/cluster/network/v1alpha1.Network
 	// +kubebuilder:validation:Optional
 	NetworkIds []*string `json:"networkIds,omitempty" tf:"network_ids,omitempty"`
+
+	// References to Network in network to populate networkIds.
+	// +kubebuilder:validation:Optional
+	NetworkIdsRefs []v1.Reference `json:"networkIdsRefs,omitempty" tf:"-"`
+
+	// Selector for a list of Network in network to populate networkIds.
+	// +kubebuilder:validation:Optional
+	NetworkIdsSelector *v1.Selector `json:"networkIdsSelector,omitempty" tf:"-"`
 
 	// The name of the site the zone belongs to.
 	// +kubebuilder:validation:Optional

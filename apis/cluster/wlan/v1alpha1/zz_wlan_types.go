@@ -58,7 +58,16 @@ type MacFilterParameters struct {
 type PrivatePresharedKeysInitParameters struct {
 
 	// ID of the network/VLAN this key is bound to. Leave unset to use the WLAN's default network.
+	// +crossplane:generate:reference:type=github.com/devantler-tech/provider-upjet-unifi/apis/cluster/network/v1alpha1.Network
 	NetworkID *string `json:"networkId,omitempty" tf:"network_id,omitempty"`
+
+	// Reference to a Network in network to populate networkId.
+	// +kubebuilder:validation:Optional
+	NetworkIDRef *v1.Reference `json:"networkIdRef,omitempty" tf:"-"`
+
+	// Selector for a Network in network to populate networkId.
+	// +kubebuilder:validation:Optional
+	NetworkIDSelector *v1.Selector `json:"networkIdSelector,omitempty" tf:"-"`
 
 	// The passphrase for this key (8-255 characters).
 	PasswordSecretRef v1.SecretKeySelector `json:"passwordSecretRef" tf:"-"`
@@ -73,8 +82,17 @@ type PrivatePresharedKeysObservation struct {
 type PrivatePresharedKeysParameters struct {
 
 	// ID of the network/VLAN this key is bound to. Leave unset to use the WLAN's default network.
+	// +crossplane:generate:reference:type=github.com/devantler-tech/provider-upjet-unifi/apis/cluster/network/v1alpha1.Network
 	// +kubebuilder:validation:Optional
 	NetworkID *string `json:"networkId,omitempty" tf:"network_id,omitempty"`
+
+	// Reference to a Network in network to populate networkId.
+	// +kubebuilder:validation:Optional
+	NetworkIDRef *v1.Reference `json:"networkIdRef,omitempty" tf:"-"`
+
+	// Selector for a Network in network to populate networkId.
+	// +kubebuilder:validation:Optional
+	NetworkIDSelector *v1.Selector `json:"networkIdSelector,omitempty" tf:"-"`
 
 	// The passphrase for this key (8-255 characters).
 	// +kubebuilder:validation:Optional

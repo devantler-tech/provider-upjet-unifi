@@ -20,7 +20,16 @@ type DestinationInitParameters struct {
 	ClientMacs []*string `json:"clientMacs,omitempty" tf:"client_macs,omitempty"`
 
 	// ID of a `unifi_firewall_group` (address-group type) to match. Used when `matching_target` is `IP` with `matching_target_type = OBJECT`.
+	// +crossplane:generate:reference:type=github.com/devantler-tech/provider-upjet-unifi/apis/namespaced/firewall/v1alpha1.Group
 	IPGroupID *string `json:"ipGroupId,omitempty" tf:"ip_group_id,omitempty"`
+
+	// Reference to a Group in firewall to populate ipGroupId.
+	// +kubebuilder:validation:Optional
+	IPGroupIDRef *v1.NamespacedReference `json:"ipGroupIdRef,omitempty" tf:"-"`
+
+	// Selector for a Group in firewall to populate ipGroupId.
+	// +kubebuilder:validation:Optional
+	IPGroupIDSelector *v1.NamespacedSelector `json:"ipGroupIdSelector,omitempty" tf:"-"`
 
 	// List of IP addresses or CIDR ranges to match. Used when `matching_target` is `IP`.
 	Ips []*string `json:"ips,omitempty" tf:"ips,omitempty"`
@@ -44,7 +53,16 @@ type DestinationInitParameters struct {
 	Port *string `json:"port,omitempty" tf:"port,omitempty"`
 
 	// ID of a `unifi_firewall_group` (port-group type) to match. Used when `port_matching_type` is `OBJECT`.
+	// +crossplane:generate:reference:type=github.com/devantler-tech/provider-upjet-unifi/apis/namespaced/firewall/v1alpha1.Group
 	PortGroupID *string `json:"portGroupId,omitempty" tf:"port_group_id,omitempty"`
+
+	// Reference to a Group in firewall to populate portGroupId.
+	// +kubebuilder:validation:Optional
+	PortGroupIDRef *v1.NamespacedReference `json:"portGroupIdRef,omitempty" tf:"-"`
+
+	// Selector for a Group in firewall to populate portGroupId.
+	// +kubebuilder:validation:Optional
+	PortGroupIDSelector *v1.NamespacedSelector `json:"portGroupIdSelector,omitempty" tf:"-"`
 
 	// How to match ports: `ANY`, `SPECIFIC`, or `OBJECT` (port group).
 	PortMatchingType *string `json:"portMatchingType,omitempty" tf:"port_matching_type,omitempty"`
@@ -108,8 +126,17 @@ type DestinationParameters struct {
 	ClientMacs []*string `json:"clientMacs,omitempty" tf:"client_macs,omitempty"`
 
 	// ID of a `unifi_firewall_group` (address-group type) to match. Used when `matching_target` is `IP` with `matching_target_type = OBJECT`.
+	// +crossplane:generate:reference:type=github.com/devantler-tech/provider-upjet-unifi/apis/namespaced/firewall/v1alpha1.Group
 	// +kubebuilder:validation:Optional
 	IPGroupID *string `json:"ipGroupId,omitempty" tf:"ip_group_id,omitempty"`
+
+	// Reference to a Group in firewall to populate ipGroupId.
+	// +kubebuilder:validation:Optional
+	IPGroupIDRef *v1.NamespacedReference `json:"ipGroupIdRef,omitempty" tf:"-"`
+
+	// Selector for a Group in firewall to populate ipGroupId.
+	// +kubebuilder:validation:Optional
+	IPGroupIDSelector *v1.NamespacedSelector `json:"ipGroupIdSelector,omitempty" tf:"-"`
 
 	// List of IP addresses or CIDR ranges to match. Used when `matching_target` is `IP`.
 	// +kubebuilder:validation:Optional
@@ -137,8 +164,17 @@ type DestinationParameters struct {
 	Port *string `json:"port,omitempty" tf:"port,omitempty"`
 
 	// ID of a `unifi_firewall_group` (port-group type) to match. Used when `port_matching_type` is `OBJECT`.
+	// +crossplane:generate:reference:type=github.com/devantler-tech/provider-upjet-unifi/apis/namespaced/firewall/v1alpha1.Group
 	// +kubebuilder:validation:Optional
 	PortGroupID *string `json:"portGroupId,omitempty" tf:"port_group_id,omitempty"`
+
+	// Reference to a Group in firewall to populate portGroupId.
+	// +kubebuilder:validation:Optional
+	PortGroupIDRef *v1.NamespacedReference `json:"portGroupIdRef,omitempty" tf:"-"`
+
+	// Selector for a Group in firewall to populate portGroupId.
+	// +kubebuilder:validation:Optional
+	PortGroupIDSelector *v1.NamespacedSelector `json:"portGroupIdSelector,omitempty" tf:"-"`
 
 	// How to match ports: `ANY`, `SPECIFIC`, or `OBJECT` (port group).
 	// +kubebuilder:validation:Optional
@@ -368,7 +404,16 @@ type SourceInitParameters struct {
 	ClientMacs []*string `json:"clientMacs,omitempty" tf:"client_macs,omitempty"`
 
 	// ID of a `unifi_firewall_group` (address-group type) to match. Used when `matching_target` is `IP` with `matching_target_type = OBJECT`.
+	// +crossplane:generate:reference:type=github.com/devantler-tech/provider-upjet-unifi/apis/namespaced/firewall/v1alpha1.Group
 	IPGroupID *string `json:"ipGroupId,omitempty" tf:"ip_group_id,omitempty"`
+
+	// Reference to a Group in firewall to populate ipGroupId.
+	// +kubebuilder:validation:Optional
+	IPGroupIDRef *v1.NamespacedReference `json:"ipGroupIdRef,omitempty" tf:"-"`
+
+	// Selector for a Group in firewall to populate ipGroupId.
+	// +kubebuilder:validation:Optional
+	IPGroupIDSelector *v1.NamespacedSelector `json:"ipGroupIdSelector,omitempty" tf:"-"`
 
 	// List of IP addresses or CIDR ranges to match. Used when `matching_target` is `IP`.
 	Ips []*string `json:"ips,omitempty" tf:"ips,omitempty"`
@@ -392,7 +437,16 @@ type SourceInitParameters struct {
 	Port *string `json:"port,omitempty" tf:"port,omitempty"`
 
 	// ID of a `unifi_firewall_group` (port-group type) to match. Used when `port_matching_type` is `OBJECT`.
+	// +crossplane:generate:reference:type=github.com/devantler-tech/provider-upjet-unifi/apis/namespaced/firewall/v1alpha1.Group
 	PortGroupID *string `json:"portGroupId,omitempty" tf:"port_group_id,omitempty"`
+
+	// Reference to a Group in firewall to populate portGroupId.
+	// +kubebuilder:validation:Optional
+	PortGroupIDRef *v1.NamespacedReference `json:"portGroupIdRef,omitempty" tf:"-"`
+
+	// Selector for a Group in firewall to populate portGroupId.
+	// +kubebuilder:validation:Optional
+	PortGroupIDSelector *v1.NamespacedSelector `json:"portGroupIdSelector,omitempty" tf:"-"`
 
 	// How to match ports: `ANY`, `SPECIFIC`, or `OBJECT` (port group).
 	PortMatchingType *string `json:"portMatchingType,omitempty" tf:"port_matching_type,omitempty"`
@@ -456,8 +510,17 @@ type SourceParameters struct {
 	ClientMacs []*string `json:"clientMacs,omitempty" tf:"client_macs,omitempty"`
 
 	// ID of a `unifi_firewall_group` (address-group type) to match. Used when `matching_target` is `IP` with `matching_target_type = OBJECT`.
+	// +crossplane:generate:reference:type=github.com/devantler-tech/provider-upjet-unifi/apis/namespaced/firewall/v1alpha1.Group
 	// +kubebuilder:validation:Optional
 	IPGroupID *string `json:"ipGroupId,omitempty" tf:"ip_group_id,omitempty"`
+
+	// Reference to a Group in firewall to populate ipGroupId.
+	// +kubebuilder:validation:Optional
+	IPGroupIDRef *v1.NamespacedReference `json:"ipGroupIdRef,omitempty" tf:"-"`
+
+	// Selector for a Group in firewall to populate ipGroupId.
+	// +kubebuilder:validation:Optional
+	IPGroupIDSelector *v1.NamespacedSelector `json:"ipGroupIdSelector,omitempty" tf:"-"`
 
 	// List of IP addresses or CIDR ranges to match. Used when `matching_target` is `IP`.
 	// +kubebuilder:validation:Optional
@@ -485,8 +548,17 @@ type SourceParameters struct {
 	Port *string `json:"port,omitempty" tf:"port,omitempty"`
 
 	// ID of a `unifi_firewall_group` (port-group type) to match. Used when `port_matching_type` is `OBJECT`.
+	// +crossplane:generate:reference:type=github.com/devantler-tech/provider-upjet-unifi/apis/namespaced/firewall/v1alpha1.Group
 	// +kubebuilder:validation:Optional
 	PortGroupID *string `json:"portGroupId,omitempty" tf:"port_group_id,omitempty"`
+
+	// Reference to a Group in firewall to populate portGroupId.
+	// +kubebuilder:validation:Optional
+	PortGroupIDRef *v1.NamespacedReference `json:"portGroupIdRef,omitempty" tf:"-"`
+
+	// Selector for a Group in firewall to populate portGroupId.
+	// +kubebuilder:validation:Optional
+	PortGroupIDSelector *v1.NamespacedSelector `json:"portGroupIdSelector,omitempty" tf:"-"`
 
 	// How to match ports: `ANY`, `SPECIFIC`, or `OBJECT` (port group).
 	// +kubebuilder:validation:Optional

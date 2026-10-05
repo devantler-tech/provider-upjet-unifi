@@ -99,6 +99,16 @@ func (in *ClientInitParameters) DeepCopyInto(out *ClientInitParameters) {
 		*out = new(string)
 		**out = **in
 	}
+	if in.NetworkIDRef != nil {
+		in, out := &in.NetworkIDRef, &out.NetworkIDRef
+		*out = new(v1.Reference)
+		(*in).DeepCopyInto(*out)
+	}
+	if in.NetworkIDSelector != nil {
+		in, out := &in.NetworkIDSelector, &out.NetworkIDSelector
+		*out = new(v1.Selector)
+		(*in).DeepCopyInto(*out)
+	}
 	if in.Note != nil {
 		in, out := &in.Note, &out.Note
 		*out = new(string)
@@ -337,6 +347,16 @@ func (in *ClientParameters) DeepCopyInto(out *ClientParameters) {
 		in, out := &in.NetworkID, &out.NetworkID
 		*out = new(string)
 		**out = **in
+	}
+	if in.NetworkIDRef != nil {
+		in, out := &in.NetworkIDRef, &out.NetworkIDRef
+		*out = new(v1.Reference)
+		(*in).DeepCopyInto(*out)
+	}
+	if in.NetworkIDSelector != nil {
+		in, out := &in.NetworkIDSelector, &out.NetworkIDSelector
+		*out = new(v1.Selector)
+		(*in).DeepCopyInto(*out)
 	}
 	if in.Note != nil {
 		in, out := &in.Note, &out.Note
@@ -704,6 +724,16 @@ func (in *DeviceInitParameters) DeepCopyInto(out *DeviceInitParameters) {
 		in, out := &in.MgmtNetworkID, &out.MgmtNetworkID
 		*out = new(string)
 		**out = **in
+	}
+	if in.MgmtNetworkIDRef != nil {
+		in, out := &in.MgmtNetworkIDRef, &out.MgmtNetworkIDRef
+		*out = new(v1.Reference)
+		(*in).DeepCopyInto(*out)
+	}
+	if in.MgmtNetworkIDSelector != nil {
+		in, out := &in.MgmtNetworkIDSelector, &out.MgmtNetworkIDSelector
+		*out = new(v1.Selector)
+		(*in).DeepCopyInto(*out)
 	}
 	if in.Name != nil {
 		in, out := &in.Name, &out.Name
@@ -1139,6 +1169,16 @@ func (in *DeviceParameters) DeepCopyInto(out *DeviceParameters) {
 		*out = new(string)
 		**out = **in
 	}
+	if in.MgmtNetworkIDRef != nil {
+		in, out := &in.MgmtNetworkIDRef, &out.MgmtNetworkIDRef
+		*out = new(v1.Reference)
+		(*in).DeepCopyInto(*out)
+	}
+	if in.MgmtNetworkIDSelector != nil {
+		in, out := &in.MgmtNetworkIDSelector, &out.MgmtNetworkIDSelector
+		*out = new(v1.Selector)
+		(*in).DeepCopyInto(*out)
+	}
 	if in.Name != nil {
 		in, out := &in.Name, &out.Name
 		*out = new(string)
@@ -1522,6 +1562,18 @@ func (in *PortOverrideInitParameters) DeepCopyInto(out *PortOverrideInitParamete
 			}
 		}
 	}
+	if in.ExcludedNetworkconfIdsRefs != nil {
+		in, out := &in.ExcludedNetworkconfIdsRefs, &out.ExcludedNetworkconfIdsRefs
+		*out = make([]v1.Reference, len(*in))
+		for i := range *in {
+			(*in)[i].DeepCopyInto(&(*out)[i])
+		}
+	}
+	if in.ExcludedNetworkconfIdsSelector != nil {
+		in, out := &in.ExcludedNetworkconfIdsSelector, &out.ExcludedNetworkconfIdsSelector
+		*out = new(v1.Selector)
+		(*in).DeepCopyInto(*out)
+	}
 	if in.FecMode != nil {
 		in, out := &in.FecMode, &out.FecMode
 		*out = new(string)
@@ -1578,6 +1630,18 @@ func (in *PortOverrideInitParameters) DeepCopyInto(out *PortOverrideInitParamete
 			}
 		}
 	}
+	if in.MulticastRouterNetworkconfIdsRefs != nil {
+		in, out := &in.MulticastRouterNetworkconfIdsRefs, &out.MulticastRouterNetworkconfIdsRefs
+		*out = make([]v1.Reference, len(*in))
+		for i := range *in {
+			(*in)[i].DeepCopyInto(&(*out)[i])
+		}
+	}
+	if in.MulticastRouterNetworkconfIdsSelector != nil {
+		in, out := &in.MulticastRouterNetworkconfIdsSelector, &out.MulticastRouterNetworkconfIdsSelector
+		*out = new(v1.Selector)
+		(*in).DeepCopyInto(*out)
+	}
 	if in.Name != nil {
 		in, out := &in.Name, &out.Name
 		*out = new(string)
@@ -1587,6 +1651,16 @@ func (in *PortOverrideInitParameters) DeepCopyInto(out *PortOverrideInitParamete
 		in, out := &in.NativeNetworkconfID, &out.NativeNetworkconfID
 		*out = new(string)
 		**out = **in
+	}
+	if in.NativeNetworkconfIDRef != nil {
+		in, out := &in.NativeNetworkconfIDRef, &out.NativeNetworkconfIDRef
+		*out = new(v1.Reference)
+		(*in).DeepCopyInto(*out)
+	}
+	if in.NativeNetworkconfIDSelector != nil {
+		in, out := &in.NativeNetworkconfIDSelector, &out.NativeNetworkconfIDSelector
+		*out = new(v1.Selector)
+		(*in).DeepCopyInto(*out)
 	}
 	if in.OpMode != nil {
 		in, out := &in.OpMode, &out.OpMode
@@ -1607,6 +1681,16 @@ func (in *PortOverrideInitParameters) DeepCopyInto(out *PortOverrideInitParamete
 		in, out := &in.PortProfileID, &out.PortProfileID
 		*out = new(string)
 		**out = **in
+	}
+	if in.PortProfileIDRef != nil {
+		in, out := &in.PortProfileIDRef, &out.PortProfileIDRef
+		*out = new(v1.Reference)
+		(*in).DeepCopyInto(*out)
+	}
+	if in.PortProfileIDSelector != nil {
+		in, out := &in.PortProfileIDSelector, &out.PortProfileIDSelector
+		*out = new(v1.Selector)
+		(*in).DeepCopyInto(*out)
 	}
 	if in.PortSecurityEnabled != nil {
 		in, out := &in.PortSecurityEnabled, &out.PortSecurityEnabled
@@ -1720,6 +1804,18 @@ func (in *PortOverrideInitParameters) DeepCopyInto(out *PortOverrideInitParamete
 			}
 		}
 	}
+	if in.TaggedNetworkconfIdsRefs != nil {
+		in, out := &in.TaggedNetworkconfIdsRefs, &out.TaggedNetworkconfIdsRefs
+		*out = make([]v1.Reference, len(*in))
+		for i := range *in {
+			(*in)[i].DeepCopyInto(&(*out)[i])
+		}
+	}
+	if in.TaggedNetworkconfIdsSelector != nil {
+		in, out := &in.TaggedNetworkconfIdsSelector, &out.TaggedNetworkconfIdsSelector
+		*out = new(v1.Selector)
+		(*in).DeepCopyInto(*out)
+	}
 	if in.TaggedVlanMgmt != nil {
 		in, out := &in.TaggedVlanMgmt, &out.TaggedVlanMgmt
 		*out = new(string)
@@ -1729,6 +1825,16 @@ func (in *PortOverrideInitParameters) DeepCopyInto(out *PortOverrideInitParamete
 		in, out := &in.VoiceNetworkconfID, &out.VoiceNetworkconfID
 		*out = new(string)
 		**out = **in
+	}
+	if in.VoiceNetworkconfIDRef != nil {
+		in, out := &in.VoiceNetworkconfIDRef, &out.VoiceNetworkconfIDRef
+		*out = new(v1.Reference)
+		(*in).DeepCopyInto(*out)
+	}
+	if in.VoiceNetworkconfIDSelector != nil {
+		in, out := &in.VoiceNetworkconfIDSelector, &out.VoiceNetworkconfIDSelector
+		*out = new(v1.Selector)
+		(*in).DeepCopyInto(*out)
 	}
 }
 
@@ -2062,6 +2168,18 @@ func (in *PortOverrideParameters) DeepCopyInto(out *PortOverrideParameters) {
 			}
 		}
 	}
+	if in.ExcludedNetworkconfIdsRefs != nil {
+		in, out := &in.ExcludedNetworkconfIdsRefs, &out.ExcludedNetworkconfIdsRefs
+		*out = make([]v1.Reference, len(*in))
+		for i := range *in {
+			(*in)[i].DeepCopyInto(&(*out)[i])
+		}
+	}
+	if in.ExcludedNetworkconfIdsSelector != nil {
+		in, out := &in.ExcludedNetworkconfIdsSelector, &out.ExcludedNetworkconfIdsSelector
+		*out = new(v1.Selector)
+		(*in).DeepCopyInto(*out)
+	}
 	if in.FecMode != nil {
 		in, out := &in.FecMode, &out.FecMode
 		*out = new(string)
@@ -2118,6 +2236,18 @@ func (in *PortOverrideParameters) DeepCopyInto(out *PortOverrideParameters) {
 			}
 		}
 	}
+	if in.MulticastRouterNetworkconfIdsRefs != nil {
+		in, out := &in.MulticastRouterNetworkconfIdsRefs, &out.MulticastRouterNetworkconfIdsRefs
+		*out = make([]v1.Reference, len(*in))
+		for i := range *in {
+			(*in)[i].DeepCopyInto(&(*out)[i])
+		}
+	}
+	if in.MulticastRouterNetworkconfIdsSelector != nil {
+		in, out := &in.MulticastRouterNetworkconfIdsSelector, &out.MulticastRouterNetworkconfIdsSelector
+		*out = new(v1.Selector)
+		(*in).DeepCopyInto(*out)
+	}
 	if in.Name != nil {
 		in, out := &in.Name, &out.Name
 		*out = new(string)
@@ -2127,6 +2257,16 @@ func (in *PortOverrideParameters) DeepCopyInto(out *PortOverrideParameters) {
 		in, out := &in.NativeNetworkconfID, &out.NativeNetworkconfID
 		*out = new(string)
 		**out = **in
+	}
+	if in.NativeNetworkconfIDRef != nil {
+		in, out := &in.NativeNetworkconfIDRef, &out.NativeNetworkconfIDRef
+		*out = new(v1.Reference)
+		(*in).DeepCopyInto(*out)
+	}
+	if in.NativeNetworkconfIDSelector != nil {
+		in, out := &in.NativeNetworkconfIDSelector, &out.NativeNetworkconfIDSelector
+		*out = new(v1.Selector)
+		(*in).DeepCopyInto(*out)
 	}
 	if in.OpMode != nil {
 		in, out := &in.OpMode, &out.OpMode
@@ -2147,6 +2287,16 @@ func (in *PortOverrideParameters) DeepCopyInto(out *PortOverrideParameters) {
 		in, out := &in.PortProfileID, &out.PortProfileID
 		*out = new(string)
 		**out = **in
+	}
+	if in.PortProfileIDRef != nil {
+		in, out := &in.PortProfileIDRef, &out.PortProfileIDRef
+		*out = new(v1.Reference)
+		(*in).DeepCopyInto(*out)
+	}
+	if in.PortProfileIDSelector != nil {
+		in, out := &in.PortProfileIDSelector, &out.PortProfileIDSelector
+		*out = new(v1.Selector)
+		(*in).DeepCopyInto(*out)
 	}
 	if in.PortSecurityEnabled != nil {
 		in, out := &in.PortSecurityEnabled, &out.PortSecurityEnabled
@@ -2260,6 +2410,18 @@ func (in *PortOverrideParameters) DeepCopyInto(out *PortOverrideParameters) {
 			}
 		}
 	}
+	if in.TaggedNetworkconfIdsRefs != nil {
+		in, out := &in.TaggedNetworkconfIdsRefs, &out.TaggedNetworkconfIdsRefs
+		*out = make([]v1.Reference, len(*in))
+		for i := range *in {
+			(*in)[i].DeepCopyInto(&(*out)[i])
+		}
+	}
+	if in.TaggedNetworkconfIdsSelector != nil {
+		in, out := &in.TaggedNetworkconfIdsSelector, &out.TaggedNetworkconfIdsSelector
+		*out = new(v1.Selector)
+		(*in).DeepCopyInto(*out)
+	}
 	if in.TaggedVlanMgmt != nil {
 		in, out := &in.TaggedVlanMgmt, &out.TaggedVlanMgmt
 		*out = new(string)
@@ -2269,6 +2431,16 @@ func (in *PortOverrideParameters) DeepCopyInto(out *PortOverrideParameters) {
 		in, out := &in.VoiceNetworkconfID, &out.VoiceNetworkconfID
 		*out = new(string)
 		**out = **in
+	}
+	if in.VoiceNetworkconfIDRef != nil {
+		in, out := &in.VoiceNetworkconfIDRef, &out.VoiceNetworkconfIDRef
+		*out = new(v1.Reference)
+		(*in).DeepCopyInto(*out)
+	}
+	if in.VoiceNetworkconfIDSelector != nil {
+		in, out := &in.VoiceNetworkconfIDSelector, &out.VoiceNetworkconfIDSelector
+		*out = new(v1.Selector)
+		(*in).DeepCopyInto(*out)
 	}
 }
 
