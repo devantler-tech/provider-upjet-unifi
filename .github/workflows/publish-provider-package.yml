@@ -121,7 +121,7 @@ jobs:
           # must not be able to publish with an older, advisory-affected
           # toolchain. No build cache either: a release must not be built from
           # a cache another run could have written.
-          go-version: "1.26.6"
+          go-version: "1.26.9"
           cache: false
 
       - name: Vendor Dependencies
