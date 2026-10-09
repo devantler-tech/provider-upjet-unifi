@@ -4,7 +4,7 @@
 set -eu
 
 root=$(CDPATH='' cd -- "$(dirname -- "$0")/.." && pwd)
-minimum=1.26.6
+minimum=1.26.9
 
 fail() {
 	echo "go-floor.test: $*" >&2
