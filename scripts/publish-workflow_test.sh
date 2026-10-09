@@ -51,7 +51,24 @@ ruby -r yaml -e '
 
   publish = jobs.fetch("publish-provider-package")
   raise "publish must wait for validated version" unless publish.fetch("needs") == "resolve-version"
-  raise "publish must consume the validated version" unless publish.dig("with", "version") == "${{ needs.resolve-version.outputs.version }}"
+  raise "publish must consume the validated version" unless publish.dig("env", "VERSION") == "${{ needs.resolve-version.outputs.version }}"
+  publish_runs = publish.fetch("steps").map { |step| step["run"] }.compact
+  raise "publish must build and push the package" unless publish_runs.any? { |run| run.include?("VERSION=\"$VERSION\"") && run.match?(/ publish\s*\z/) }
+  raise "publish must not interpolate ${{ }} into the shell" if publish_runs.any? { |run| run.include?("${{") }
+
+  # The organization refuses any action that is not pinned to a full commit
+  # SHA, and it checks the actions INSIDE a called workflow too: a release was
+  # refused because a workflow this one called used an action by tag (#56). A
+  # pin on the call cannot vouch for what the called workflow uses, so no job
+  # may call a workflow, and every step action must be a 40-hex commit.
+  jobs.each do |name, job|
+    raise "#{name} must not call a reusable workflow - its inner action pins cannot be checked here" if job.key?("uses")
+    job.fetch("steps").each do |step|
+      action = step["uses"]
+      next unless action
+      raise "#{name} uses #{action}, which is not pinned to a full commit SHA" unless action.match?(/\A[^@\s]+@[0-9a-f]{40}\z/)
+    end
+  end
 
   sign = jobs.fetch("sign-provider-package")
   raise "sign must wait for validation and publication" unless sign.fetch("needs") == ["resolve-version", "publish-provider-package"]

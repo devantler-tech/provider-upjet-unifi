@@ -49,31 +49,93 @@ jobs:
         run: ./scripts/release-version.sh "$REF_TYPE" "$REF_NAME" >> "$GITHUB_OUTPUT"
 
   publish-provider-package:
-    # The reusable workflow pushes the xpkg to GHCR (docker login + crane copy)
-    # using GHCR_PAT (the job's GITHUB_TOKEN), so it needs packages:write to
-    # publish and contents:read to check out. It does no OIDC/cosign keyless
-    # signing itself, so id-token:write is intentionally omitted HERE — the
-    # signature is attached by the sign-provider-package job below.
+    # Builds the xpkg and pushes it to ghcr.io/devantler-tech with steps this
+    # repository owns, mirroring the build in ci.yml. It used to call the
+    # community reusable workflow (crossplane-contrib/provider-workflows),
+    # but that workflow uses actions by tag, and the organization refuses any
+    # action that is not pinned to a full commit SHA — a pin on the CALL does
+    # not reach the actions inside it, so every release was refused before a
+    # step ran (#56). Keep every `uses:` here a 40-hex commit; the publish
+    # workflow test enforces it.
+    #
+    # Needs packages:write to push and contents:read to check out. It does no
+    # OIDC/cosign keyless signing itself, so id-token:write is intentionally
+    # omitted HERE — the signature is attached by the sign-provider-package
+    # job below.
     permissions:
       contents: read
       packages: write
     needs: resolve-version
-    uses: crossplane-contrib/provider-workflows/.github/workflows/publish-provider.yml@451c4dc6ad3691b0a702a997a0ac24e8bbc8bbaa # main
-    with:
-      repository: provider-upjet-unifi
-      # Publish to ghcr.io/devantler-tech. The reusable workflow defaults
-      # registry_org to "crossplane-contrib" (which we cannot push to → the
-      # publish 403s with "permission_denied"), so it must be set explicitly.
-      registry_org: devantler-tech
-      version: ${{ needs.resolve-version.outputs.version }}
-      # The security floor is deliberately not a dispatch input: a caller must
-      # not be able to publish with an older, advisory-affected toolchain.
-      go-version: "1.26.6"
-      cleanup-disk: true
-    secrets:
-      GHCR_PAT: ${{ secrets.GITHUB_TOKEN }}
-      XPKG_MIRROR_TOKEN: ${{ secrets.XPKG_MIRROR_TOKEN }}
-      XPKG_MIRROR_ACCESS_ID: ${{ secrets.XPKG_MIRROR_ACCESS_ID }}
+    runs-on: ubuntu-24.04
+    env:
+      DOCKER_BUILDX_VERSION: "v0.34.1"
+      # Publish to ghcr.io/devantler-tech, and never promote a channel from here.
+      XPKG_REG_ORGS: ghcr.io/devantler-tech
+      XPKG_REG_ORGS_NO_PROMOTE: ghcr.io/devantler-tech
+      # The validated tag-derived version reaches the shell via env, never
+      # inline ${{ }} in run:, so its contents cannot inject shell syntax.
+      VERSION: ${{ needs.resolve-version.outputs.version }}
+    steps:
+      - name: Cleanup Disk
+        uses: jlumbroso/free-disk-space@54081f138730dfa15788a46383842cd2f914a1be # v1.3.1
+        with:
+          android: true
+          dotnet: true
+          haskell: true
+          tool-cache: true
+          large-packages: false
+          swap-storage: false
+
+      - name: Setup QEMU
+        uses: docker/setup-qemu-action@ce360397dd3f832beb865e1373c09c0e9f86d70a # v4.0.0
+        with:
+          platforms: all
+
+      - name: Setup Docker Buildx
+        uses: docker/setup-buildx-action@4d04d5d9486b7bd6fa91e7baf45bbb4f8b9deedd # v4.0.0
+        with:
+          version: ${{ env.DOCKER_BUILDX_VERSION }}
+          install: true
+          # A release must not run a builder binary restored from a cache.
+          cache-binary: false
+
+      - name: Log in to GHCR
+        uses: docker/login-action@650006c6eb7dba73a995cc03b0b2d7f5ca915bee # v4.2.0
+        with:
+          registry: ghcr.io
+          username: ${{ github.repository_owner }}
+          password: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Check out the release ref
+        uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6.0.2
+        with:
+          submodules: true
+          # The build derives version metadata from history and tags.
+          fetch-depth: 0
+          persist-credentials: false
+
+      - name: Setup Go
+        uses: actions/setup-go@4a3601121dd01d1626a1e23e37211e3254c1c06c # v6.4.0
+        with:
+          # The security floor is deliberately not a dispatch input: a caller
+          # must not be able to publish with an older, advisory-affected
+          # toolchain. No build cache either: a release must not be built from
+          # a cache another run could have written.
+          go-version: "1.26.6"
+          cache: false
+
+      - name: Vendor Dependencies
+        run: make vendor vendor.check
+
+      - name: Build Artifacts
+        run: make -j2 XPKG_REG_ORGS="$XPKG_REG_ORGS" XPKG_REG_ORGS_NO_PROMOTE="$XPKG_REG_ORGS_NO_PROMOTE" BRANCH_NAME=main VERSION="$VERSION" build.all
+        env:
+          # We're using docker buildx, which doesn't actually load the images it
+          # builds by default. Specifying --load does so.
+          BUILD_ARGS: "--load"
+
+      - name: Publish Artifacts
+        run: make -j2 XPKG_REG_ORGS="$XPKG_REG_ORGS" XPKG_REG_ORGS_NO_PROMOTE="$XPKG_REG_ORGS_NO_PROMOTE" BRANCH_NAME=main VERSION="$VERSION" publish
 
   sign-provider-package:
     # Keyless cosign signature over the published package image — REQUIRED for
@@ -81,9 +143,9 @@ jobs:
     # (Kyverno) denies any unsigned ghcr.io/devantler-tech/* pod image, and the
     # ProviderRevision's package-runtime Deployment runs THIS image: v0.1.0
     # shipped unsigned and its pods were rejected at admission on prod
-    # (2026-07-02), leaving the provider Deployment at 0/1. The upstream
-    # reusable publish workflow does not sign, so the signature is attached
-    # here right after it pushes. The Fulcio certificate identity this produces is
+    # (2026-07-02), leaving the provider Deployment at 0/1. The publish job
+    # above does not sign, so the signature is attached here right after it
+    # pushes. The Fulcio certificate identity this produces is
     #   https://github.com/devantler-tech/provider-upjet-unifi/.github/workflows/publish-provider-package.yml@refs/tags/<version>
     # which the platform policy accepts alongside its publish-app identity.
     needs:
