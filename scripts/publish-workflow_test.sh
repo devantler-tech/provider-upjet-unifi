@@ -56,7 +56,7 @@ ruby -r yaml -e '
   raise "publish must build and push the package" unless publish_runs.any? { |run| run.include?("VERSION=\"$VERSION\"") && run.match?(/ publish\s*\z/) }
   raise "publish must not interpolate ${{ }} into the shell" if publish_runs.any? { |run| run.include?("${{") }
 
-  # The organisation refuses any action that is not pinned to a full commit
+  # The organization refuses any action that is not pinned to a full commit
   # SHA, and it checks the actions INSIDE a called workflow too: a release was
   # refused because a workflow this one called used an action by tag (#56). A
   # pin on the call cannot vouch for what the called workflow uses, so no job

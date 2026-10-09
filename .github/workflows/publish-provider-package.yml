@@ -52,7 +52,7 @@ jobs:
     # Builds the xpkg and pushes it to ghcr.io/devantler-tech with steps this
     # repository owns, mirroring the build in ci.yml. It used to call the
     # community reusable workflow (crossplane-contrib/provider-workflows),
-    # but that workflow uses actions by tag, and the organisation refuses any
+    # but that workflow uses actions by tag, and the organization refuses any
     # action that is not pinned to a full commit SHA — a pin on the CALL does
     # not reach the actions inside it, so every release was refused before a
     # step ran (#56). Keep every `uses:` here a 40-hex commit; the publish
@@ -87,12 +87,12 @@ jobs:
           swap-storage: false
 
       - name: Setup QEMU
-        uses: docker/setup-qemu-action@ce360397dd3f832beb865e1373c09c0e9f86d70a # v4
+        uses: docker/setup-qemu-action@ce360397dd3f832beb865e1373c09c0e9f86d70a # v4.0.0
         with:
           platforms: all
 
       - name: Setup Docker Buildx
-        uses: docker/setup-buildx-action@4d04d5d9486b7bd6fa91e7baf45bbb4f8b9deedd # v4
+        uses: docker/setup-buildx-action@4d04d5d9486b7bd6fa91e7baf45bbb4f8b9deedd # v4.0.0
         with:
           version: ${{ env.DOCKER_BUILDX_VERSION }}
           install: true
