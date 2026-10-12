@@ -34,7 +34,7 @@ For anything beyond documentation you also need Go (the version in [`go.mod`](go
 A first check that needs no cluster or credentials is to build the code generator:
 
 ```sh
-go build ./cmd/generator
+go build -o /dev/null ./cmd/generator
 ```
 
 It exits successfully and prints nothing; the first run downloads dependencies and can take a few

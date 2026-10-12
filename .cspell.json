@@ -112,6 +112,7 @@
     "prealloc",
     "precheck",
     "protogetter",
+    "providerconfig",
     "radiusprofile",
     "recognised",
     "recvcheck",
