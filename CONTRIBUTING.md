@@ -25,8 +25,9 @@ Make a small wording improvement in `README.md`, then check the change for white
 git diff --check
 ```
 
-The command must exit successfully and print nothing. [CI](.github/workflows/ci.yml) also lints and
-spell-checks the documentation.
+The command must exit successfully and print nothing. On the pull request, the organization's
+required lint check also spell-checks the documentation. This repository's own
+[CI workflow](.github/workflows/ci.yml) skips its code jobs for a Markdown-only change.
 
 ## Change the code
 
@@ -43,11 +44,12 @@ build the package or contact a controller.
 
 Know which files you may edit:
 
-- **Hand-written:** `config/**` (which resources exist, how they are grouped and named),
-  `internal/clients/unifi.go` (how credentials reach the provider), `examples/**`, `hack/**`,
-  `scripts/**` and the documentation.
-- **Generated, never edited by hand:** `apis/**`, `internal/controller/**` and `package/crds/**`.
-  Change the hand-written inputs and regenerate instead.
+- **Hand-written:** the Go files under `config/` (which resources exist, how they are grouped and
+  named), `internal/clients/unifi.go` (how credentials reach the provider), `examples/**`,
+  `hack/**`, `scripts/**` and the documentation.
+- **Generated, never edited by hand:** `apis/**`, `internal/controller/**`, `package/crds/**`,
+  `config/schema.json` and `config/provider-metadata.yaml`. Change the hand-written inputs and
+  regenerate instead.
 
 The everyday targets are:
 

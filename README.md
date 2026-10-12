@@ -38,6 +38,11 @@ The provider reads your controller's address and credentials from a Kubernetes `
    `password`, and apply it. Keep the filled-in file out of Git.
 2. Apply `providerconfig.yaml`.
 
+That configures the cluster-scoped resources. The namespaced resources look for a
+`ClusterProviderConfig` instead: for those, use the same secret and apply
+`clusterproviderconfig.yaml` from
+[`examples/namespaced/providerconfig/`](examples/namespaced/providerconfig/).
+
 Supported credential keys are `api_url`, `username`, `password`, `api_key`, `site`,
 `allow_insecure`, `hardware_id` and `cloud_connector`. Set `allow_insecure` only for a controller
 with a self-signed certificate.
@@ -45,7 +50,7 @@ with a self-signed certificate.
 ## Create a resource
 
 Every resource you create changes the live controller, so begin with something harmless on a
-network you can afford to experiment on. Each example comes in two flavours: cluster-scoped
+network you can afford to experiment on. Most examples come in two flavours: cluster-scoped
 (one resource for the whole cluster) and namespaced (the resource lives in a Kubernetes namespace).
 
 | Resource         | Cluster                                          | Namespaced                                          |
