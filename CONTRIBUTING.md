@@ -72,9 +72,11 @@ cluster, never one you care about, and no UniFi controller.
 
 ## Keep development and operations separate
 
-Publishing a release, signing the package and installing it on a real cluster are maintainer
-operations, not onboarding steps. Do not point a locally built provider at a controller you do not
-own, and never commit controller addresses, credentials or filled-in secret templates.
+Publishing a release and signing the package are maintainer operations, not onboarding steps.
+Installing a released version on your own cluster is ordinary use and is described in the
+[README](README.md#install); you do not need it to validate a contribution. Do not point a locally
+built provider at a controller you do not own, and never commit controller addresses, credentials
+or filled-in secret templates.
 
 ## Submit your change
 
