@@ -38,8 +38,8 @@ go build ./cmd/generator
 ```
 
 It exits successfully and prints nothing; the first run downloads dependencies and can take a few
-minutes. This proves the hand-written code compiles. It does not run the generator, build the
-package or contact a controller.
+minutes. This confirms the generator and its dependencies compile. It does not run the generator,
+build the package or contact a controller.
 
 Know which files you may edit:
 
