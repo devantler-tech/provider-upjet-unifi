@@ -24,7 +24,19 @@ type DestinationInitParameters struct {
 	// List of IP addresses or CIDR ranges to match. Used when `matching_target` is `IP`.
 	Ips []*string `json:"ips,omitempty" tf:"ips,omitempty"`
 
-	// What to match: `ANY`, `NETWORK`, `CLIENT`, `IP`, `DEVICE`, `MAC`, or `WEB` (domains/FQDN).
+	// Match the clients in `client_macs` by MAC address rather than by their current IP address. Corresponds to the controller's `match_mac` flag on a `CLIENT` matching target. Defaults to `false`.
+	MatchMac *bool `json:"matchMac,omitempty" tf:"match_mac,omitempty"`
+
+	// Invert the IP match: when `true`, the endpoint matches every address **except** those in `ips` / `ip_group_id`. Corresponds to the "Match Opposite" toggle on an `IP` matching target in the UniFi UI. Defaults to `false`.
+	MatchOppositeIps *bool `json:"matchOppositeIps,omitempty" tf:"match_opposite_ips,omitempty"`
+
+	// Invert the network match: when `true`, the endpoint matches every network **except** those in `network_ids`. Corresponds to the "Match Opposite" toggle on a `NETWORK` matching target in the UniFi UI. Defaults to `false`.
+	MatchOppositeNetworks *bool `json:"matchOppositeNetworks,omitempty" tf:"match_opposite_networks,omitempty"`
+
+	// Invert the port match: when `true`, the endpoint matches every port **except** those in `port` / `port_group_id`. Corresponds to the "Match Opposite" toggle on the port selector in the UniFi UI. Defaults to `false`.
+	MatchOppositePorts *bool `json:"matchOppositePorts,omitempty" tf:"match_opposite_ports,omitempty"`
+
+	// What to match: `ANY`, `NETWORK`, `CLIENT`, `IP`, `DEVICE`, `MAC`, `WEB` (domains/FQDN), or `REGION` (country codes, set `regions`). The controller only accepts `REGION` on an external zone.
 	MatchingTarget *string `json:"matchingTarget,omitempty" tf:"matching_target,omitempty"`
 
 	// List of UniFi network IDs to match. Used when `matching_target` is `NETWORK`.
@@ -47,6 +59,9 @@ type DestinationInitParameters struct {
 
 	// How to match ports: `ANY`, `SPECIFIC`, or `OBJECT` (port group).
 	PortMatchingType *string `json:"portMatchingType,omitempty" tf:"port_matching_type,omitempty"`
+
+	// Two-letter ISO country codes to match (for example `["DE", "US"]`). Used when `matching_target` is `REGION`, which the controller only accepts on an external zone. The controller rejects an update that leaves the list empty, so a policy matching on region must always carry at least one code.
+	Regions []*string `json:"regions,omitempty" tf:"regions,omitempty"`
 
 	// List of domains/FQDNs to match. Used when `matching_target` is `WEB`.
 	WebDomains []*string `json:"webDomains,omitempty" tf:"web_domains,omitempty"`
@@ -75,7 +90,19 @@ type DestinationObservation struct {
 	// List of IP addresses or CIDR ranges to match. Used when `matching_target` is `IP`.
 	Ips []*string `json:"ips,omitempty" tf:"ips,omitempty"`
 
-	// What to match: `ANY`, `NETWORK`, `CLIENT`, `IP`, `DEVICE`, `MAC`, or `WEB` (domains/FQDN).
+	// Match the clients in `client_macs` by MAC address rather than by their current IP address. Corresponds to the controller's `match_mac` flag on a `CLIENT` matching target. Defaults to `false`.
+	MatchMac *bool `json:"matchMac,omitempty" tf:"match_mac,omitempty"`
+
+	// Invert the IP match: when `true`, the endpoint matches every address **except** those in `ips` / `ip_group_id`. Corresponds to the "Match Opposite" toggle on an `IP` matching target in the UniFi UI. Defaults to `false`.
+	MatchOppositeIps *bool `json:"matchOppositeIps,omitempty" tf:"match_opposite_ips,omitempty"`
+
+	// Invert the network match: when `true`, the endpoint matches every network **except** those in `network_ids`. Corresponds to the "Match Opposite" toggle on a `NETWORK` matching target in the UniFi UI. Defaults to `false`.
+	MatchOppositeNetworks *bool `json:"matchOppositeNetworks,omitempty" tf:"match_opposite_networks,omitempty"`
+
+	// Invert the port match: when `true`, the endpoint matches every port **except** those in `port` / `port_group_id`. Corresponds to the "Match Opposite" toggle on the port selector in the UniFi UI. Defaults to `false`.
+	MatchOppositePorts *bool `json:"matchOppositePorts,omitempty" tf:"match_opposite_ports,omitempty"`
+
+	// What to match: `ANY`, `NETWORK`, `CLIENT`, `IP`, `DEVICE`, `MAC`, `WEB` (domains/FQDN), or `REGION` (country codes, set `regions`). The controller only accepts `REGION` on an external zone.
 	MatchingTarget *string `json:"matchingTarget,omitempty" tf:"matching_target,omitempty"`
 
 	// How the matching target is specified (`ANY`, `SPECIFIC`, `LIST`, `OBJECT`). Managed by the UniFi controller; the provider round-trips it so updates are accepted.
@@ -92,6 +119,9 @@ type DestinationObservation struct {
 
 	// How to match ports: `ANY`, `SPECIFIC`, or `OBJECT` (port group).
 	PortMatchingType *string `json:"portMatchingType,omitempty" tf:"port_matching_type,omitempty"`
+
+	// Two-letter ISO country codes to match (for example `["DE", "US"]`). Used when `matching_target` is `REGION`, which the controller only accepts on an external zone. The controller rejects an update that leaves the list empty, so a policy matching on region must always carry at least one code.
+	Regions []*string `json:"regions,omitempty" tf:"regions,omitempty"`
 
 	// List of domains/FQDNs to match. Used when `matching_target` is `WEB`.
 	WebDomains []*string `json:"webDomains,omitempty" tf:"web_domains,omitempty"`
@@ -114,7 +144,23 @@ type DestinationParameters struct {
 	// +kubebuilder:validation:Optional
 	Ips []*string `json:"ips,omitempty" tf:"ips,omitempty"`
 
-	// What to match: `ANY`, `NETWORK`, `CLIENT`, `IP`, `DEVICE`, `MAC`, or `WEB` (domains/FQDN).
+	// Match the clients in `client_macs` by MAC address rather than by their current IP address. Corresponds to the controller's `match_mac` flag on a `CLIENT` matching target. Defaults to `false`.
+	// +kubebuilder:validation:Optional
+	MatchMac *bool `json:"matchMac,omitempty" tf:"match_mac,omitempty"`
+
+	// Invert the IP match: when `true`, the endpoint matches every address **except** those in `ips` / `ip_group_id`. Corresponds to the "Match Opposite" toggle on an `IP` matching target in the UniFi UI. Defaults to `false`.
+	// +kubebuilder:validation:Optional
+	MatchOppositeIps *bool `json:"matchOppositeIps,omitempty" tf:"match_opposite_ips,omitempty"`
+
+	// Invert the network match: when `true`, the endpoint matches every network **except** those in `network_ids`. Corresponds to the "Match Opposite" toggle on a `NETWORK` matching target in the UniFi UI. Defaults to `false`.
+	// +kubebuilder:validation:Optional
+	MatchOppositeNetworks *bool `json:"matchOppositeNetworks,omitempty" tf:"match_opposite_networks,omitempty"`
+
+	// Invert the port match: when `true`, the endpoint matches every port **except** those in `port` / `port_group_id`. Corresponds to the "Match Opposite" toggle on the port selector in the UniFi UI. Defaults to `false`.
+	// +kubebuilder:validation:Optional
+	MatchOppositePorts *bool `json:"matchOppositePorts,omitempty" tf:"match_opposite_ports,omitempty"`
+
+	// What to match: `ANY`, `NETWORK`, `CLIENT`, `IP`, `DEVICE`, `MAC`, `WEB` (domains/FQDN), or `REGION` (country codes, set `regions`). The controller only accepts `REGION` on an external zone.
 	// +kubebuilder:validation:Optional
 	MatchingTarget *string `json:"matchingTarget" tf:"matching_target,omitempty"`
 
@@ -142,6 +188,10 @@ type DestinationParameters struct {
 	// How to match ports: `ANY`, `SPECIFIC`, or `OBJECT` (port group).
 	// +kubebuilder:validation:Optional
 	PortMatchingType *string `json:"portMatchingType,omitempty" tf:"port_matching_type,omitempty"`
+
+	// Two-letter ISO country codes to match (for example `["DE", "US"]`). Used when `matching_target` is `REGION`, which the controller only accepts on an external zone. The controller rejects an update that leaves the list empty, so a policy matching on region must always carry at least one code.
+	// +kubebuilder:validation:Optional
+	Regions []*string `json:"regions,omitempty" tf:"regions,omitempty"`
 
 	// List of domains/FQDNs to match. Used when `matching_target` is `WEB`.
 	// +kubebuilder:validation:Optional
@@ -183,17 +233,22 @@ type PolicyInitParameters struct {
 	// Whether the policy is enabled. Defaults to `true`.
 	Enabled *bool `json:"enabled,omitempty" tf:"enabled,omitempty"`
 
-	// The IP version to match: `BOTH`, `IPV4`, or `IPV6`. Defaults to `IPV4`.
+	// The IP version to match: `BOTH`, `IPV4`, or `IPV6`. Defaults to `IPV4` for a newly created policy; an existing policy keeps whatever the controller holds, so adopting a dual-stack policy does not narrow it to IPv4 (#544). The controller requires this field, so it is always sent.
 	IPVersion *string `json:"ipVersion,omitempty" tf:"ip_version,omitempty"`
 
 	// Whether to log packets matching this policy. Defaults to `false`.
 	Logging *bool `json:"logging,omitempty" tf:"logging,omitempty"`
+
+	// Invert the protocol match: when `true`, the policy matches every protocol **except** `protocol`. Corresponds to the "Match Opposite" toggle next to the protocol selector in the UniFi UI. Defaults to `false`.
+	MatchOppositeProtocol *bool `json:"matchOppositeProtocol,omitempty" tf:"match_opposite_protocol,omitempty"`
 
 	// The name of the firewall policy.
 	Name *string `json:"name,omitempty" tf:"name,omitempty"`
 
 	// The protocol to match: `all`, `tcp`, `udp`, `tcp_udp`, `icmp`, or `icmpv6`. Defaults to `all`. Note: for `icmp`/`icmpv6` policies the controller rejects `create_allow_respond = true` (`FirewallPolicyCreateRespondTrafficPolicyNotAllowed`) — keep it `false` and add an explicit reverse policy if you need the reply.
 	Protocol *string `json:"protocol,omitempty" tf:"protocol,omitempty"`
+
+	Schedule *ScheduleInitParameters `json:"schedule,omitempty" tf:"schedule,omitempty"`
 
 	// The name of the UniFi site. Defaults to the site configured in the provider.
 	Site *string `json:"site,omitempty" tf:"site,omitempty"`
@@ -227,7 +282,7 @@ type PolicyObservation struct {
 
 	ID *string `json:"id,omitempty" tf:"id,omitempty"`
 
-	// The IP version to match: `BOTH`, `IPV4`, or `IPV6`. Defaults to `IPV4`.
+	// The IP version to match: `BOTH`, `IPV4`, or `IPV6`. Defaults to `IPV4` for a newly created policy; an existing policy keeps whatever the controller holds, so adopting a dual-stack policy does not narrow it to IPv4 (#544). The controller requires this field, so it is always sent.
 	IPVersion *string `json:"ipVersion,omitempty" tf:"ip_version,omitempty"`
 
 	// ICMP type matching mode. Managed by the UniFi controller; the provider round-trips it so updates are accepted.
@@ -242,11 +297,16 @@ type PolicyObservation struct {
 	// Whether to log packets matching this policy. Defaults to `false`.
 	Logging *bool `json:"logging,omitempty" tf:"logging,omitempty"`
 
+	// Invert the protocol match: when `true`, the policy matches every protocol **except** `protocol`. Corresponds to the "Match Opposite" toggle next to the protocol selector in the UniFi UI. Defaults to `false`.
+	MatchOppositeProtocol *bool `json:"matchOppositeProtocol,omitempty" tf:"match_opposite_protocol,omitempty"`
+
 	// The name of the firewall policy.
 	Name *string `json:"name,omitempty" tf:"name,omitempty"`
 
 	// The protocol to match: `all`, `tcp`, `udp`, `tcp_udp`, `icmp`, or `icmpv6`. Defaults to `all`. Note: for `icmp`/`icmpv6` policies the controller rejects `create_allow_respond = true` (`FirewallPolicyCreateRespondTrafficPolicyNotAllowed`) — keep it `false` and add an explicit reverse policy if you need the reply.
 	Protocol *string `json:"protocol,omitempty" tf:"protocol,omitempty"`
+
+	Schedule *ScheduleObservation `json:"schedule,omitempty" tf:"schedule,omitempty"`
 
 	// The name of the UniFi site. Defaults to the site configured in the provider.
 	Site *string `json:"site,omitempty" tf:"site,omitempty"`
@@ -285,13 +345,17 @@ type PolicyParameters struct {
 	// +kubebuilder:validation:Optional
 	Enabled *bool `json:"enabled,omitempty" tf:"enabled,omitempty"`
 
-	// The IP version to match: `BOTH`, `IPV4`, or `IPV6`. Defaults to `IPV4`.
+	// The IP version to match: `BOTH`, `IPV4`, or `IPV6`. Defaults to `IPV4` for a newly created policy; an existing policy keeps whatever the controller holds, so adopting a dual-stack policy does not narrow it to IPv4 (#544). The controller requires this field, so it is always sent.
 	// +kubebuilder:validation:Optional
 	IPVersion *string `json:"ipVersion,omitempty" tf:"ip_version,omitempty"`
 
 	// Whether to log packets matching this policy. Defaults to `false`.
 	// +kubebuilder:validation:Optional
 	Logging *bool `json:"logging,omitempty" tf:"logging,omitempty"`
+
+	// Invert the protocol match: when `true`, the policy matches every protocol **except** `protocol`. Corresponds to the "Match Opposite" toggle next to the protocol selector in the UniFi UI. Defaults to `false`.
+	// +kubebuilder:validation:Optional
+	MatchOppositeProtocol *bool `json:"matchOppositeProtocol,omitempty" tf:"match_opposite_protocol,omitempty"`
 
 	// The name of the firewall policy.
 	// +kubebuilder:validation:Optional
@@ -300,6 +364,9 @@ type PolicyParameters struct {
 	// The protocol to match: `all`, `tcp`, `udp`, `tcp_udp`, `icmp`, or `icmpv6`. Defaults to `all`. Note: for `icmp`/`icmpv6` policies the controller rejects `create_allow_respond = true` (`FirewallPolicyCreateRespondTrafficPolicyNotAllowed`) — keep it `false` and add an explicit reverse policy if you need the reply.
 	// +kubebuilder:validation:Optional
 	Protocol *string `json:"protocol,omitempty" tf:"protocol,omitempty"`
+
+	// +kubebuilder:validation:Optional
+	Schedule *ScheduleParameters `json:"schedule,omitempty" tf:"schedule,omitempty"`
 
 	// The name of the UniFi site. Defaults to the site configured in the provider.
 	// +kubebuilder:validation:Optional
@@ -361,6 +428,108 @@ type PolicyTimeoutsParameters struct {
 	Update *string `json:"update,omitempty" tf:"update,omitempty"`
 }
 
+type ScheduleInitParameters struct {
+
+	// Date used by `ONE_TIME_ONLY`, in `YYYY-MM-DD` format.
+	Date *string `json:"date,omitempty" tf:"date,omitempty"`
+
+	// End date used by `CUSTOM`, in `YYYY-MM-DD` format.
+	DateEnd *string `json:"dateEnd,omitempty" tf:"date_end,omitempty"`
+
+	// Start date used by `CUSTOM`, in `YYYY-MM-DD` format.
+	DateStart *string `json:"dateStart,omitempty" tf:"date_start,omitempty"`
+
+	// Schedule mode.
+	Mode *string `json:"mode,omitempty" tf:"mode,omitempty"`
+
+	// Clear inherited fields that are unused by the selected mode.
+	Normalize *bool `json:"normalize,omitempty" tf:"normalize,omitempty"`
+
+	// Weekdays on which the policy is active.
+	// +listType=set
+	RepeatOnDays []*string `json:"repeatOnDays,omitempty" tf:"repeat_on_days,omitempty"`
+
+	// Whether the policy is active all day.
+	TimeAllDay *bool `json:"timeAllDay,omitempty" tf:"time_all_day,omitempty"`
+
+	// End time in 24-hour `HH:MM` format.
+	TimeRangeEnd *string `json:"timeRangeEnd,omitempty" tf:"time_range_end,omitempty"`
+
+	// Start time in 24-hour `HH:MM` format.
+	TimeRangeStart *string `json:"timeRangeStart,omitempty" tf:"time_range_start,omitempty"`
+}
+
+type ScheduleObservation struct {
+
+	// Date used by `ONE_TIME_ONLY`, in `YYYY-MM-DD` format.
+	Date *string `json:"date,omitempty" tf:"date,omitempty"`
+
+	// End date used by `CUSTOM`, in `YYYY-MM-DD` format.
+	DateEnd *string `json:"dateEnd,omitempty" tf:"date_end,omitempty"`
+
+	// Start date used by `CUSTOM`, in `YYYY-MM-DD` format.
+	DateStart *string `json:"dateStart,omitempty" tf:"date_start,omitempty"`
+
+	// Schedule mode.
+	Mode *string `json:"mode,omitempty" tf:"mode,omitempty"`
+
+	// Clear inherited fields that are unused by the selected mode.
+	Normalize *bool `json:"normalize,omitempty" tf:"normalize,omitempty"`
+
+	// Weekdays on which the policy is active.
+	// +listType=set
+	RepeatOnDays []*string `json:"repeatOnDays,omitempty" tf:"repeat_on_days,omitempty"`
+
+	// Whether the policy is active all day.
+	TimeAllDay *bool `json:"timeAllDay,omitempty" tf:"time_all_day,omitempty"`
+
+	// End time in 24-hour `HH:MM` format.
+	TimeRangeEnd *string `json:"timeRangeEnd,omitempty" tf:"time_range_end,omitempty"`
+
+	// Start time in 24-hour `HH:MM` format.
+	TimeRangeStart *string `json:"timeRangeStart,omitempty" tf:"time_range_start,omitempty"`
+}
+
+type ScheduleParameters struct {
+
+	// Date used by `ONE_TIME_ONLY`, in `YYYY-MM-DD` format.
+	// +kubebuilder:validation:Optional
+	Date *string `json:"date,omitempty" tf:"date,omitempty"`
+
+	// End date used by `CUSTOM`, in `YYYY-MM-DD` format.
+	// +kubebuilder:validation:Optional
+	DateEnd *string `json:"dateEnd,omitempty" tf:"date_end,omitempty"`
+
+	// Start date used by `CUSTOM`, in `YYYY-MM-DD` format.
+	// +kubebuilder:validation:Optional
+	DateStart *string `json:"dateStart,omitempty" tf:"date_start,omitempty"`
+
+	// Schedule mode.
+	// +kubebuilder:validation:Optional
+	Mode *string `json:"mode,omitempty" tf:"mode,omitempty"`
+
+	// Clear inherited fields that are unused by the selected mode.
+	// +kubebuilder:validation:Optional
+	Normalize *bool `json:"normalize,omitempty" tf:"normalize,omitempty"`
+
+	// Weekdays on which the policy is active.
+	// +kubebuilder:validation:Optional
+	// +listType=set
+	RepeatOnDays []*string `json:"repeatOnDays,omitempty" tf:"repeat_on_days,omitempty"`
+
+	// Whether the policy is active all day.
+	// +kubebuilder:validation:Optional
+	TimeAllDay *bool `json:"timeAllDay,omitempty" tf:"time_all_day,omitempty"`
+
+	// End time in 24-hour `HH:MM` format.
+	// +kubebuilder:validation:Optional
+	TimeRangeEnd *string `json:"timeRangeEnd,omitempty" tf:"time_range_end,omitempty"`
+
+	// Start time in 24-hour `HH:MM` format.
+	// +kubebuilder:validation:Optional
+	TimeRangeStart *string `json:"timeRangeStart,omitempty" tf:"time_range_start,omitempty"`
+}
+
 type SourceInitParameters struct {
 
 	// List of client MAC addresses to match. Used when `matching_target` is `CLIENT`.
@@ -372,7 +541,19 @@ type SourceInitParameters struct {
 	// List of IP addresses or CIDR ranges to match. Used when `matching_target` is `IP`.
 	Ips []*string `json:"ips,omitempty" tf:"ips,omitempty"`
 
-	// What to match: `ANY`, `NETWORK`, `CLIENT`, `IP`, `DEVICE`, `MAC`, or `WEB` (domains/FQDN).
+	// Match the clients in `client_macs` by MAC address rather than by their current IP address. Corresponds to the controller's `match_mac` flag on a `CLIENT` matching target. Defaults to `false`.
+	MatchMac *bool `json:"matchMac,omitempty" tf:"match_mac,omitempty"`
+
+	// Invert the IP match: when `true`, the endpoint matches every address **except** those in `ips` / `ip_group_id`. Corresponds to the "Match Opposite" toggle on an `IP` matching target in the UniFi UI. Defaults to `false`.
+	MatchOppositeIps *bool `json:"matchOppositeIps,omitempty" tf:"match_opposite_ips,omitempty"`
+
+	// Invert the network match: when `true`, the endpoint matches every network **except** those in `network_ids`. Corresponds to the "Match Opposite" toggle on a `NETWORK` matching target in the UniFi UI. Defaults to `false`.
+	MatchOppositeNetworks *bool `json:"matchOppositeNetworks,omitempty" tf:"match_opposite_networks,omitempty"`
+
+	// Invert the port match: when `true`, the endpoint matches every port **except** those in `port` / `port_group_id`. Corresponds to the "Match Opposite" toggle on the port selector in the UniFi UI. Defaults to `false`.
+	MatchOppositePorts *bool `json:"matchOppositePorts,omitempty" tf:"match_opposite_ports,omitempty"`
+
+	// What to match: `ANY`, `NETWORK`, `CLIENT`, `IP`, `DEVICE`, `MAC`, `WEB` (domains/FQDN), or `REGION` (country codes, set `regions`). The controller only accepts `REGION` on an external zone.
 	MatchingTarget *string `json:"matchingTarget,omitempty" tf:"matching_target,omitempty"`
 
 	// List of UniFi network IDs to match. Used when `matching_target` is `NETWORK`.
@@ -395,6 +576,9 @@ type SourceInitParameters struct {
 
 	// How to match ports: `ANY`, `SPECIFIC`, or `OBJECT` (port group).
 	PortMatchingType *string `json:"portMatchingType,omitempty" tf:"port_matching_type,omitempty"`
+
+	// Two-letter ISO country codes to match (for example `["DE", "US"]`). Used when `matching_target` is `REGION`, which the controller only accepts on an external zone. The controller rejects an update that leaves the list empty, so a policy matching on region must always carry at least one code.
+	Regions []*string `json:"regions,omitempty" tf:"regions,omitempty"`
 
 	// List of domains/FQDNs to match. Used when `matching_target` is `WEB`.
 	WebDomains []*string `json:"webDomains,omitempty" tf:"web_domains,omitempty"`
@@ -423,7 +607,19 @@ type SourceObservation struct {
 	// List of IP addresses or CIDR ranges to match. Used when `matching_target` is `IP`.
 	Ips []*string `json:"ips,omitempty" tf:"ips,omitempty"`
 
-	// What to match: `ANY`, `NETWORK`, `CLIENT`, `IP`, `DEVICE`, `MAC`, or `WEB` (domains/FQDN).
+	// Match the clients in `client_macs` by MAC address rather than by their current IP address. Corresponds to the controller's `match_mac` flag on a `CLIENT` matching target. Defaults to `false`.
+	MatchMac *bool `json:"matchMac,omitempty" tf:"match_mac,omitempty"`
+
+	// Invert the IP match: when `true`, the endpoint matches every address **except** those in `ips` / `ip_group_id`. Corresponds to the "Match Opposite" toggle on an `IP` matching target in the UniFi UI. Defaults to `false`.
+	MatchOppositeIps *bool `json:"matchOppositeIps,omitempty" tf:"match_opposite_ips,omitempty"`
+
+	// Invert the network match: when `true`, the endpoint matches every network **except** those in `network_ids`. Corresponds to the "Match Opposite" toggle on a `NETWORK` matching target in the UniFi UI. Defaults to `false`.
+	MatchOppositeNetworks *bool `json:"matchOppositeNetworks,omitempty" tf:"match_opposite_networks,omitempty"`
+
+	// Invert the port match: when `true`, the endpoint matches every port **except** those in `port` / `port_group_id`. Corresponds to the "Match Opposite" toggle on the port selector in the UniFi UI. Defaults to `false`.
+	MatchOppositePorts *bool `json:"matchOppositePorts,omitempty" tf:"match_opposite_ports,omitempty"`
+
+	// What to match: `ANY`, `NETWORK`, `CLIENT`, `IP`, `DEVICE`, `MAC`, `WEB` (domains/FQDN), or `REGION` (country codes, set `regions`). The controller only accepts `REGION` on an external zone.
 	MatchingTarget *string `json:"matchingTarget,omitempty" tf:"matching_target,omitempty"`
 
 	// How the matching target is specified (`ANY`, `SPECIFIC`, `LIST`, `OBJECT`). Managed by the UniFi controller; the provider round-trips it so updates are accepted.
@@ -440,6 +636,9 @@ type SourceObservation struct {
 
 	// How to match ports: `ANY`, `SPECIFIC`, or `OBJECT` (port group).
 	PortMatchingType *string `json:"portMatchingType,omitempty" tf:"port_matching_type,omitempty"`
+
+	// Two-letter ISO country codes to match (for example `["DE", "US"]`). Used when `matching_target` is `REGION`, which the controller only accepts on an external zone. The controller rejects an update that leaves the list empty, so a policy matching on region must always carry at least one code.
+	Regions []*string `json:"regions,omitempty" tf:"regions,omitempty"`
 
 	// List of domains/FQDNs to match. Used when `matching_target` is `WEB`.
 	WebDomains []*string `json:"webDomains,omitempty" tf:"web_domains,omitempty"`
@@ -462,7 +661,23 @@ type SourceParameters struct {
 	// +kubebuilder:validation:Optional
 	Ips []*string `json:"ips,omitempty" tf:"ips,omitempty"`
 
-	// What to match: `ANY`, `NETWORK`, `CLIENT`, `IP`, `DEVICE`, `MAC`, or `WEB` (domains/FQDN).
+	// Match the clients in `client_macs` by MAC address rather than by their current IP address. Corresponds to the controller's `match_mac` flag on a `CLIENT` matching target. Defaults to `false`.
+	// +kubebuilder:validation:Optional
+	MatchMac *bool `json:"matchMac,omitempty" tf:"match_mac,omitempty"`
+
+	// Invert the IP match: when `true`, the endpoint matches every address **except** those in `ips` / `ip_group_id`. Corresponds to the "Match Opposite" toggle on an `IP` matching target in the UniFi UI. Defaults to `false`.
+	// +kubebuilder:validation:Optional
+	MatchOppositeIps *bool `json:"matchOppositeIps,omitempty" tf:"match_opposite_ips,omitempty"`
+
+	// Invert the network match: when `true`, the endpoint matches every network **except** those in `network_ids`. Corresponds to the "Match Opposite" toggle on a `NETWORK` matching target in the UniFi UI. Defaults to `false`.
+	// +kubebuilder:validation:Optional
+	MatchOppositeNetworks *bool `json:"matchOppositeNetworks,omitempty" tf:"match_opposite_networks,omitempty"`
+
+	// Invert the port match: when `true`, the endpoint matches every port **except** those in `port` / `port_group_id`. Corresponds to the "Match Opposite" toggle on the port selector in the UniFi UI. Defaults to `false`.
+	// +kubebuilder:validation:Optional
+	MatchOppositePorts *bool `json:"matchOppositePorts,omitempty" tf:"match_opposite_ports,omitempty"`
+
+	// What to match: `ANY`, `NETWORK`, `CLIENT`, `IP`, `DEVICE`, `MAC`, `WEB` (domains/FQDN), or `REGION` (country codes, set `regions`). The controller only accepts `REGION` on an external zone.
 	// +kubebuilder:validation:Optional
 	MatchingTarget *string `json:"matchingTarget" tf:"matching_target,omitempty"`
 
@@ -490,6 +705,10 @@ type SourceParameters struct {
 	// How to match ports: `ANY`, `SPECIFIC`, or `OBJECT` (port group).
 	// +kubebuilder:validation:Optional
 	PortMatchingType *string `json:"portMatchingType,omitempty" tf:"port_matching_type,omitempty"`
+
+	// Two-letter ISO country codes to match (for example `["DE", "US"]`). Used when `matching_target` is `REGION`, which the controller only accepts on an external zone. The controller rejects an update that leaves the list empty, so a policy matching on region must always carry at least one code.
+	// +kubebuilder:validation:Optional
+	Regions []*string `json:"regions,omitempty" tf:"regions,omitempty"`
 
 	// List of domains/FQDNs to match. Used when `matching_target` is `WEB`.
 	// +kubebuilder:validation:Optional

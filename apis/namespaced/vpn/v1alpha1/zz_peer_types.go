@@ -28,6 +28,12 @@ type PeerInitParameters_2 struct {
 	// The ID of the WireGuard server network the peer connects to.
 	NetworkID *string `json:"networkId,omitempty" tf:"network_id,omitempty"`
 
+	// Optional WireGuard pre-shared key for this peer (the UI's Pre-Shared Key toggle), adding a layer of symmetric encryption on top of the key pair. The controller stores and returns it in clear text, so it is kept in state - use `preshared_key_wo` to avoid persisting the secret. Left unset, the attribute is not written and a key configured out of band is preserved.
+	PresharedKeySecretRef *v1.LocalSecretKeySelector `json:"presharedKeySecretRef,omitempty" tf:"-"`
+
+	// 11+). Used at apply time but never written to state, so it can be sourced from an ephemeral resource. Mutually exclusive with `preshared_key`.
+	PresharedKeyWoSecretRef *v1.LocalSecretKeySelector `json:"presharedKeyWoSecretRef,omitempty" tf:"-"`
+
 	// The WireGuard public key of the peer.
 	PublicKey *string `json:"publicKey,omitempty" tf:"public_key,omitempty"`
 
@@ -79,6 +85,14 @@ type PeerParameters_2 struct {
 	// The ID of the WireGuard server network the peer connects to.
 	// +kubebuilder:validation:Optional
 	NetworkID *string `json:"networkId,omitempty" tf:"network_id,omitempty"`
+
+	// Optional WireGuard pre-shared key for this peer (the UI's Pre-Shared Key toggle), adding a layer of symmetric encryption on top of the key pair. The controller stores and returns it in clear text, so it is kept in state - use `preshared_key_wo` to avoid persisting the secret. Left unset, the attribute is not written and a key configured out of band is preserved.
+	// +kubebuilder:validation:Optional
+	PresharedKeySecretRef *v1.LocalSecretKeySelector `json:"presharedKeySecretRef,omitempty" tf:"-"`
+
+	// 11+). Used at apply time but never written to state, so it can be sourced from an ephemeral resource. Mutually exclusive with `preshared_key`.
+	// +kubebuilder:validation:Optional
+	PresharedKeyWoSecretRef *v1.LocalSecretKeySelector `json:"presharedKeyWoSecretRef,omitempty" tf:"-"`
 
 	// The WireGuard public key of the peer.
 	// +kubebuilder:validation:Optional

@@ -13,6 +13,10 @@ spec:
     networkId: REPLACE_WITH_NETWORK_ID
     userGroupId: REPLACE_WITH_USER_GROUP_ID
     wlanBand: both
+    # Set explicitly: upstream v0.59.0 no longer defaults these two for a new
+    # SSID. Other removed WLAN defaults are not restored here; see the PR body.
+    groupRekey: 3600
+    wpaEnc: ccmp
   providerConfigRef:
     kind: ClusterProviderConfig
     name: default

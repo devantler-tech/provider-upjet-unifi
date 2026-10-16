@@ -79,7 +79,7 @@ resources:
             delete: (String) A string that can be parsed as a duration consisting of numbers and unit suffixes, such as "30s" or "2h45m". Valid time units are "s" (seconds), "m" (minutes), "h" (hours). Setting a timeout for a Delete operation is only applicable if changes are saved into state before the destroy operation occurs.
             display_name: (String) The display name of the client.
             fixed_ap_mac: (String) The MAC address of the access point to which this client should be fixed.
-            fixed_ip: (String) A fixed IPv4 address for this client.
+            fixed_ip: (String) A fixed IPv4 address for this client. Set to an empty string to clear a previously assigned fixed IP.
             groups: (List of String) List of network members group names for this client.
             hostname: (String) The hostname of the client.
             id: (String) The ID of the client.
@@ -129,8 +129,8 @@ resources:
             allow_adoption: (Boolean) Specifies whether this resource should tell the controller to adopt the device on create.
             antenna_gain: (Number) Antenna gain.
             antenna_id: (Number) Antenna ID.
-            assisted_roaming_enabled: (Boolean) Enable assisted roaming.
-            assisted_roaming_rssi: (Number) Assisted roaming RSSI threshold.
+            assisted_roaming_enabled: (Boolean, Deprecated) Deprecated and no longer applied. UniFi removed 802.11k assisted roaming from the radio table; the field is absent from the controller API and from the firmware's own field definitions as of Network 10.6, so the provider can neither read nor write it. Always null.
+            assisted_roaming_rssi: (Number, Deprecated) Deprecated and no longer applied. See assisted_roaming_enabled. Always null.
             autoneg: (Boolean) Enable auto-negotiation for port speed.
             bandsteering_mode: (String) Band steering mode; valid values are off, equal, and prefer_5g.
             bonding_enabled: (Boolean) Enable network bonding.
@@ -148,7 +148,7 @@ resources:
             dot1x_idle_timeout: (String) 802.1X idle timeout, as a Go duration string (e.g. 5m, 300s).
             egress_rate_limit_kbps: (Number) Egress rate limit in kbps.
             egress_rate_limit_kbps_enabled: (Boolean) Enable egress rate limiting.
-            excluded_networkconf_ids: (List of String) List of network IDs to exclude from this port.
+            excluded_networkconf_ids: (Set of String) List of network IDs to exclude from this port.
             fec_mode: (String) Forward Error Correction mode.
             flow_control_enabled: (Boolean) Enable flow control.
             flowctrl_enabled: (Boolean) Enable flow control.
@@ -184,7 +184,7 @@ resources:
             min_rssi_enabled: (Boolean) Enable minimum RSSI.
             mirror_port_idx: (Number) Mirror port index.
             model: (String) Device model.
-            multicast_router_networkconf_ids: (List of String) List of network IDs for multicast router.
+            multicast_router_networkconf_ids: (Set of String) List of network IDs for multicast router.
             name: (String) The name of the device.
             native_networkconf_id: (String) Native network ID (VLAN).
             netmask: (String) Network mask (for static configuration).
@@ -226,7 +226,7 @@ resources:
             stp_priority: (Number) STP priority.
             stp_version: (String) STP version; valid values are stp, rstp, and disabled.
             switch_vlan_enabled: (Boolean) Enable VLAN support on the switch.
-            tagged_networkconf_ids: (List of String) List of network IDs to tag on this port.
+            tagged_networkconf_ids: (Set of String) List of network IDs to tag on this port.
             tagged_vlan_mgmt: (String) Tagged VLAN management.
             timeouts: (Attributes) (see below for nested schema)
             tx_power: (String) Transmit power or 'auto'.
@@ -309,6 +309,9 @@ resources:
             connection_states: '(List of String) Connection states matched when connection_state_type is CUSTOM (NEW, ESTABLISHED, RELATED, INVALID). Optional: leave unset for ALL/RESPOND_ONLY and the controller manages it; the provider round-trips the value so a CUSTOM policy''s states are not dropped on update (which the firmware rejects with HTTP 400).'
             create: (String) A string that can be parsed as a duration consisting of numbers and unit suffixes, such as "30s" or "2h45m". Valid time units are "s" (seconds), "m" (minutes), "h" (hours).
             create_allow_respond: (Boolean) When true, UniFi automatically creates a matching rule to allow established/related return traffic. Recommended for ALLOW policies. Defaults to false.
+            date: (String) Date used by ONE_TIME_ONLY, in YYYY-MM-DD format.
+            date_end: (String) End date used by CUSTOM, in YYYY-MM-DD format.
+            date_start: (String) Start date used by CUSTOM, in YYYY-MM-DD format.
             delete: (String) A string that can be parsed as a duration consisting of numbers and unit suffixes, such as "30s" or "2h45m". Valid time units are "s" (seconds), "m" (minutes), "h" (hours). Setting a timeout for a Delete operation is only applicable if changes are saved into state before the destroy operation occurs.
             description: (String) A description for the policy.
             destination: (Attributes) The destination endpoint of the policy. (see below for nested schema)
@@ -318,20 +321,33 @@ resources:
             id: (String) The ID of the firewall policy.
             index: '(Number) The ordering index of the policy within its zone-pair, assigned by the controller. Read-only: UniFi does not accept a client-supplied index on create or update (the policy is always appended to the end of its source/destination zone-pair), and the supported API exposes no reorder operation, so policy ordering cannot be managed through this provider. Reorder policies in the UniFi UI if needed.'
             ip_group_id: (String) ID of a unifi_firewall_group (address-group type) to match. Used when matching_target is IP with matching_target_type = OBJECT.
-            ip_version: '(String) The IP version to match: BOTH, IPV4, or IPV6. Defaults to IPV4.'
+            ip_version: '(String) The IP version to match: BOTH, IPV4, or IPV6. Defaults to IPV4 for a newly created policy; an existing policy keeps whatever the controller holds, so adopting a dual-stack policy does not narrow it to IPv4 (#544). The controller requires this field, so it is always sent.'
             ips: (List of String) List of IP addresses or CIDR ranges to match. Used when matching_target is IP.
             logging: (Boolean) Whether to log packets matching this policy. Defaults to false.
-            matching_target: '(String) What to match: ANY, NETWORK, CLIENT, IP, DEVICE, MAC, or WEB (domains/FQDN).'
+            match_mac: (Boolean) Match the clients in client_macs by MAC address rather than by their current IP address. Corresponds to the controller's match_mac flag on a CLIENT matching target. Defaults to false.
+            match_opposite_ips: '(Boolean) Invert the IP match: when true, the endpoint matches every address except those in ips / ip_group_id. Corresponds to the "Match Opposite" toggle on an IP matching target in the UniFi UI. Defaults to false.'
+            match_opposite_networks: '(Boolean) Invert the network match: when true, the endpoint matches every network except those in network_ids. Corresponds to the "Match Opposite" toggle on a NETWORK matching target in the UniFi UI. Defaults to false.'
+            match_opposite_ports: '(Boolean) Invert the port match: when true, the endpoint matches every port except those in port / port_group_id. Corresponds to the "Match Opposite" toggle on the port selector in the UniFi UI. Defaults to false.'
+            match_opposite_protocol: '(Boolean) Invert the protocol match: when true, the policy matches every protocol except protocol. Corresponds to the "Match Opposite" toggle next to the protocol selector in the UniFi UI. Defaults to false.'
+            matching_target: '(String) What to match: ANY, NETWORK, CLIENT, IP, DEVICE, MAC, WEB (domains/FQDN), or REGION (country codes, set regions). The controller only accepts REGION on an external zone.'
             matching_target_type: (String) How the matching target is specified (ANY, SPECIFIC, LIST, OBJECT). Managed by the UniFi controller; the provider round-trips it so updates are accepted.
+            mode: (String) Schedule mode.
             name: (String) The name of the firewall policy.
             network_ids: (List of String) List of UniFi network IDs to match. Used when matching_target is NETWORK.
+            normalize: (Boolean) Clear inherited fields that are unused by the selected mode.
             port: (String) Port(s) to match when port_matching_type is SPECIFIC. A single port (161) or a comma-separated list of ports/ranges (80,443, 8000-8100). Leave unset for no port match.
             port_group_id: (String) ID of a unifi_firewall_group (port-group type) to match. Used when port_matching_type is OBJECT.
             port_matching_type: '(String) How to match ports: ANY, SPECIFIC, or OBJECT (port group).'
             protocol: '(String) The protocol to match: all, tcp, udp, tcp_udp, icmp, or icmpv6. Defaults to all. Note: for icmp/icmpv6 policies the controller rejects create_allow_respond = true (FirewallPolicyCreateRespondTrafficPolicyNotAllowed) — keep it false and add an explicit reverse policy if you need the reply.'
             read: (String) A string that can be parsed as a duration consisting of numbers and unit suffixes, such as "30s" or "2h45m". Valid time units are "s" (seconds), "m" (minutes), "h" (hours). Read operations occur during any refresh or planning operation when refresh is enabled.
+            regions: (List of String) Two-letter ISO country codes to match (for example ["DE", "US"]). Used when matching_target is REGION, which the controller only accepts on an external zone. The controller rejects an update that leaves the list empty, so a policy matching on region must always carry at least one code.
+            repeat_on_days: (Set of String) Weekdays on which the policy is active.
+            schedule: (Attributes) When the policy is active. The complete controller value is round-tripped so updating another policy field does not reset its schedule. Supported modes are ALWAYS, EVERY_DAY, EVERY_WEEK, ONE_TIME_ONLY, and CUSTOM. Timed modes require time_all_day; when false, both time-range fields are required. EVERY_WEEK also requires weekdays, ONE_TIME_ONLY requires date and a time range, and CUSTOM requires a date range and weekdays. Set normalize to clear inherited fields unused by the selected mode. (see below for nested schema)
             site: (String) The name of the UniFi site. Defaults to the site configured in the provider.
             source: (Attributes) The source endpoint of the policy. (see below for nested schema)
+            time_all_day: (Boolean) Whether the policy is active all day.
+            time_range_end: (String) End time in 24-hour HH:MM format.
+            time_range_start: (String) Start time in 24-hour HH:MM format.
             timeouts: (Attributes) (see below for nested schema)
             update: (String) A string that can be parsed as a duration consisting of numbers and unit suffixes, such as "30s" or "2h45m". Valid time units are "s" (seconds), "m" (minutes), "h" (hours).
             web_domains: (List of String) List of domains/FQDNs to match. Used when matching_target is WEB.
@@ -411,6 +427,10 @@ resources:
             - |-
               # Firewall zones can be imported using the zone ID, or site:id for a non-default site.
               terraform import unifi_firewall_zone.dmz 5f3e9b2c4ee8cb0f1f4a1234
+
+              # Built-in zones (e.g. Hotspot, Internal) can also be imported by name, which
+              # resolves the controller-assigned ID for you. Prefix with "site:" for a non-default site.
+              terraform import unifi_firewall_zone.hotspot name=Hotspot
     Network (Resource):
         subCategory: ""
         description: unifi_network manages networks (VLANs) in the UniFi controller.
@@ -418,7 +438,7 @@ resources:
         title: Network (Resource)
         argumentDocs:
             addresses: (List of String) List of WINS server addresses (maximum 2).
-            auto_scale: (Boolean) Specifies whether auto-scaling is enabled.
+            auto_scale: '(Boolean) Specifies whether auto-scaling is enabled. The controller stores no default: left unset, the attribute is not written and whatever the controller holds is preserved.'
             boot: (Attributes) DHCP boot settings. (see below for nested schema)
             conflict_checking: (Boolean) Specifies whether DHCP conflict checking is enabled.
             create: (String) A string that can be parsed as a duration consisting of numbers and unit suffixes, such as "30s" or "2h45m". Valid time units are "s" (seconds), "m" (minutes), "h" (hours).
@@ -433,6 +453,7 @@ resources:
             domain_name: (String) The domain name for the network.
             enabled: (Boolean) Specifies whether the network is enabled.
             filename: (String) Boot filename.
+            firewall_zone_id: '(String) The firewall zone ID assigned to this network. Note: This field is dual-managed and can compete with unifi_firewall_zone.network_ids. To prevent state drift loops, ensure you manage zone membership from exactly one side. On Zone-Based Firewall (ZBF) controllers, this field is tightly coupled to the network''s purpose field.'
             gateway_enabled: (Boolean) Specifies whether DHCP gateway is enabled.
             gateway_type: (String) The gateway type. Must be one of default or switch.
             id: (String) The ID of the network.
@@ -440,10 +461,10 @@ resources:
             internet_access: (Boolean) Specifies whether internet access is enabled.
             ip_address: (String) The IP address.
             ip_address_pool: (List of String) The IP address pool.
-            ip_aliases: (List of String) List of IP aliases for the network.
-            ipv6_aliases: (List of String) List of IPv6 aliases for the network.
+            ip_aliases: (List of String) List of IP aliases for the network, in CIDR notation (e.g. 192.168.2.1/24). The controller rejects entries without a prefix length.
+            ipv6_aliases: '(List of String) List of IPv6 aliases for the network. Not currently supported: the underlying UniFi API client has no field for this value, so a non-empty list is rejected at plan time (#413).'
             ipv6_client_address_assignment: '(String) How clients on this network obtain an IPv6 address (UI: Networks → IPv6 → Client Address Assignment). One of slaac (SLAAC only), dhcpv6 (DHCPv6 only), or slaac-dhcpv6 (both). Computed from the controller when not set.'
-            ipv6_interface_type: (String) Specifies which type of IPv6 connection to use. Must be one of none, pd, or static.
+            ipv6_interface_type: (String) Specifies which type of IPv6 connection to use. Must be one of none, pd, or static. Taken from the controller when not set; an adopted network keeps the type it already has (#544).
             ipv6_pd_auto_prefixid_enabled: (Boolean) Specifies whether automatic prefix ID assignment is enabled for IPv6 Prefix Delegation.
             ipv6_pd_interface: (String) The IPv6 Prefix Delegation WAN interface (e.g., wan, wan2).
             ipv6_pd_prefixid: (String) The IPv6 Prefix Delegation prefix ID (hex string, e.g., 0, 1a).
@@ -456,18 +477,19 @@ resources:
             ipv6_static_subnet: (String) The IPv6 static subnet of the network. Only used when ipv6_interface_type is static.
             lease: (Number) The lease time for DHCPv6 addresses in seconds.
             leasetime: (String) Specifies the DHCP lease time, as a Go duration string (e.g. 24h, 86400s). Defaults to 24h0m0s.
-            lte_lan: (Boolean) Whether this network/VLAN stays active when the gateway fails over to a UniFi LTE (cellular) backup WAN. Maps to the controller's lte_lan_enabled flag and only matters when a UniFi LTE failover device is in use; otherwise it is cosmetic. Defaults to true (network stays available during LTE failover); set to false to disable it while on the LTE backup link. The controller may set this automatically, which is why existing networks can show differing values.
+            lte_lan: '(Boolean) Whether this network/VLAN stays active when the gateway fails over to a UniFi LTE (cellular) backup WAN. Maps to the controller''s lte_lan_enabled flag and only matters when a UniFi LTE failover device is in use; otherwise it is cosmetic. The controller stores no default: left unset, the attribute is not written and whatever the controller holds is preserved, which is why existing networks show differing values.'
             mode: (String) The mode.
             multicast_dns: '(Boolean) Specifies whether mDNS is enabled. This is read back from the controller rather than defaulted: some controllers (notably UniFi OS gateways) ignore mdns_enabled at create/update time and always store false, so forcing a true default produced a "provider produced inconsistent result after apply" error.'
             name: (String) The name of the network.
             nat_outbound_ip_addresses: (Attributes List) List of NAT outbound IP addresses. (see below for nested schema)
             network_isolation: (Boolean) Specifies whether network isolation is enabled.
             ntp_enabled: (Boolean) Specifies whether DHCP NTP is enabled.
+            ntp_servers: (List of String) List of NTP server addresses for DHCP clients.
             purpose: '(String) The network purpose: corporate (default), guest, or vlan-only. Leave unset to let the controller manage it (a third_party_gateway network is always vlan-only). Note: on Zone-Based-Firewall controllers the purpose is coupled to the firewall zone — a guest network only keeps purpose = "guest" while it belongs to the guest/Hotspot zone (assign it there via unifi_firewall_zone), otherwise the controller rewrites it back to corporate and the apply fails with an inconsistent-result error.'
             read: (String) A string that can be parsed as a duration consisting of numbers and unit suffixes, such as "30s" or "2h45m". Valid time units are "s" (seconds), "m" (minutes), "h" (hours). Read operations occur during any refresh or planning operation when refresh is enabled.
             server: (String) TFTP server for boot options.
-            servers: (List of String) List of allowed DHCP server IP addresses (maximum 3).
-            setting_preference: (String) Setting preference. Must be one of auto or manual.
+            servers: (List of String) List of allowed DHCP server IP addresses (maximum 3). On corporate and guest networks the controller only honors DHCP guarding with setting_preference = "manual"; when setting_preference is not configured, the provider sets it to manual automatically whenever dhcp_guarding.enabled is true.
+            setting_preference: (String) Setting preference. Must be one of auto or manual. Taken from the controller when not set; an adopted network keeps its own preference, so importing a manual network no longer proposes auto - which would also reset DHCP guarding (#544).
             site: (String) The name of the site to associate the network with.
             start: (String) The IPv4 address where the DHCP range starts.
             stop: (String) The IPv4 address where the DHCP range stops.
@@ -542,7 +564,7 @@ resources:
             egress_rate_limit_kbps_enabled: (Boolean) Enable egress rate limiting for the port profile.
             excluded_networkconf_ids: (Set of String) The IDs of networks excluded from the port profile (used when tagged_vlan_mgmt is custom). Computed from the controller when not set.
             fec_mode: (String) Forward Error Correction mode. Can be rs-fec, fc-fec, default, or disabled.
-            forward: (String) The type forwarding to use for the port profile. Can be all, native, customize or disabled.
+            forward: '(String) The type forwarding to use for the port profile. Can be all, native, customize or disabled. customize requires a native network that carries a VLAN id: the controller silently stores all for a profile whose native network is untagged, which the provider rejects at plan time rather than letting the apply leave the resource tainted.'
             full_duplex: (Boolean) Enable full duplex for the port profile.
             id: (String) The ID of the port profile.
             isolation: (Boolean) Enable port isolation for the port profile.
@@ -683,6 +705,7 @@ resources:
         argumentDocs:
             accounting_enabled: (Boolean) Enable RADIUS accounting.
             acct_port: (Number) RADIUS accounting port.
+            acl_device_isolation: '(List of String) Network IDs with Client Device Isolation enabled (Settings > Networks > "Device Isolation (ACL)"), which blocks all communication between devices in the same network. This is a switch ACL: it covers same-network traffic across access points, which unifi_wlan.l2_isolation (one access point) and unifi_network.network_isolation (between networks) do not. The controller only offers it for networks routed by a UniFi gateway or L3 switch, and some switch models do not support ACLs at all - it rejects an unsupported network rather than silently ignoring it.'
             advanced_feature_enabled: (Boolean) Enable advanced features.
             advanced_filtering_preference: '(String) Advanced filtering mode: manual or disabled.'
             auth_port: (Number) RADIUS authentication port.
@@ -694,6 +717,7 @@ resources:
             category: (String) Alert suppression signature category.
             code: (Number) Regulatory country code (ISO 3166-1 numeric).
             comment: (String) Comment.
+            connectivity: '(Attributes) Wireless meshing and uplink connectivity (Settings > WiFi > Wireless Meshing). Disabling meshing frees the standby mesh radio and doubles the per-band SSID budget: with meshing on, APs reserve a hidden backhaul SSID and allow 4 SSIDs per band instead of 8. The controller-generated mesh SSID and pre-shared key are not exposed and are preserved across updates, as are any options this block does not model. (see below for nested schema)'
             content_filtering_blocking_page_enabled: (Boolean) Show a blocking page when content filtering blocks a request.
             contents: (List of String) Logged facilities (e.g. device, client, firewall_default_policy, triggers, updates, admin_activity, critical, security_detections, vpn).
             country: (Attributes) Regulatory country settings. (see below for nested schema)
@@ -703,11 +727,13 @@ resources:
             debug: (Boolean) Enable debug logging.
             debug_tools_enabled: (Boolean) Enable debug tools.
             delete: (String) A string that can be parsed as a duration consisting of numbers and unit suffixes, such as "30s" or "2h45m". Valid time units are "s" (seconds), "m" (minutes), "h" (hours). Setting a timeout for a Delete operation is only applicable if changes are saved into state before the destroy operation occurs.
+            dhcp_snoop: (Boolean) Enable Rogue DHCP Server Detection (DHCP snooping).
             direct_connect_enabled: (Boolean) Enable Direct Connect (remote access).
             direction: '(String) Match direction: both, src, or dest.'
             dns_verification: (Attributes) DNS verification settings. (see below for nested schema)
             doh: (Attributes) Encrypted DNS (DNS-over-HTTPS) settings. (see below for nested schema)
             domain: (String) Domain for DNS verification.
+            dot1x_portctrl_enabled: (Boolean) Enable 802.1X port control.
             dpi: (Attributes) Deep Packet Inspection (DPI) settings. (see below for nested schema)
             enabled: (Boolean) Whether periodic automated speed tests are enabled.
             enabled_categories: (List of String) Emerging Threats ruleset categories to enable (e.g. "emerging-malware", "tor", "phishing").
@@ -719,6 +745,7 @@ resources:
             geo_ip_filtering_enabled: (Boolean) Enable geo IP filtering.
             geo_ip_filtering_traffic_direction: '(String) Geo IP filtering traffic direction: both, ingress, or egress.'
             gid: (Number) Signature Generator ID (GID).
+            global_switch: (Attributes) Site-wide switch settings (Settings > Networks > Global Switch Settings). On current controllers jumbo frames are only honored here, not via unifi_device.jumboframe_enabled. Options not exposed by this block are preserved across updates. (see below for nested schema)
             gre_module: (Boolean) Enable GRE module.
             h323_module: (Boolean) Enable H.323 module.
             honeypot: (Attributes List) Honeypot IP addresses per network. (see below for nested schema)
@@ -732,11 +759,13 @@ resources:
             ip_address: (String) IP address to use as a honeypot.
             ips: (Attributes) Intrusion Prevention System (IPS/IDS) and threat management settings. Basic IDS/IPS uses the built-in Emerging Threats ruleset and is free. A UniFi CyberSecure subscription adds enhanced threat intelligence from Proofpoint and Cloudflare on top of the base ruleset. (see below for nested schema)
             ips_mode: '(String) IPS operating mode: ids (detect only), ips (detect and block), ipsInline, or disabled.'
+            jumboframe_enabled: (Boolean) Enable jumbo frames on all switches.
             key: (String) Public SSH key.
             lcm: (Attributes) LCD/display (LCM) settings for devices with a screen. (see below for nested schema)
             log_all_contents: (Boolean) Log all available facilities.
             memory_optimized: (Boolean) Use memory-optimized IPS ruleset (reduced rule set for low-memory devices).
             mgmt: (Attributes) Management settings. (see below for nested schema)
+            mlo_mesh_enabled: (Boolean) Enable Multi-Link Operation (MLO) for the mesh backhaul. Requires WiFi 7 hardware.
             mode: '(String) Match mode: ip, subnet, or network.'
             mss_clamp: '(String) MSS clamping mode: auto, custom, or disabled.'
             name: (String) Name of SSH key.
@@ -778,6 +807,7 @@ resources:
             ssh_password: (String, Sensitive) SSH password for device access. Sensitive — the controller stores only a hash, so this value is kept from configuration and not read back.
             ssh_username: (String) SSH username for device access.
             state: '(String) Encrypted DNS state: off, auto, manual, or custom.'
+            stp_version: '(String) Spanning Tree Protocol mode for all switches: stp, rstp, or disabled.'
             suppression_alerts: (Attributes List) IPS signature alert suppression entries — silence specific signatures or categories. (see below for nested schema)
             suppression_whitelist: (Attributes List) IPS suppression whitelist entries — sources/destinations to exclude from inspection. (see below for nested schema)
             syn_cookies: (Boolean) Enable SYN cookies.
@@ -804,6 +834,8 @@ resources:
             unbind_wan_monitors: (Boolean) Unbind WAN monitors.
             unifi_idp_enabled: (Boolean) Enable the UniFi Identity Provider.
             update: (String) A string that can be parsed as a duration consisting of numbers and unit suffixes, such as "30s" or "2h45m". Valid time units are "s" (seconds), "m" (minutes), "h" (hours).
+            uplink_host: (String) Host the site uses to verify connectivity when uplink_type is internet.
+            uplink_type: '(String) How the site reaches the controller: gateway or internet.'
             upnp_enabled: (Boolean) Enable UPnP.
             upnp_nat_pmp_enabled: (Boolean) Enable UPnP NAT-PMP.
             upnp_secure_mode: (Boolean) Enable UPnP secure mode.
@@ -861,15 +893,19 @@ resources:
             ike_lifetime: (String) IKE (phase 1) security-association lifetime, as a Go duration string (e.g. 8h, 28800s). Must be a whole number of seconds between 30s and 86400s (24h).
             interface: (String) The local WAN interface the tunnel binds to (e.g. wan, wan2).
             key_exchange: (String) IKE key-exchange version. One of ikev1 or ikev2.
+            local_identifier: (String) IKE local identifier used for peer authentication (the UI's "Local Identifier"). Setting it also enables identifier authentication; left unset, the attribute is not written and whatever the controller holds is preserved.
+            local_identifier_enabled: (Boolean) Whether the local identifier is used for authentication. Set automatically when local_identifier is configured; declare it explicitly to enable identifier authentication without pinning a value.
             local_ip: (String) The local IP used for the tunnel. Defaults to the WAN address when omitted.
             name: (String) The name of the site-to-site VPN.
-            peer_ip: (String) The public IP address of the remote VPN gateway (peer).
+            peer_ip: (String) The public IP address or hostname of the remote VPN gateway (peer). The controller accepts and stores a hostname, which is how a peer behind dynamic DNS is configured.
             pfs: (Boolean) Whether Perfect Forward Secrecy is enabled.
             pre_shared_key: (String, Sensitive) The IPsec pre-shared key. Stored in state — use pre_shared_key_wo to avoid persisting the secret.
             pre_shared_key_wo: (String, Sensitive, Write-only) Write-only equivalent of pre_shared_key (Terraform 1.11+). Used at apply time but never written to state, so it can be sourced from an ephemeral resource (e.g. a Vault secret). Mutually exclusive with pre_shared_key.
             profile: (String) IPsec profile. One of customized, azure_dynamic, or azure_static. Set to customized to tune the IKE/ESP attributes below; the controller may derive the ESP values from the IKE ones.
             read: (String) A string that can be parsed as a duration consisting of numbers and unit suffixes, such as "30s" or "2h45m". Valid time units are "s" (seconds), "m" (minutes), "h" (hours). Read operations occur during any refresh or planning operation when refresh is enabled.
-            remote_subnets: (List of String) The remote site's subnets reachable through the tunnel (CIDR).
+            remote_identifier: (String) IKE remote identifier used for peer authentication (the UI's "Remote Identifier"). See local_identifier.
+            remote_identifier_enabled: (Boolean) Whether the remote identifier is used for authentication. See local_identifier_enabled.
+            remote_subnets: (List of String) The remote site's subnets reachable through the tunnel (CIDR). May be empty when dynamic routing is enabled.
             route_distance: (Number) The route distance (administrative metric) for tunnel routes (1-255).
             site: (String) The name of the site to associate the VPN with.
             timeouts: (Attributes) (see below for nested schema)
@@ -962,7 +998,9 @@ resources:
             port: (Number) WireGuard peer endpoint port.
             preshared_key: (String, Sensitive) WireGuard preshared key. Required when preshared_key_enabled is true.
             preshared_key_enabled: (Boolean) Specifies whether to use a preshared key for additional security.
-            private_key: (String, Sensitive) WireGuard private key for this client.
+            private_key: (String, Sensitive) WireGuard private key for this client. Stored in state; use private_key_wo to avoid persisting the secret.
+            private_key_wo: (String, Sensitive, Write-only) Write-only equivalent of private_key (Terraform 1.11+). Used at apply time but never written to state. Mutually exclusive with private_key.
+            private_key_wo_version: (Number) Version counter for private_key_wo. Increment this value to trigger a private key update.
             public_key: (String, Sensitive) WireGuard peer public key.
             pull_dns: (Boolean) Specifies whether to pull DNS servers from the VPN.
             read: (String) A string that can be parsed as a duration consisting of numbers and unit suffixes, such as "30s" or "2h45m". Valid time units are "s" (seconds), "m" (minutes), "h" (hours). Read operations occur during any refresh or planning operation when refresh is enabled.
@@ -1059,6 +1097,8 @@ resources:
             networkgroup: (String) The WAN network group this interface belongs to (WAN, WAN2, …). The primary uplink is WAN; a secondary/SFP uplink is WAN2. Computed from the controller when unset (so an imported WAN2 is preserved), defaulting to WAN on create. Required to manage multi-WAN (WAN2+) setups, where a hard-coded WAN collides with the primary (api.err.WanConfigurationForNetworkGroupAlreadyExists).
             option_number: (Number) DHCP option number
             options: (Attributes List) DHCP options (see below for nested schema)
+            password: (String, Sensitive) PPPoE password supplied by the ISP. Stored in state - use password_wo to avoid persisting the secret. Only meaningful when type is pppoe.
+            password_wo: '(String, Sensitive, Write-only) Write-only equivalent of password (Terraform 1.11+). Used at apply time but never written to state, so it can be sourced from an ephemeral resource. Because nothing is stored, the provider cannot detect a password changed outside Terraform: such a change produces no diff. Mutually exclusive with password.'
             pd_size: (Number) DHCPv6 prefix delegation size
             pd_size_auto: (Boolean) Whether DHCPv6 PD size is automatic
             preference: (String) DNS preference (auto, manual)
@@ -1081,6 +1121,7 @@ resources:
             upload_kilobits_per_second: (Number) Upload speed in kilobits per second
             upnp: (Attributes) UPnP configuration (see below for nested schema)
             upstream: (Boolean) Whether IGMP proxy upstream is enabled
+            username: (String) PPPoE username supplied by the ISP. Only meaningful when type is pppoe. Left unset, the attribute is not written and whatever the controller holds is preserved, so an imported PPPoE uplink can be managed without touching its login.
             value: (String) DHCP option value
             vlan: (Attributes) VLAN configuration (see below for nested schema)
             wan_delegation_type: (String) IPv6 WAN delegation type (pd, single_network, none)
@@ -1108,6 +1149,8 @@ resources:
             interface_ip: (String) The tunnel IP assigned to the peer, without mask (e.g. 192.0.2.10). Must be within the WireGuard server's subnet.
             name: (String) The name of the WireGuard peer.
             network_id: (String) The ID of the WireGuard server network the peer connects to.
+            preshared_key: (String, Sensitive) Optional WireGuard pre-shared key for this peer (the UI's Pre-Shared Key toggle), adding a layer of symmetric encryption on top of the key pair. The controller stores and returns it in clear text, so it is kept in state - use preshared_key_wo to avoid persisting the secret. Left unset, the attribute is not written and a key configured out of band is preserved.
+            preshared_key_wo: '(String, Sensitive, Write-only) Write-only equivalent of preshared_key (Terraform 1.11+). Used at apply time but never written to state, so it can be sourced from an ephemeral resource. Because nothing is stored, the provider cannot detect a key changed outside Terraform: such a change produces no diff. Mutually exclusive with preshared_key.'
             public_key: (String) The WireGuard public key of the peer.
             read: (String) A string that can be parsed as a duration consisting of numbers and unit suffixes, such as "30s" or "2h45m". Valid time units are "s" (seconds), "m" (minutes), "h" (hours). Read operations occur during any refresh or planning operation when refresh is enabled.
             site: (String) The name of the site the WireGuard server belongs to.
@@ -1128,6 +1171,7 @@ resources:
         argumentDocs:
             ap_group_ids: (Set of String) List of AP group IDs to apply this WLAN to.
             ap_group_mode: (String) Access point group mode.
+            bandsteering_mode: '(String, Deprecated) Deprecated and no longer applied. UniFi moved band steering off the WLAN object: bandsteering_mode is absent from the controller''s WLAN field definitions as of Network 10.6, while it is still present on the device, so the setting now lives on unifi_device''s bandsteering_mode instead. This attribute is neither read nor written and always reads back null.'
             bc_filter_list: (Set of String) List of MAC addresses for the broadcast filter. The controller may populate this on its own, so it is computed when unset.
             bss_transition: (Boolean) Improves client roaming by providing connection details of nearby APs.
             create: (String) A string that can be parsed as a duration consisting of numbers and unit suffixes, such as "30s" or "2h45m". Valid time units are "s" (seconds), "m" (minutes), "h" (hours).
@@ -1141,7 +1185,7 @@ resources:
             enabled: (Boolean) Enable or disable the WLAN.
             enhanced_iot: (Boolean) Enable enhanced IoT connectivity. When true, the controller forces iapp_enabled = true, wpa3_support = false, wpa3_transition = false, pmf_mode = "disabled" and dtim_ng = 1; the provider pins those fields to match, so any conflicting values you set for them are ignored (this disables WPA3 on the SSID).
             fast_roaming_enabled: (Boolean) Enable fast roaming, aka 802.11r.
-            group_rekey: (Number) Group rekey interval in seconds (0 to disable).
+            group_rekey: (Number) Group rekey interval in seconds (0 to disable). Computed from the controller when not set.
             hide_ssid: (Boolean) Indicates whether or not to hide the SSID from broadcast.
             hotspot2conf_enabled: (Boolean) Enable Hotspot 2.0 configuration.
             iapp_enabled: (Boolean) Enable Inter-Access Point Protocol (802.11f) for faster roaming. Computed from the controller when not set.
@@ -1183,7 +1227,7 @@ resources:
             vlan_enabled: (Boolean) Enable VLAN tagging.
             wlan_band: (String) WLAN band.
             wlan_bands: (Set of String) List of WLAN bands.
-            wpa_enc: (String) WPA encryption. Can be one of auto, ccmp, gcmp, ccmp-256, or gcmp-256.
+            wpa_enc: (String) WPA encryption. Can be one of auto, ccmp, gcmp, ccmp-256, or gcmp-256. Computed from the controller when not set.
             wpa_mode: (String) WPA mode. Can be one of auto, wpa1, or wpa2.
             wpa3_enhanced_192: (Boolean) Enable WPA3 Enterprise 192-bit mode.
             wpa3_fast_roaming: (Boolean) Enable WPA3 fast roaming (802.11r).

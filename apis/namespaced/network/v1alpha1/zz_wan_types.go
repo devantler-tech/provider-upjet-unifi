@@ -497,6 +497,12 @@ type WanInitParameters struct {
 	// The WAN network group this interface belongs to (`WAN`, `WAN2`, …). The primary uplink is `WAN`; a secondary/SFP uplink is `WAN2`. Computed from the controller when unset (so an imported `WAN2` is preserved), defaulting to `WAN` on create. Required to manage multi-WAN (WAN2+) setups, where a hard-coded `WAN` collides with the primary (`api.err.WanConfigurationForNetworkGroupAlreadyExists`).
 	Networkgroup *string `json:"networkgroup,omitempty" tf:"networkgroup,omitempty"`
 
+	// PPPoE password supplied by the ISP. Stored in state - use `password_wo` to avoid persisting the secret. Only meaningful when `type` is `pppoe`.
+	PasswordSecretRef *v1.LocalSecretKeySelector `json:"passwordSecretRef,omitempty" tf:"-"`
+
+	// 11+). Used at apply time but never written to state, so it can be sourced from an ephemeral resource. Mutually exclusive with `password`.
+	PasswordWoSecretRef *v1.LocalSecretKeySelector `json:"passwordWoSecretRef,omitempty" tf:"-"`
+
 	ProviderCapabilities *ProviderCapabilitiesInitParameters `json:"providerCapabilities,omitempty" tf:"provider_capabilities,omitempty"`
 
 	// Whether to report WAN events
@@ -522,6 +528,9 @@ type WanInitParameters struct {
 	TypeV6 *string `json:"typeV6,omitempty" tf:"type_v6,omitempty"`
 
 	Upnp *UpnpInitParameters `json:"upnp,omitempty" tf:"upnp,omitempty"`
+
+	// PPPoE username supplied by the ISP. Only meaningful when `type` is `pppoe`. Left unset, the attribute is not written and whatever the controller holds is preserved, so an imported PPPoE uplink can be managed without touching its login.
+	Username *string `json:"username,omitempty" tf:"username,omitempty"`
 
 	Vlan *VlanInitParameters `json:"vlan,omitempty" tf:"vlan,omitempty"`
 
@@ -591,6 +600,9 @@ type WanObservation struct {
 
 	Upnp *UpnpObservation `json:"upnp,omitempty" tf:"upnp,omitempty"`
 
+	// PPPoE username supplied by the ISP. Only meaningful when `type` is `pppoe`. Left unset, the attribute is not written and whatever the controller holds is preserved, so an imported PPPoE uplink can be managed without touching its login.
+	Username *string `json:"username,omitempty" tf:"username,omitempty"`
+
 	Vlan *VlanObservation `json:"vlan,omitempty" tf:"vlan,omitempty"`
 
 	// The DS-Lite AFTR remote host. Only used when `wan_dslite_remote_host_auto` is disabled.
@@ -644,6 +656,14 @@ type WanParameters struct {
 	// +kubebuilder:validation:Optional
 	Networkgroup *string `json:"networkgroup,omitempty" tf:"networkgroup,omitempty"`
 
+	// PPPoE password supplied by the ISP. Stored in state - use `password_wo` to avoid persisting the secret. Only meaningful when `type` is `pppoe`.
+	// +kubebuilder:validation:Optional
+	PasswordSecretRef *v1.LocalSecretKeySelector `json:"passwordSecretRef,omitempty" tf:"-"`
+
+	// 11+). Used at apply time but never written to state, so it can be sourced from an ephemeral resource. Mutually exclusive with `password`.
+	// +kubebuilder:validation:Optional
+	PasswordWoSecretRef *v1.LocalSecretKeySelector `json:"passwordWoSecretRef,omitempty" tf:"-"`
+
 	// +kubebuilder:validation:Optional
 	ProviderCapabilities *ProviderCapabilitiesParameters `json:"providerCapabilities,omitempty" tf:"provider_capabilities,omitempty"`
 
@@ -679,6 +699,10 @@ type WanParameters struct {
 
 	// +kubebuilder:validation:Optional
 	Upnp *UpnpParameters `json:"upnp,omitempty" tf:"upnp,omitempty"`
+
+	// PPPoE username supplied by the ISP. Only meaningful when `type` is `pppoe`. Left unset, the attribute is not written and whatever the controller holds is preserved, so an imported PPPoE uplink can be managed without touching its login.
+	// +kubebuilder:validation:Optional
+	Username *string `json:"username,omitempty" tf:"username,omitempty"`
 
 	// +kubebuilder:validation:Optional
 	Vlan *VlanParameters `json:"vlan,omitempty" tf:"vlan,omitempty"`

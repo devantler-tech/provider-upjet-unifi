@@ -226,8 +226,14 @@ type WireguardInitParameters struct {
 	// WireGuard preshared key. Required when preshared_key_enabled is true.
 	PresharedKeySecretRef *v1.SecretKeySelector `json:"presharedKeySecretRef,omitempty" tf:"-"`
 
-	// WireGuard private key for this client.
-	PrivateKeySecretRef v1.SecretKeySelector `json:"privateKeySecretRef" tf:"-"`
+	// WireGuard private key for this client. Stored in state; use `private_key_wo` to avoid persisting the secret.
+	PrivateKeySecretRef *v1.SecretKeySelector `json:"privateKeySecretRef,omitempty" tf:"-"`
+
+	// 11+). Used at apply time but never written to state. Mutually exclusive with `private_key`.
+	PrivateKeyWoSecretRef *v1.SecretKeySelector `json:"privateKeyWoSecretRef,omitempty" tf:"-"`
+
+	// Version counter for `private_key_wo`. Increment this value to trigger a private key update.
+	PrivateKeyWoVersion *float64 `json:"privateKeyWoVersion,omitempty" tf:"private_key_wo_version,omitempty"`
 }
 
 type WireguardObservation struct {
@@ -243,6 +249,9 @@ type WireguardObservation struct {
 
 	// Specifies whether to use a preshared key for additional security.
 	PresharedKeyEnabled *bool `json:"presharedKeyEnabled,omitempty" tf:"preshared_key_enabled,omitempty"`
+
+	// Version counter for `private_key_wo`. Increment this value to trigger a private key update.
+	PrivateKeyWoVersion *float64 `json:"privateKeyWoVersion,omitempty" tf:"private_key_wo_version,omitempty"`
 }
 
 type WireguardParameters struct {
@@ -269,9 +278,17 @@ type WireguardParameters struct {
 	// +kubebuilder:validation:Optional
 	PresharedKeySecretRef *v1.SecretKeySelector `json:"presharedKeySecretRef,omitempty" tf:"-"`
 
-	// WireGuard private key for this client.
+	// WireGuard private key for this client. Stored in state; use `private_key_wo` to avoid persisting the secret.
 	// +kubebuilder:validation:Optional
-	PrivateKeySecretRef v1.SecretKeySelector `json:"privateKeySecretRef" tf:"-"`
+	PrivateKeySecretRef *v1.SecretKeySelector `json:"privateKeySecretRef,omitempty" tf:"-"`
+
+	// 11+). Used at apply time but never written to state. Mutually exclusive with `private_key`.
+	// +kubebuilder:validation:Optional
+	PrivateKeyWoSecretRef *v1.SecretKeySelector `json:"privateKeyWoSecretRef,omitempty" tf:"-"`
+
+	// Version counter for `private_key_wo`. Increment this value to trigger a private key update.
+	// +kubebuilder:validation:Optional
+	PrivateKeyWoVersion *float64 `json:"privateKeyWoVersion,omitempty" tf:"private_key_wo_version,omitempty"`
 }
 
 // ClientSpec defines the desired state of Client

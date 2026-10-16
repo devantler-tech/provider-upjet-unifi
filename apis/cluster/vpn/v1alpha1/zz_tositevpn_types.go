@@ -103,10 +103,16 @@ type ToSiteVPNInitParameters struct {
 	// The local IP used for the tunnel. Defaults to the WAN address when omitted.
 	LocalIP *string `json:"localIp,omitempty" tf:"local_ip,omitempty"`
 
+	// IKE local identifier used for peer authentication (the UI's "Local Identifier"). Setting it also enables identifier authentication; left unset, the attribute is not written and whatever the controller holds is preserved.
+	LocalIdentifier *string `json:"localIdentifier,omitempty" tf:"local_identifier,omitempty"`
+
+	// Whether the local identifier is used for authentication. Set automatically when `local_identifier` is configured; declare it explicitly to enable identifier authentication without pinning a value.
+	LocalIdentifierEnabled *bool `json:"localIdentifierEnabled,omitempty" tf:"local_identifier_enabled,omitempty"`
+
 	// The name of the site-to-site VPN.
 	Name *string `json:"name,omitempty" tf:"name,omitempty"`
 
-	// The public IP address of the remote VPN gateway (peer).
+	// The public IP address **or hostname** of the remote VPN gateway (peer). The controller accepts and stores a hostname, which is how a peer behind dynamic DNS is configured.
 	PeerIP *string `json:"peerIp,omitempty" tf:"peer_ip,omitempty"`
 
 	// Whether Perfect Forward Secrecy is enabled.
@@ -121,7 +127,13 @@ type ToSiteVPNInitParameters struct {
 	// IPsec profile. One of `customized`, `azure_dynamic`, or `azure_static`. Set to `customized` to tune the IKE/ESP attributes below; the controller may derive the ESP values from the IKE ones.
 	Profile *string `json:"profile,omitempty" tf:"profile,omitempty"`
 
-	// The remote site's subnets reachable through the tunnel (CIDR).
+	// IKE remote identifier used for peer authentication (the UI's "Remote Identifier"). See `local_identifier`.
+	RemoteIdentifier *string `json:"remoteIdentifier,omitempty" tf:"remote_identifier,omitempty"`
+
+	// Whether the remote identifier is used for authentication. See `local_identifier_enabled`.
+	RemoteIdentifierEnabled *bool `json:"remoteIdentifierEnabled,omitempty" tf:"remote_identifier_enabled,omitempty"`
+
+	// The remote site's subnets reachable through the tunnel (CIDR). May be empty when dynamic routing is enabled.
 	RemoteSubnets []*string `json:"remoteSubnets,omitempty" tf:"remote_subnets,omitempty"`
 
 	// The route distance (administrative metric) for tunnel routes (1-255).
@@ -176,10 +188,16 @@ type ToSiteVPNObservation struct {
 	// The local IP used for the tunnel. Defaults to the WAN address when omitted.
 	LocalIP *string `json:"localIp,omitempty" tf:"local_ip,omitempty"`
 
+	// IKE local identifier used for peer authentication (the UI's "Local Identifier"). Setting it also enables identifier authentication; left unset, the attribute is not written and whatever the controller holds is preserved.
+	LocalIdentifier *string `json:"localIdentifier,omitempty" tf:"local_identifier,omitempty"`
+
+	// Whether the local identifier is used for authentication. Set automatically when `local_identifier` is configured; declare it explicitly to enable identifier authentication without pinning a value.
+	LocalIdentifierEnabled *bool `json:"localIdentifierEnabled,omitempty" tf:"local_identifier_enabled,omitempty"`
+
 	// The name of the site-to-site VPN.
 	Name *string `json:"name,omitempty" tf:"name,omitempty"`
 
-	// The public IP address of the remote VPN gateway (peer).
+	// The public IP address **or hostname** of the remote VPN gateway (peer). The controller accepts and stores a hostname, which is how a peer behind dynamic DNS is configured.
 	PeerIP *string `json:"peerIp,omitempty" tf:"peer_ip,omitempty"`
 
 	// Whether Perfect Forward Secrecy is enabled.
@@ -188,7 +206,13 @@ type ToSiteVPNObservation struct {
 	// IPsec profile. One of `customized`, `azure_dynamic`, or `azure_static`. Set to `customized` to tune the IKE/ESP attributes below; the controller may derive the ESP values from the IKE ones.
 	Profile *string `json:"profile,omitempty" tf:"profile,omitempty"`
 
-	// The remote site's subnets reachable through the tunnel (CIDR).
+	// IKE remote identifier used for peer authentication (the UI's "Remote Identifier"). See `local_identifier`.
+	RemoteIdentifier *string `json:"remoteIdentifier,omitempty" tf:"remote_identifier,omitempty"`
+
+	// Whether the remote identifier is used for authentication. See `local_identifier_enabled`.
+	RemoteIdentifierEnabled *bool `json:"remoteIdentifierEnabled,omitempty" tf:"remote_identifier_enabled,omitempty"`
+
+	// The remote site's subnets reachable through the tunnel (CIDR). May be empty when dynamic routing is enabled.
 	RemoteSubnets []*string `json:"remoteSubnets,omitempty" tf:"remote_subnets,omitempty"`
 
 	// The route distance (administrative metric) for tunnel routes (1-255).
@@ -254,11 +278,19 @@ type ToSiteVPNParameters struct {
 	// +kubebuilder:validation:Optional
 	LocalIP *string `json:"localIp,omitempty" tf:"local_ip,omitempty"`
 
+	// IKE local identifier used for peer authentication (the UI's "Local Identifier"). Setting it also enables identifier authentication; left unset, the attribute is not written and whatever the controller holds is preserved.
+	// +kubebuilder:validation:Optional
+	LocalIdentifier *string `json:"localIdentifier,omitempty" tf:"local_identifier,omitempty"`
+
+	// Whether the local identifier is used for authentication. Set automatically when `local_identifier` is configured; declare it explicitly to enable identifier authentication without pinning a value.
+	// +kubebuilder:validation:Optional
+	LocalIdentifierEnabled *bool `json:"localIdentifierEnabled,omitempty" tf:"local_identifier_enabled,omitempty"`
+
 	// The name of the site-to-site VPN.
 	// +kubebuilder:validation:Optional
 	Name *string `json:"name,omitempty" tf:"name,omitempty"`
 
-	// The public IP address of the remote VPN gateway (peer).
+	// The public IP address **or hostname** of the remote VPN gateway (peer). The controller accepts and stores a hostname, which is how a peer behind dynamic DNS is configured.
 	// +kubebuilder:validation:Optional
 	PeerIP *string `json:"peerIp,omitempty" tf:"peer_ip,omitempty"`
 
@@ -278,7 +310,15 @@ type ToSiteVPNParameters struct {
 	// +kubebuilder:validation:Optional
 	Profile *string `json:"profile,omitempty" tf:"profile,omitempty"`
 
-	// The remote site's subnets reachable through the tunnel (CIDR).
+	// IKE remote identifier used for peer authentication (the UI's "Remote Identifier"). See `local_identifier`.
+	// +kubebuilder:validation:Optional
+	RemoteIdentifier *string `json:"remoteIdentifier,omitempty" tf:"remote_identifier,omitempty"`
+
+	// Whether the remote identifier is used for authentication. See `local_identifier_enabled`.
+	// +kubebuilder:validation:Optional
+	RemoteIdentifierEnabled *bool `json:"remoteIdentifierEnabled,omitempty" tf:"remote_identifier_enabled,omitempty"`
+
+	// The remote site's subnets reachable through the tunnel (CIDR). May be empty when dynamic routing is enabled.
 	// +kubebuilder:validation:Optional
 	RemoteSubnets []*string `json:"remoteSubnets,omitempty" tf:"remote_subnets,omitempty"`
 

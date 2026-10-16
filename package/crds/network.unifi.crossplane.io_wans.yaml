@@ -194,6 +194,44 @@ spec:
                       to manage multi-WAN (WAN2+) setups, where a hard-coded `WAN`
                       collides with the primary (`api.err.WanConfigurationForNetworkGroupAlreadyExists`).
                     type: string
+                  passwordSecretRef:
+                    description: PPPoE password supplied by the ISP. Stored in state
+                      - use `password_wo` to avoid persisting the secret. Only meaningful
+                      when `type` is `pppoe`.
+                    properties:
+                      key:
+                        description: The key to select.
+                        type: string
+                      name:
+                        description: Name of the secret.
+                        type: string
+                      namespace:
+                        description: Namespace of the secret.
+                        type: string
+                    required:
+                    - key
+                    - name
+                    - namespace
+                    type: object
+                  passwordWoSecretRef:
+                    description: 11+). Used at apply time but never written to state,
+                      so it can be sourced from an ephemeral resource. Mutually exclusive
+                      with `password`.
+                    properties:
+                      key:
+                        description: The key to select.
+                        type: string
+                      name:
+                        description: Name of the secret.
+                        type: string
+                      namespace:
+                        description: Namespace of the secret.
+                        type: string
+                    required:
+                    - key
+                    - name
+                    - namespace
+                    type: object
                   providerCapabilities:
                     properties:
                       downloadKilobitsPerSecond:
@@ -285,6 +323,12 @@ spec:
                         description: UPnP WAN interface
                         type: string
                     type: object
+                  username:
+                    description: PPPoE username supplied by the ISP. Only meaningful
+                      when `type` is `pppoe`. Left unset, the attribute is not written
+                      and whatever the controller holds is preserved, so an imported
+                      PPPoE uplink can be managed without touching its login.
+                    type: string
                   vlan:
                     properties:
                       enabled:
@@ -438,6 +482,44 @@ spec:
                       to manage multi-WAN (WAN2+) setups, where a hard-coded `WAN`
                       collides with the primary (`api.err.WanConfigurationForNetworkGroupAlreadyExists`).
                     type: string
+                  passwordSecretRef:
+                    description: PPPoE password supplied by the ISP. Stored in state
+                      - use `password_wo` to avoid persisting the secret. Only meaningful
+                      when `type` is `pppoe`.
+                    properties:
+                      key:
+                        description: The key to select.
+                        type: string
+                      name:
+                        description: Name of the secret.
+                        type: string
+                      namespace:
+                        description: Namespace of the secret.
+                        type: string
+                    required:
+                    - key
+                    - name
+                    - namespace
+                    type: object
+                  passwordWoSecretRef:
+                    description: 11+). Used at apply time but never written to state,
+                      so it can be sourced from an ephemeral resource. Mutually exclusive
+                      with `password`.
+                    properties:
+                      key:
+                        description: The key to select.
+                        type: string
+                      name:
+                        description: Name of the secret.
+                        type: string
+                      namespace:
+                        description: Namespace of the secret.
+                        type: string
+                    required:
+                    - key
+                    - name
+                    - namespace
+                    type: object
                   providerCapabilities:
                     properties:
                       downloadKilobitsPerSecond:
@@ -529,6 +611,12 @@ spec:
                         description: UPnP WAN interface
                         type: string
                     type: object
+                  username:
+                    description: PPPoE username supplied by the ISP. Only meaningful
+                      when `type` is `pppoe`. Left unset, the attribute is not written
+                      and whatever the controller holds is preserved, so an imported
+                      PPPoE uplink can be managed without touching its login.
+                    type: string
                   vlan:
                     properties:
                       enabled:
@@ -858,6 +946,12 @@ spec:
                         description: UPnP WAN interface
                         type: string
                     type: object
+                  username:
+                    description: PPPoE username supplied by the ISP. Only meaningful
+                      when `type` is `pppoe`. Left unset, the attribute is not written
+                      and whatever the controller holds is preserved, so an imported
+                      PPPoE uplink can be managed without touching its login.
+                    type: string
                   vlan:
                     properties:
                       enabled:

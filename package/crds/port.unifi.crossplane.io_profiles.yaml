@@ -105,8 +105,12 @@ spec:
                       `default`, or `disabled`.
                     type: string
                   forward:
-                    description: The type forwarding to use for the port profile.
-                      Can be `all`, `native`, `customize` or `disabled`.
+                    description: 'The type forwarding to use for the port profile.
+                      Can be `all`, `native`, `customize` or `disabled`. `customize`
+                      requires a native network that carries a VLAN id: the controller
+                      silently stores `all` for a profile whose native network is
+                      untagged, which the provider rejects at plan time rather than
+                      letting the apply leave the resource tainted.'
                     type: string
                   fullDuplex:
                     description: Enable full duplex for the port profile.
@@ -320,8 +324,12 @@ spec:
                       `default`, or `disabled`.
                     type: string
                   forward:
-                    description: The type forwarding to use for the port profile.
-                      Can be `all`, `native`, `customize` or `disabled`.
+                    description: 'The type forwarding to use for the port profile.
+                      Can be `all`, `native`, `customize` or `disabled`. `customize`
+                      requires a native network that carries a VLAN id: the controller
+                      silently stores `all` for a profile whose native network is
+                      untagged, which the provider rejects at plan time rather than
+                      letting the apply leave the resource tainted.'
                     type: string
                   fullDuplex:
                     description: Enable full duplex for the port profile.
@@ -613,8 +621,12 @@ spec:
                       `default`, or `disabled`.
                     type: string
                   forward:
-                    description: The type forwarding to use for the port profile.
-                      Can be `all`, `native`, `customize` or `disabled`.
+                    description: 'The type forwarding to use for the port profile.
+                      Can be `all`, `native`, `customize` or `disabled`. `customize`
+                      requires a native network that carries a VLAN id: the controller
+                      silently stores `all` for a profile whose native network is
+                      untagged, which the provider rejects at plan time rather than
+                      letting the apply leave the resource tainted.'
                     type: string
                   fullDuplex:
                     description: Enable full duplex for the port profile.

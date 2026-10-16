@@ -73,7 +73,9 @@ spec:
               forProvider:
                 properties:
                   autoScale:
-                    description: Specifies whether auto-scaling is enabled.
+                    description: 'Specifies whether auto-scaling is enabled. The controller
+                      stores no default: left unset, the attribute is not written
+                      and whatever the controller holds is preserved.'
                     type: boolean
                   dhcpGuarding:
                     properties:
@@ -82,7 +84,11 @@ spec:
                         type: boolean
                       servers:
                         description: List of allowed DHCP server IP addresses (maximum
-                          3).
+                          3). On `corporate` and `guest` networks the controller only
+                          honors DHCP guarding with `setting_preference = "manual"`;
+                          when `setting_preference` is not configured, the provider
+                          sets it to `manual` automatically whenever `dhcp_guarding.enabled`
+                          is `true`.
                         items:
                           type: string
                         type: array
@@ -136,6 +142,11 @@ spec:
                       ntpEnabled:
                         description: Specifies whether DHCP NTP is enabled.
                         type: boolean
+                      ntpServers:
+                        description: List of NTP server addresses for DHCP clients.
+                        items:
+                          type: string
+                        type: array
                       start:
                         description: The IPv4 address where the DHCP range starts.
                         type: string
@@ -197,6 +208,13 @@ spec:
                   enabled:
                     description: Specifies whether the network is enabled.
                     type: boolean
+                  firewallZoneId:
+                    description: 'The firewall zone ID assigned to this network. Note:
+                      This field is dual-managed and can compete with `unifi_firewall_zone.network_ids`.
+                      To prevent state drift loops, ensure you manage zone membership
+                      from exactly one side. On Zone-Based Firewall (ZBF) controllers,
+                      this field is tightly coupled to the network''s `purpose` field.'
+                    type: string
                   gatewayType:
                     description: The gateway type. Must be one of `default` or `switch`.
                     type: string
@@ -207,12 +225,16 @@ spec:
                     description: Specifies whether internet access is enabled.
                     type: boolean
                   ipAliases:
-                    description: List of IP aliases for the network.
+                    description: List of IP aliases for the network, in CIDR notation
+                      (e.g. `192.168.2.1/24`). The controller rejects entries without
+                      a prefix length.
                     items:
                       type: string
                     type: array
                   ipv6Aliases:
-                    description: List of IPv6 aliases for the network.
+                    description: 'List of IPv6 aliases for the network. Not currently
+                      supported: the underlying UniFi API client has no field for
+                      this value, so a non-empty list is rejected at plan time (#413).'
                     items:
                       type: string
                     type: array
@@ -224,7 +246,9 @@ spec:
                     type: string
                   ipv6InterfaceType:
                     description: Specifies which type of IPv6 connection to use. Must
-                      be one of `none`, `pd`, or `static`.
+                      be one of `none`, `pd`, or `static`. Taken from the controller
+                      when not set; an adopted network keeps the type it already has
+                      (#544).
                     type: string
                   ipv6PdAutoPrefixidEnabled:
                     description: Specifies whether automatic prefix ID assignment
@@ -271,14 +295,13 @@ spec:
                       when `ipv6_interface_type` is `static`.
                     type: string
                   lteLan:
-                    description: Whether this network/VLAN stays active when the gateway
-                      fails over to a UniFi LTE (cellular) backup WAN. Maps to the
-                      controller's `lte_lan_enabled` flag and only matters when a
-                      UniFi LTE failover device is in use; otherwise it is cosmetic.
-                      Defaults to `true` (network stays available during LTE failover);
-                      set to `false` to disable it while on the LTE backup link. The
-                      controller may set this automatically, which is why existing
-                      networks can show differing values.
+                    description: 'Whether this network/VLAN stays active when the
+                      gateway fails over to a UniFi LTE (cellular) backup WAN. Maps
+                      to the controller''s `lte_lan_enabled` flag and only matters
+                      when a UniFi LTE failover device is in use; otherwise it is
+                      cosmetic. The controller stores no default: left unset, the
+                      attribute is not written and whatever the controller holds is
+                      preserved, which is why existing networks show differing values.'
                     type: boolean
                   multicastDns:
                     description: 'Specifies whether mDNS is enabled. This is read
@@ -325,6 +348,9 @@ spec:
                     type: string
                   settingPreference:
                     description: Setting preference. Must be one of `auto` or `manual`.
+                      Taken from the controller when not set; an adopted network keeps
+                      its own preference, so importing a `manual` network no longer
+                      proposes `auto` - which would also reset DHCP guarding (#544).
                     type: string
                   site:
                     description: The name of the site to associate the network with.
@@ -392,7 +418,9 @@ spec:
                   autoscaler.
                 properties:
                   autoScale:
-                    description: Specifies whether auto-scaling is enabled.
+                    description: 'Specifies whether auto-scaling is enabled. The controller
+                      stores no default: left unset, the attribute is not written
+                      and whatever the controller holds is preserved.'
                     type: boolean
                   dhcpGuarding:
                     properties:
@@ -401,7 +429,11 @@ spec:
                         type: boolean
                       servers:
                         description: List of allowed DHCP server IP addresses (maximum
-                          3).
+                          3). On `corporate` and `guest` networks the controller only
+                          honors DHCP guarding with `setting_preference = "manual"`;
+                          when `setting_preference` is not configured, the provider
+                          sets it to `manual` automatically whenever `dhcp_guarding.enabled`
+                          is `true`.
                         items:
                           type: string
                         type: array
@@ -455,6 +487,11 @@ spec:
                       ntpEnabled:
                         description: Specifies whether DHCP NTP is enabled.
                         type: boolean
+                      ntpServers:
+                        description: List of NTP server addresses for DHCP clients.
+                        items:
+                          type: string
+                        type: array
                       start:
                         description: The IPv4 address where the DHCP range starts.
                         type: string
@@ -516,6 +553,13 @@ spec:
                   enabled:
                     description: Specifies whether the network is enabled.
                     type: boolean
+                  firewallZoneId:
+                    description: 'The firewall zone ID assigned to this network. Note:
+                      This field is dual-managed and can compete with `unifi_firewall_zone.network_ids`.
+                      To prevent state drift loops, ensure you manage zone membership
+                      from exactly one side. On Zone-Based Firewall (ZBF) controllers,
+                      this field is tightly coupled to the network''s `purpose` field.'
+                    type: string
                   gatewayType:
                     description: The gateway type. Must be one of `default` or `switch`.
                     type: string
@@ -526,12 +570,16 @@ spec:
                     description: Specifies whether internet access is enabled.
                     type: boolean
                   ipAliases:
-                    description: List of IP aliases for the network.
+                    description: List of IP aliases for the network, in CIDR notation
+                      (e.g. `192.168.2.1/24`). The controller rejects entries without
+                      a prefix length.
                     items:
                       type: string
                     type: array
                   ipv6Aliases:
-                    description: List of IPv6 aliases for the network.
+                    description: 'List of IPv6 aliases for the network. Not currently
+                      supported: the underlying UniFi API client has no field for
+                      this value, so a non-empty list is rejected at plan time (#413).'
                     items:
                       type: string
                     type: array
@@ -543,7 +591,9 @@ spec:
                     type: string
                   ipv6InterfaceType:
                     description: Specifies which type of IPv6 connection to use. Must
-                      be one of `none`, `pd`, or `static`.
+                      be one of `none`, `pd`, or `static`. Taken from the controller
+                      when not set; an adopted network keeps the type it already has
+                      (#544).
                     type: string
                   ipv6PdAutoPrefixidEnabled:
                     description: Specifies whether automatic prefix ID assignment
@@ -590,14 +640,13 @@ spec:
                       when `ipv6_interface_type` is `static`.
                     type: string
                   lteLan:
-                    description: Whether this network/VLAN stays active when the gateway
-                      fails over to a UniFi LTE (cellular) backup WAN. Maps to the
-                      controller's `lte_lan_enabled` flag and only matters when a
-                      UniFi LTE failover device is in use; otherwise it is cosmetic.
-                      Defaults to `true` (network stays available during LTE failover);
-                      set to `false` to disable it while on the LTE backup link. The
-                      controller may set this automatically, which is why existing
-                      networks can show differing values.
+                    description: 'Whether this network/VLAN stays active when the
+                      gateway fails over to a UniFi LTE (cellular) backup WAN. Maps
+                      to the controller''s `lte_lan_enabled` flag and only matters
+                      when a UniFi LTE failover device is in use; otherwise it is
+                      cosmetic. The controller stores no default: left unset, the
+                      attribute is not written and whatever the controller holds is
+                      preserved, which is why existing networks show differing values.'
                     type: boolean
                   multicastDns:
                     description: 'Specifies whether mDNS is enabled. This is read
@@ -644,6 +693,9 @@ spec:
                     type: string
                   settingPreference:
                     description: Setting preference. Must be one of `auto` or `manual`.
+                      Taken from the controller when not set; an adopted network keeps
+                      its own preference, so importing a `manual` network no longer
+                      proposes `auto` - which would also reset DHCP guarding (#544).
                     type: string
                   site:
                     description: The name of the site to associate the network with.
@@ -794,7 +846,9 @@ spec:
               atProvider:
                 properties:
                   autoScale:
-                    description: Specifies whether auto-scaling is enabled.
+                    description: 'Specifies whether auto-scaling is enabled. The controller
+                      stores no default: left unset, the attribute is not written
+                      and whatever the controller holds is preserved.'
                     type: boolean
                   dhcpGuarding:
                     properties:
@@ -803,7 +857,11 @@ spec:
                         type: boolean
                       servers:
                         description: List of allowed DHCP server IP addresses (maximum
-                          3).
+                          3). On `corporate` and `guest` networks the controller only
+                          honors DHCP guarding with `setting_preference = "manual"`;
+                          when `setting_preference` is not configured, the provider
+                          sets it to `manual` automatically whenever `dhcp_guarding.enabled`
+                          is `true`.
                         items:
                           type: string
                         type: array
@@ -857,6 +915,11 @@ spec:
                       ntpEnabled:
                         description: Specifies whether DHCP NTP is enabled.
                         type: boolean
+                      ntpServers:
+                        description: List of NTP server addresses for DHCP clients.
+                        items:
+                          type: string
+                        type: array
                       start:
                         description: The IPv4 address where the DHCP range starts.
                         type: string
@@ -918,6 +981,13 @@ spec:
                   enabled:
                     description: Specifies whether the network is enabled.
                     type: boolean
+                  firewallZoneId:
+                    description: 'The firewall zone ID assigned to this network. Note:
+                      This field is dual-managed and can compete with `unifi_firewall_zone.network_ids`.
+                      To prevent state drift loops, ensure you manage zone membership
+                      from exactly one side. On Zone-Based Firewall (ZBF) controllers,
+                      this field is tightly coupled to the network''s `purpose` field.'
+                    type: string
                   gatewayType:
                     description: The gateway type. Must be one of `default` or `switch`.
                     type: string
@@ -930,12 +1000,16 @@ spec:
                     description: Specifies whether internet access is enabled.
                     type: boolean
                   ipAliases:
-                    description: List of IP aliases for the network.
+                    description: List of IP aliases for the network, in CIDR notation
+                      (e.g. `192.168.2.1/24`). The controller rejects entries without
+                      a prefix length.
                     items:
                       type: string
                     type: array
                   ipv6Aliases:
-                    description: List of IPv6 aliases for the network.
+                    description: 'List of IPv6 aliases for the network. Not currently
+                      supported: the underlying UniFi API client has no field for
+                      this value, so a non-empty list is rejected at plan time (#413).'
                     items:
                       type: string
                     type: array
@@ -947,7 +1021,9 @@ spec:
                     type: string
                   ipv6InterfaceType:
                     description: Specifies which type of IPv6 connection to use. Must
-                      be one of `none`, `pd`, or `static`.
+                      be one of `none`, `pd`, or `static`. Taken from the controller
+                      when not set; an adopted network keeps the type it already has
+                      (#544).
                     type: string
                   ipv6PdAutoPrefixidEnabled:
                     description: Specifies whether automatic prefix ID assignment
@@ -994,14 +1070,13 @@ spec:
                       when `ipv6_interface_type` is `static`.
                     type: string
                   lteLan:
-                    description: Whether this network/VLAN stays active when the gateway
-                      fails over to a UniFi LTE (cellular) backup WAN. Maps to the
-                      controller's `lte_lan_enabled` flag and only matters when a
-                      UniFi LTE failover device is in use; otherwise it is cosmetic.
-                      Defaults to `true` (network stays available during LTE failover);
-                      set to `false` to disable it while on the LTE backup link. The
-                      controller may set this automatically, which is why existing
-                      networks can show differing values.
+                    description: 'Whether this network/VLAN stays active when the
+                      gateway fails over to a UniFi LTE (cellular) backup WAN. Maps
+                      to the controller''s `lte_lan_enabled` flag and only matters
+                      when a UniFi LTE failover device is in use; otherwise it is
+                      cosmetic. The controller stores no default: left unset, the
+                      attribute is not written and whatever the controller holds is
+                      preserved, which is why existing networks show differing values.'
                     type: boolean
                   multicastDns:
                     description: 'Specifies whether mDNS is enabled. This is read
@@ -1048,6 +1123,9 @@ spec:
                     type: string
                   settingPreference:
                     description: Setting preference. Must be one of `auto` or `manual`.
+                      Taken from the controller when not set; an adopted network keeps
+                      its own preference, so importing a `manual` network no longer
+                      proposes `auto` - which would also reset DHCP guarding (#544).
                     type: string
                   site:
                     description: The name of the site to associate the network with.

@@ -21,7 +21,7 @@ func (mg *Wan) GetTerraformResourceType() string {
 
 // GetConnectionDetailsMapping for this Wan
 func (tr *Wan) GetConnectionDetailsMapping() map[string]string {
-	return nil
+	return map[string]string{"password": "passwordSecretRef", "password_wo": "passwordWoSecretRef"}
 }
 
 // GetObservation of this Wan

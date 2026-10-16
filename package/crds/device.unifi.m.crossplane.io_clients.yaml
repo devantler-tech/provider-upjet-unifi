@@ -74,7 +74,8 @@ spec:
                       client should be fixed.
                     type: string
                   fixedIp:
-                    description: A fixed IPv4 address for this client.
+                    description: A fixed IPv4 address for this client. Set to an empty
+                      string to clear a previously assigned fixed IP.
                     type: string
                   groups:
                     description: List of network members group names for this client.
@@ -180,7 +181,8 @@ spec:
                       client should be fixed.
                     type: string
                   fixedIp:
-                    description: A fixed IPv4 address for this client.
+                    description: A fixed IPv4 address for this client. Set to an empty
+                      string to clear a previously assigned fixed IP.
                     type: string
                   groups:
                     description: List of network members group names for this client.
@@ -341,7 +343,8 @@ spec:
                       client should be fixed.
                     type: string
                   fixedIp:
-                    description: A fixed IPv4 address for this client.
+                    description: A fixed IPv4 address for this client. Set to an empty
+                      string to clear a previously assigned fixed IP.
                     type: string
                   groups:
                     description: List of network members group names for this client.

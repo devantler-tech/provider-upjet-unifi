@@ -688,6 +688,11 @@ func (in *WlanInitParameters) DeepCopyInto(out *WlanInitParameters) {
 		*out = new(string)
 		**out = **in
 	}
+	if in.BandsteeringMode != nil {
+		in, out := &in.BandsteeringMode, &out.BandsteeringMode
+		*out = new(string)
+		**out = **in
+	}
 	if in.BcFilterList != nil {
 		in, out := &in.BcFilterList, &out.BcFilterList
 		*out = make([]*string, len(*in))
@@ -1032,6 +1037,11 @@ func (in *WlanObservation) DeepCopyInto(out *WlanObservation) {
 		*out = new(string)
 		**out = **in
 	}
+	if in.BandsteeringMode != nil {
+		in, out := &in.BandsteeringMode, &out.BandsteeringMode
+		*out = new(string)
+		**out = **in
+	}
 	if in.BcFilterList != nil {
 		in, out := &in.BcFilterList, &out.BcFilterList
 		*out = make([]*string, len(*in))
@@ -1328,6 +1338,11 @@ func (in *WlanParameters) DeepCopyInto(out *WlanParameters) {
 	}
 	if in.ApGroupMode != nil {
 		in, out := &in.ApGroupMode, &out.ApGroupMode
+		*out = new(string)
+		**out = **in
+	}
+	if in.BandsteeringMode != nil {
+		in, out := &in.BandsteeringMode, &out.BandsteeringMode
 		*out = new(string)
 		**out = **in
 	}

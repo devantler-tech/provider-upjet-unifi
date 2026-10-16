@@ -178,7 +178,8 @@ spec:
                         - name
                         type: object
                       privateKeySecretRef:
-                        description: WireGuard private key for this client.
+                        description: WireGuard private key for this client. Stored
+                          in state; use `private_key_wo` to avoid persisting the secret.
                         properties:
                           key:
                             type: string
@@ -189,6 +190,23 @@ spec:
                         - key
                         - name
                         type: object
+                      privateKeyWoSecretRef:
+                        description: 11+). Used at apply time but never written to
+                          state. Mutually exclusive with `private_key`.
+                        properties:
+                          key:
+                            type: string
+                          name:
+                            description: Name of the secret.
+                            type: string
+                        required:
+                        - key
+                        - name
+                        type: object
+                      privateKeyWoVersion:
+                        description: Version counter for `private_key_wo`. Increment
+                          this value to trigger a private key update.
+                        type: number
                     type: object
                 type: object
               initProvider:
@@ -328,7 +346,8 @@ spec:
                         - name
                         type: object
                       privateKeySecretRef:
-                        description: WireGuard private key for this client.
+                        description: WireGuard private key for this client. Stored
+                          in state; use `private_key_wo` to avoid persisting the secret.
                         properties:
                           key:
                             type: string
@@ -339,8 +358,23 @@ spec:
                         - key
                         - name
                         type: object
-                    required:
-                    - privateKeySecretRef
+                      privateKeyWoSecretRef:
+                        description: 11+). Used at apply time but never written to
+                          state. Mutually exclusive with `private_key`.
+                        properties:
+                          key:
+                            type: string
+                          name:
+                            description: Name of the secret.
+                            type: string
+                        required:
+                        - key
+                        - name
+                        type: object
+                      privateKeyWoVersion:
+                        description: Version counter for `private_key_wo`. Increment
+                          this value to trigger a private key update.
+                        type: number
                     type: object
                 type: object
               managementPolicies:
@@ -502,6 +536,10 @@ spec:
                         description: Specifies whether to use a preshared key for
                           additional security.
                         type: boolean
+                      privateKeyWoVersion:
+                        description: Version counter for `private_key_wo`. Increment
+                          this value to trigger a private key update.
+                        type: number
                     type: object
                 type: object
               conditions:

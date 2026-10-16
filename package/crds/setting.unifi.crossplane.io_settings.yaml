@@ -82,6 +82,24 @@ spec:
                         description: Whether periodic automated speed tests are enabled.
                         type: boolean
                     type: object
+                  connectivity:
+                    properties:
+                      enabled:
+                        description: Enable Wireless Meshing for the site.
+                        type: boolean
+                      mloMeshEnabled:
+                        description: Enable Multi-Link Operation (MLO) for the mesh
+                          backhaul. Requires WiFi 7 hardware.
+                        type: boolean
+                      uplinkHost:
+                        description: Host the site uses to verify connectivity when
+                          `uplink_type` is `internet`.
+                        type: string
+                      uplinkType:
+                        description: 'How the site reaches the controller: `gateway`
+                          or `internet`.'
+                        type: string
+                    type: object
                   country:
                     properties:
                       code:
@@ -123,6 +141,36 @@ spec:
                       fingerprintingEnabled:
                         description: Whether device fingerprinting is enabled.
                         type: boolean
+                    type: object
+                  globalSwitch:
+                    properties:
+                      aclDeviceIsolation:
+                        description: 'Network IDs with Client Device Isolation enabled
+                          (Settings > Networks > "Device Isolation (ACL)"), which
+                          blocks all communication between devices in the same network.
+                          This is a switch ACL: it covers same-network traffic across
+                          access points, which `unifi_wlan.l2_isolation` (one access
+                          point) and `unifi_network.network_isolation` (between networks)
+                          do not. The controller only offers it for networks routed
+                          by a UniFi gateway or L3 switch, and some switch models
+                          do not support ACLs at all - it rejects an unsupported network
+                          rather than silently ignoring it.'
+                        items:
+                          type: string
+                        type: array
+                      dhcpSnoop:
+                        description: Enable Rogue DHCP Server Detection (DHCP snooping).
+                        type: boolean
+                      dot1xPortctrlEnabled:
+                        description: Enable 802.1X port control.
+                        type: boolean
+                      jumboframeEnabled:
+                        description: Enable jumbo frames on all switches.
+                        type: boolean
+                      stpVersion:
+                        description: 'Spanning Tree Protocol mode for all switches:
+                          `stp`, `rstp`, or `disabled`.'
+                        type: string
                     type: object
                   igmpSnooping:
                     properties:
@@ -619,6 +667,24 @@ spec:
                         description: Whether periodic automated speed tests are enabled.
                         type: boolean
                     type: object
+                  connectivity:
+                    properties:
+                      enabled:
+                        description: Enable Wireless Meshing for the site.
+                        type: boolean
+                      mloMeshEnabled:
+                        description: Enable Multi-Link Operation (MLO) for the mesh
+                          backhaul. Requires WiFi 7 hardware.
+                        type: boolean
+                      uplinkHost:
+                        description: Host the site uses to verify connectivity when
+                          `uplink_type` is `internet`.
+                        type: string
+                      uplinkType:
+                        description: 'How the site reaches the controller: `gateway`
+                          or `internet`.'
+                        type: string
+                    type: object
                   country:
                     properties:
                       code:
@@ -660,6 +726,36 @@ spec:
                       fingerprintingEnabled:
                         description: Whether device fingerprinting is enabled.
                         type: boolean
+                    type: object
+                  globalSwitch:
+                    properties:
+                      aclDeviceIsolation:
+                        description: 'Network IDs with Client Device Isolation enabled
+                          (Settings > Networks > "Device Isolation (ACL)"), which
+                          blocks all communication between devices in the same network.
+                          This is a switch ACL: it covers same-network traffic across
+                          access points, which `unifi_wlan.l2_isolation` (one access
+                          point) and `unifi_network.network_isolation` (between networks)
+                          do not. The controller only offers it for networks routed
+                          by a UniFi gateway or L3 switch, and some switch models
+                          do not support ACLs at all - it rejects an unsupported network
+                          rather than silently ignoring it.'
+                        items:
+                          type: string
+                        type: array
+                      dhcpSnoop:
+                        description: Enable Rogue DHCP Server Detection (DHCP snooping).
+                        type: boolean
+                      dot1xPortctrlEnabled:
+                        description: Enable 802.1X port control.
+                        type: boolean
+                      jumboframeEnabled:
+                        description: Enable jumbo frames on all switches.
+                        type: boolean
+                      stpVersion:
+                        description: 'Spanning Tree Protocol mode for all switches:
+                          `stp`, `rstp`, or `disabled`.'
+                        type: string
                     type: object
                   igmpSnooping:
                     properties:
@@ -1234,6 +1330,24 @@ spec:
                         description: Whether periodic automated speed tests are enabled.
                         type: boolean
                     type: object
+                  connectivity:
+                    properties:
+                      enabled:
+                        description: Enable Wireless Meshing for the site.
+                        type: boolean
+                      mloMeshEnabled:
+                        description: Enable Multi-Link Operation (MLO) for the mesh
+                          backhaul. Requires WiFi 7 hardware.
+                        type: boolean
+                      uplinkHost:
+                        description: Host the site uses to verify connectivity when
+                          `uplink_type` is `internet`.
+                        type: string
+                      uplinkType:
+                        description: 'How the site reaches the controller: `gateway`
+                          or `internet`.'
+                        type: string
+                    type: object
                   country:
                     properties:
                       code:
@@ -1275,6 +1389,36 @@ spec:
                       fingerprintingEnabled:
                         description: Whether device fingerprinting is enabled.
                         type: boolean
+                    type: object
+                  globalSwitch:
+                    properties:
+                      aclDeviceIsolation:
+                        description: 'Network IDs with Client Device Isolation enabled
+                          (Settings > Networks > "Device Isolation (ACL)"), which
+                          blocks all communication between devices in the same network.
+                          This is a switch ACL: it covers same-network traffic across
+                          access points, which `unifi_wlan.l2_isolation` (one access
+                          point) and `unifi_network.network_isolation` (between networks)
+                          do not. The controller only offers it for networks routed
+                          by a UniFi gateway or L3 switch, and some switch models
+                          do not support ACLs at all - it rejects an unsupported network
+                          rather than silently ignoring it.'
+                        items:
+                          type: string
+                        type: array
+                      dhcpSnoop:
+                        description: Enable Rogue DHCP Server Detection (DHCP snooping).
+                        type: boolean
+                      dot1xPortctrlEnabled:
+                        description: Enable 802.1X port control.
+                        type: boolean
+                      jumboframeEnabled:
+                        description: Enable jumbo frames on all switches.
+                        type: boolean
+                      stpVersion:
+                        description: 'Spanning Tree Protocol mode for all switches:
+                          `stp`, `rstp`, or `disabled`.'
+                        type: string
                     type: object
                   id:
                     type: string
