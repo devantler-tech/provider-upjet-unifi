@@ -7,6 +7,10 @@ spec:
     name: example-lan
     subnet: 10.0.42.1/24
     vlan: 42
+    # Set explicitly: the provider no longer defaults these for a new network
+    # (upstream v0.59.0), so the example states the values it relies on.
+    settingPreference: auto
+    ipv6InterfaceType: none
     dhcpServer:
       enabled: true
       start: 10.0.42.10

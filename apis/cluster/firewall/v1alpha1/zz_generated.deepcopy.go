@@ -43,6 +43,26 @@ func (in *DestinationInitParameters) DeepCopyInto(out *DestinationInitParameters
 			}
 		}
 	}
+	if in.MatchMac != nil {
+		in, out := &in.MatchMac, &out.MatchMac
+		*out = new(bool)
+		**out = **in
+	}
+	if in.MatchOppositeIps != nil {
+		in, out := &in.MatchOppositeIps, &out.MatchOppositeIps
+		*out = new(bool)
+		**out = **in
+	}
+	if in.MatchOppositeNetworks != nil {
+		in, out := &in.MatchOppositeNetworks, &out.MatchOppositeNetworks
+		*out = new(bool)
+		**out = **in
+	}
+	if in.MatchOppositePorts != nil {
+		in, out := &in.MatchOppositePorts, &out.MatchOppositePorts
+		*out = new(bool)
+		**out = **in
+	}
 	if in.MatchingTarget != nil {
 		in, out := &in.MatchingTarget, &out.MatchingTarget
 		*out = new(string)
@@ -85,6 +105,17 @@ func (in *DestinationInitParameters) DeepCopyInto(out *DestinationInitParameters
 		in, out := &in.PortMatchingType, &out.PortMatchingType
 		*out = new(string)
 		**out = **in
+	}
+	if in.Regions != nil {
+		in, out := &in.Regions, &out.Regions
+		*out = make([]*string, len(*in))
+		for i := range *in {
+			if (*in)[i] != nil {
+				in, out := &(*in)[i], &(*out)[i]
+				*out = new(string)
+				**out = **in
+			}
+		}
 	}
 	if in.WebDomains != nil {
 		in, out := &in.WebDomains, &out.WebDomains
@@ -154,6 +185,26 @@ func (in *DestinationObservation) DeepCopyInto(out *DestinationObservation) {
 			}
 		}
 	}
+	if in.MatchMac != nil {
+		in, out := &in.MatchMac, &out.MatchMac
+		*out = new(bool)
+		**out = **in
+	}
+	if in.MatchOppositeIps != nil {
+		in, out := &in.MatchOppositeIps, &out.MatchOppositeIps
+		*out = new(bool)
+		**out = **in
+	}
+	if in.MatchOppositeNetworks != nil {
+		in, out := &in.MatchOppositeNetworks, &out.MatchOppositeNetworks
+		*out = new(bool)
+		**out = **in
+	}
+	if in.MatchOppositePorts != nil {
+		in, out := &in.MatchOppositePorts, &out.MatchOppositePorts
+		*out = new(bool)
+		**out = **in
+	}
 	if in.MatchingTarget != nil {
 		in, out := &in.MatchingTarget, &out.MatchingTarget
 		*out = new(string)
@@ -189,6 +240,17 @@ func (in *DestinationObservation) DeepCopyInto(out *DestinationObservation) {
 		in, out := &in.PortMatchingType, &out.PortMatchingType
 		*out = new(string)
 		**out = **in
+	}
+	if in.Regions != nil {
+		in, out := &in.Regions, &out.Regions
+		*out = make([]*string, len(*in))
+		for i := range *in {
+			if (*in)[i] != nil {
+				in, out := &(*in)[i], &(*out)[i]
+				*out = new(string)
+				**out = **in
+			}
+		}
 	}
 	if in.WebDomains != nil {
 		in, out := &in.WebDomains, &out.WebDomains
@@ -248,6 +310,26 @@ func (in *DestinationParameters) DeepCopyInto(out *DestinationParameters) {
 			}
 		}
 	}
+	if in.MatchMac != nil {
+		in, out := &in.MatchMac, &out.MatchMac
+		*out = new(bool)
+		**out = **in
+	}
+	if in.MatchOppositeIps != nil {
+		in, out := &in.MatchOppositeIps, &out.MatchOppositeIps
+		*out = new(bool)
+		**out = **in
+	}
+	if in.MatchOppositeNetworks != nil {
+		in, out := &in.MatchOppositeNetworks, &out.MatchOppositeNetworks
+		*out = new(bool)
+		**out = **in
+	}
+	if in.MatchOppositePorts != nil {
+		in, out := &in.MatchOppositePorts, &out.MatchOppositePorts
+		*out = new(bool)
+		**out = **in
+	}
 	if in.MatchingTarget != nil {
 		in, out := &in.MatchingTarget, &out.MatchingTarget
 		*out = new(string)
@@ -290,6 +372,17 @@ func (in *DestinationParameters) DeepCopyInto(out *DestinationParameters) {
 		in, out := &in.PortMatchingType, &out.PortMatchingType
 		*out = new(string)
 		**out = **in
+	}
+	if in.Regions != nil {
+		in, out := &in.Regions, &out.Regions
+		*out = make([]*string, len(*in))
+		for i := range *in {
+			if (*in)[i] != nil {
+				in, out := &(*in)[i], &(*out)[i]
+				*out = new(string)
+				**out = **in
+			}
+		}
 	}
 	if in.WebDomains != nil {
 		in, out := &in.WebDomains, &out.WebDomains
@@ -647,6 +740,11 @@ func (in *PolicyInitParameters) DeepCopyInto(out *PolicyInitParameters) {
 		*out = new(bool)
 		**out = **in
 	}
+	if in.MatchOppositeProtocol != nil {
+		in, out := &in.MatchOppositeProtocol, &out.MatchOppositeProtocol
+		*out = new(bool)
+		**out = **in
+	}
 	if in.Name != nil {
 		in, out := &in.Name, &out.Name
 		*out = new(string)
@@ -656,6 +754,11 @@ func (in *PolicyInitParameters) DeepCopyInto(out *PolicyInitParameters) {
 		in, out := &in.Protocol, &out.Protocol
 		*out = new(string)
 		**out = **in
+	}
+	if in.Schedule != nil {
+		in, out := &in.Schedule, &out.Schedule
+		*out = new(ScheduleInitParameters)
+		(*in).DeepCopyInto(*out)
 	}
 	if in.Site != nil {
 		in, out := &in.Site, &out.Site
@@ -790,6 +893,11 @@ func (in *PolicyObservation) DeepCopyInto(out *PolicyObservation) {
 		*out = new(bool)
 		**out = **in
 	}
+	if in.MatchOppositeProtocol != nil {
+		in, out := &in.MatchOppositeProtocol, &out.MatchOppositeProtocol
+		*out = new(bool)
+		**out = **in
+	}
 	if in.Name != nil {
 		in, out := &in.Name, &out.Name
 		*out = new(string)
@@ -799,6 +907,11 @@ func (in *PolicyObservation) DeepCopyInto(out *PolicyObservation) {
 		in, out := &in.Protocol, &out.Protocol
 		*out = new(string)
 		**out = **in
+	}
+	if in.Schedule != nil {
+		in, out := &in.Schedule, &out.Schedule
+		*out = new(ScheduleObservation)
+		(*in).DeepCopyInto(*out)
 	}
 	if in.Site != nil {
 		in, out := &in.Site, &out.Site
@@ -881,6 +994,11 @@ func (in *PolicyParameters) DeepCopyInto(out *PolicyParameters) {
 		*out = new(bool)
 		**out = **in
 	}
+	if in.MatchOppositeProtocol != nil {
+		in, out := &in.MatchOppositeProtocol, &out.MatchOppositeProtocol
+		*out = new(bool)
+		**out = **in
+	}
 	if in.Name != nil {
 		in, out := &in.Name, &out.Name
 		*out = new(string)
@@ -890,6 +1008,11 @@ func (in *PolicyParameters) DeepCopyInto(out *PolicyParameters) {
 		in, out := &in.Protocol, &out.Protocol
 		*out = new(string)
 		**out = **in
+	}
+	if in.Schedule != nil {
+		in, out := &in.Schedule, &out.Schedule
+		*out = new(ScheduleParameters)
+		(*in).DeepCopyInto(*out)
 	}
 	if in.Site != nil {
 		in, out := &in.Site, &out.Site
@@ -1912,6 +2035,204 @@ func (in *RuleTimeoutsParameters) DeepCopy() *RuleTimeoutsParameters {
 }
 
 // DeepCopyInto is an autogenerated deepcopy function, copying the receiver, writing into out. in must be non-nil.
+func (in *ScheduleInitParameters) DeepCopyInto(out *ScheduleInitParameters) {
+	*out = *in
+	if in.Date != nil {
+		in, out := &in.Date, &out.Date
+		*out = new(string)
+		**out = **in
+	}
+	if in.DateEnd != nil {
+		in, out := &in.DateEnd, &out.DateEnd
+		*out = new(string)
+		**out = **in
+	}
+	if in.DateStart != nil {
+		in, out := &in.DateStart, &out.DateStart
+		*out = new(string)
+		**out = **in
+	}
+	if in.Mode != nil {
+		in, out := &in.Mode, &out.Mode
+		*out = new(string)
+		**out = **in
+	}
+	if in.Normalize != nil {
+		in, out := &in.Normalize, &out.Normalize
+		*out = new(bool)
+		**out = **in
+	}
+	if in.RepeatOnDays != nil {
+		in, out := &in.RepeatOnDays, &out.RepeatOnDays
+		*out = make([]*string, len(*in))
+		for i := range *in {
+			if (*in)[i] != nil {
+				in, out := &(*in)[i], &(*out)[i]
+				*out = new(string)
+				**out = **in
+			}
+		}
+	}
+	if in.TimeAllDay != nil {
+		in, out := &in.TimeAllDay, &out.TimeAllDay
+		*out = new(bool)
+		**out = **in
+	}
+	if in.TimeRangeEnd != nil {
+		in, out := &in.TimeRangeEnd, &out.TimeRangeEnd
+		*out = new(string)
+		**out = **in
+	}
+	if in.TimeRangeStart != nil {
+		in, out := &in.TimeRangeStart, &out.TimeRangeStart
+		*out = new(string)
+		**out = **in
+	}
+}
+
+// DeepCopy is an autogenerated deepcopy function, copying the receiver, creating a new ScheduleInitParameters.
+func (in *ScheduleInitParameters) DeepCopy() *ScheduleInitParameters {
+	if in == nil {
+		return nil
+	}
+	out := new(ScheduleInitParameters)
+	in.DeepCopyInto(out)
+	return out
+}
+
+// DeepCopyInto is an autogenerated deepcopy function, copying the receiver, writing into out. in must be non-nil.
+func (in *ScheduleObservation) DeepCopyInto(out *ScheduleObservation) {
+	*out = *in
+	if in.Date != nil {
+		in, out := &in.Date, &out.Date
+		*out = new(string)
+		**out = **in
+	}
+	if in.DateEnd != nil {
+		in, out := &in.DateEnd, &out.DateEnd
+		*out = new(string)
+		**out = **in
+	}
+	if in.DateStart != nil {
+		in, out := &in.DateStart, &out.DateStart
+		*out = new(string)
+		**out = **in
+	}
+	if in.Mode != nil {
+		in, out := &in.Mode, &out.Mode
+		*out = new(string)
+		**out = **in
+	}
+	if in.Normalize != nil {
+		in, out := &in.Normalize, &out.Normalize
+		*out = new(bool)
+		**out = **in
+	}
+	if in.RepeatOnDays != nil {
+		in, out := &in.RepeatOnDays, &out.RepeatOnDays
+		*out = make([]*string, len(*in))
+		for i := range *in {
+			if (*in)[i] != nil {
+				in, out := &(*in)[i], &(*out)[i]
+				*out = new(string)
+				**out = **in
+			}
+		}
+	}
+	if in.TimeAllDay != nil {
+		in, out := &in.TimeAllDay, &out.TimeAllDay
+		*out = new(bool)
+		**out = **in
+	}
+	if in.TimeRangeEnd != nil {
+		in, out := &in.TimeRangeEnd, &out.TimeRangeEnd
+		*out = new(string)
+		**out = **in
+	}
+	if in.TimeRangeStart != nil {
+		in, out := &in.TimeRangeStart, &out.TimeRangeStart
+		*out = new(string)
+		**out = **in
+	}
+}
+
+// DeepCopy is an autogenerated deepcopy function, copying the receiver, creating a new ScheduleObservation.
+func (in *ScheduleObservation) DeepCopy() *ScheduleObservation {
+	if in == nil {
+		return nil
+	}
+	out := new(ScheduleObservation)
+	in.DeepCopyInto(out)
+	return out
+}
+
+// DeepCopyInto is an autogenerated deepcopy function, copying the receiver, writing into out. in must be non-nil.
+func (in *ScheduleParameters) DeepCopyInto(out *ScheduleParameters) {
+	*out = *in
+	if in.Date != nil {
+		in, out := &in.Date, &out.Date
+		*out = new(string)
+		**out = **in
+	}
+	if in.DateEnd != nil {
+		in, out := &in.DateEnd, &out.DateEnd
+		*out = new(string)
+		**out = **in
+	}
+	if in.DateStart != nil {
+		in, out := &in.DateStart, &out.DateStart
+		*out = new(string)
+		**out = **in
+	}
+	if in.Mode != nil {
+		in, out := &in.Mode, &out.Mode
+		*out = new(string)
+		**out = **in
+	}
+	if in.Normalize != nil {
+		in, out := &in.Normalize, &out.Normalize
+		*out = new(bool)
+		**out = **in
+	}
+	if in.RepeatOnDays != nil {
+		in, out := &in.RepeatOnDays, &out.RepeatOnDays
+		*out = make([]*string, len(*in))
+		for i := range *in {
+			if (*in)[i] != nil {
+				in, out := &(*in)[i], &(*out)[i]
+				*out = new(string)
+				**out = **in
+			}
+		}
+	}
+	if in.TimeAllDay != nil {
+		in, out := &in.TimeAllDay, &out.TimeAllDay
+		*out = new(bool)
+		**out = **in
+	}
+	if in.TimeRangeEnd != nil {
+		in, out := &in.TimeRangeEnd, &out.TimeRangeEnd
+		*out = new(string)
+		**out = **in
+	}
+	if in.TimeRangeStart != nil {
+		in, out := &in.TimeRangeStart, &out.TimeRangeStart
+		*out = new(string)
+		**out = **in
+	}
+}
+
+// DeepCopy is an autogenerated deepcopy function, copying the receiver, creating a new ScheduleParameters.
+func (in *ScheduleParameters) DeepCopy() *ScheduleParameters {
+	if in == nil {
+		return nil
+	}
+	out := new(ScheduleParameters)
+	in.DeepCopyInto(out)
+	return out
+}
+
+// DeepCopyInto is an autogenerated deepcopy function, copying the receiver, writing into out. in must be non-nil.
 func (in *SourceInitParameters) DeepCopyInto(out *SourceInitParameters) {
 	*out = *in
 	if in.ClientMacs != nil {
@@ -1940,6 +2261,26 @@ func (in *SourceInitParameters) DeepCopyInto(out *SourceInitParameters) {
 				**out = **in
 			}
 		}
+	}
+	if in.MatchMac != nil {
+		in, out := &in.MatchMac, &out.MatchMac
+		*out = new(bool)
+		**out = **in
+	}
+	if in.MatchOppositeIps != nil {
+		in, out := &in.MatchOppositeIps, &out.MatchOppositeIps
+		*out = new(bool)
+		**out = **in
+	}
+	if in.MatchOppositeNetworks != nil {
+		in, out := &in.MatchOppositeNetworks, &out.MatchOppositeNetworks
+		*out = new(bool)
+		**out = **in
+	}
+	if in.MatchOppositePorts != nil {
+		in, out := &in.MatchOppositePorts, &out.MatchOppositePorts
+		*out = new(bool)
+		**out = **in
 	}
 	if in.MatchingTarget != nil {
 		in, out := &in.MatchingTarget, &out.MatchingTarget
@@ -1983,6 +2324,17 @@ func (in *SourceInitParameters) DeepCopyInto(out *SourceInitParameters) {
 		in, out := &in.PortMatchingType, &out.PortMatchingType
 		*out = new(string)
 		**out = **in
+	}
+	if in.Regions != nil {
+		in, out := &in.Regions, &out.Regions
+		*out = make([]*string, len(*in))
+		for i := range *in {
+			if (*in)[i] != nil {
+				in, out := &(*in)[i], &(*out)[i]
+				*out = new(string)
+				**out = **in
+			}
+		}
 	}
 	if in.WebDomains != nil {
 		in, out := &in.WebDomains, &out.WebDomains
@@ -2052,6 +2404,26 @@ func (in *SourceObservation) DeepCopyInto(out *SourceObservation) {
 			}
 		}
 	}
+	if in.MatchMac != nil {
+		in, out := &in.MatchMac, &out.MatchMac
+		*out = new(bool)
+		**out = **in
+	}
+	if in.MatchOppositeIps != nil {
+		in, out := &in.MatchOppositeIps, &out.MatchOppositeIps
+		*out = new(bool)
+		**out = **in
+	}
+	if in.MatchOppositeNetworks != nil {
+		in, out := &in.MatchOppositeNetworks, &out.MatchOppositeNetworks
+		*out = new(bool)
+		**out = **in
+	}
+	if in.MatchOppositePorts != nil {
+		in, out := &in.MatchOppositePorts, &out.MatchOppositePorts
+		*out = new(bool)
+		**out = **in
+	}
 	if in.MatchingTarget != nil {
 		in, out := &in.MatchingTarget, &out.MatchingTarget
 		*out = new(string)
@@ -2087,6 +2459,17 @@ func (in *SourceObservation) DeepCopyInto(out *SourceObservation) {
 		in, out := &in.PortMatchingType, &out.PortMatchingType
 		*out = new(string)
 		**out = **in
+	}
+	if in.Regions != nil {
+		in, out := &in.Regions, &out.Regions
+		*out = make([]*string, len(*in))
+		for i := range *in {
+			if (*in)[i] != nil {
+				in, out := &(*in)[i], &(*out)[i]
+				*out = new(string)
+				**out = **in
+			}
+		}
 	}
 	if in.WebDomains != nil {
 		in, out := &in.WebDomains, &out.WebDomains
@@ -2146,6 +2529,26 @@ func (in *SourceParameters) DeepCopyInto(out *SourceParameters) {
 			}
 		}
 	}
+	if in.MatchMac != nil {
+		in, out := &in.MatchMac, &out.MatchMac
+		*out = new(bool)
+		**out = **in
+	}
+	if in.MatchOppositeIps != nil {
+		in, out := &in.MatchOppositeIps, &out.MatchOppositeIps
+		*out = new(bool)
+		**out = **in
+	}
+	if in.MatchOppositeNetworks != nil {
+		in, out := &in.MatchOppositeNetworks, &out.MatchOppositeNetworks
+		*out = new(bool)
+		**out = **in
+	}
+	if in.MatchOppositePorts != nil {
+		in, out := &in.MatchOppositePorts, &out.MatchOppositePorts
+		*out = new(bool)
+		**out = **in
+	}
 	if in.MatchingTarget != nil {
 		in, out := &in.MatchingTarget, &out.MatchingTarget
 		*out = new(string)
@@ -2188,6 +2591,17 @@ func (in *SourceParameters) DeepCopyInto(out *SourceParameters) {
 		in, out := &in.PortMatchingType, &out.PortMatchingType
 		*out = new(string)
 		**out = **in
+	}
+	if in.Regions != nil {
+		in, out := &in.Regions, &out.Regions
+		*out = make([]*string, len(*in))
+		for i := range *in {
+			if (*in)[i] != nil {
+				in, out := &(*in)[i], &(*out)[i]
+				*out = new(string)
+				**out = **in
+			}
+		}
 	}
 	if in.WebDomains != nil {
 		in, out := &in.WebDomains, &out.WebDomains

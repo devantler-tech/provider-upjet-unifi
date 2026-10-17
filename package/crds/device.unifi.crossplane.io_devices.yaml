@@ -242,6 +242,7 @@ spec:
                           items:
                             type: string
                           type: array
+                          x-kubernetes-list-type: set
                         fecMode:
                           description: Forward Error Correction mode.
                           type: string
@@ -274,6 +275,7 @@ spec:
                           items:
                             type: string
                           type: array
+                          x-kubernetes-list-type: set
                         name:
                           description: Human-readable name of the port.
                           type: string
@@ -363,6 +365,7 @@ spec:
                           items:
                             type: string
                           type: array
+                          x-kubernetes-list-type: set
                         taggedVlanMgmt:
                           description: Tagged VLAN management.
                           type: string
@@ -381,10 +384,15 @@ spec:
                           description: Antenna ID.
                           type: number
                         assistedRoamingEnabled:
-                          description: Enable assisted roaming.
+                          description: Deprecated and no longer applied. UniFi removed
+                            802.11k assisted roaming from the radio table; the field
+                            is absent from the controller API and from the firmware's
+                            own field definitions as of Network 10.6, so the provider
+                            can neither read nor write it. Always null.
                           type: boolean
                         assistedRoamingRssi:
-                          description: Assisted roaming RSSI threshold.
+                          description: Deprecated and no longer applied. See `assisted_roaming_enabled`.
+                            Always null.
                           type: number
                         channel:
                           description: Channel number or 'auto'.
@@ -681,6 +689,7 @@ spec:
                           items:
                             type: string
                           type: array
+                          x-kubernetes-list-type: set
                         fecMode:
                           description: Forward Error Correction mode.
                           type: string
@@ -713,6 +722,7 @@ spec:
                           items:
                             type: string
                           type: array
+                          x-kubernetes-list-type: set
                         name:
                           description: Human-readable name of the port.
                           type: string
@@ -802,6 +812,7 @@ spec:
                           items:
                             type: string
                           type: array
+                          x-kubernetes-list-type: set
                         taggedVlanMgmt:
                           description: Tagged VLAN management.
                           type: string
@@ -820,10 +831,15 @@ spec:
                           description: Antenna ID.
                           type: number
                         assistedRoamingEnabled:
-                          description: Enable assisted roaming.
+                          description: Deprecated and no longer applied. UniFi removed
+                            802.11k assisted roaming from the radio table; the field
+                            is absent from the controller API and from the firmware's
+                            own field definitions as of Network 10.6, so the provider
+                            can neither read nor write it. Always null.
                           type: boolean
                         assistedRoamingRssi:
-                          description: Assisted roaming RSSI threshold.
+                          description: Deprecated and no longer applied. See `assisted_roaming_enabled`.
+                            Always null.
                           type: number
                         channel:
                           description: Channel number or 'auto'.
@@ -1206,6 +1222,7 @@ spec:
                           items:
                             type: string
                           type: array
+                          x-kubernetes-list-type: set
                         fecMode:
                           description: Forward Error Correction mode.
                           type: string
@@ -1238,6 +1255,7 @@ spec:
                           items:
                             type: string
                           type: array
+                          x-kubernetes-list-type: set
                         name:
                           description: Human-readable name of the port.
                           type: string
@@ -1327,6 +1345,7 @@ spec:
                           items:
                             type: string
                           type: array
+                          x-kubernetes-list-type: set
                         taggedVlanMgmt:
                           description: Tagged VLAN management.
                           type: string
@@ -1345,10 +1364,15 @@ spec:
                           description: Antenna ID.
                           type: number
                         assistedRoamingEnabled:
-                          description: Enable assisted roaming.
+                          description: Deprecated and no longer applied. UniFi removed
+                            802.11k assisted roaming from the radio table; the field
+                            is absent from the controller API and from the firmware's
+                            own field definitions as of Network 10.6, so the provider
+                            can neither read nor write it. Always null.
                           type: boolean
                         assistedRoamingRssi:
-                          description: Assisted roaming RSSI threshold.
+                          description: Deprecated and no longer applied. See `assisted_roaming_enabled`.
+                            Always null.
                           type: number
                         channel:
                           description: Channel number or 'auto'.

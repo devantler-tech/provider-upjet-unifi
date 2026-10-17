@@ -103,6 +103,18 @@ spec:
                   keyExchange:
                     description: IKE key-exchange version. One of `ikev1` or `ikev2`.
                     type: string
+                  localIdentifier:
+                    description: IKE local identifier used for peer authentication
+                      (the UI's "Local Identifier"). Setting it also enables identifier
+                      authentication; left unset, the attribute is not written and
+                      whatever the controller holds is preserved.
+                    type: string
+                  localIdentifierEnabled:
+                    description: Whether the local identifier is used for authentication.
+                      Set automatically when `local_identifier` is configured; declare
+                      it explicitly to enable identifier authentication without pinning
+                      a value.
+                    type: boolean
                   localIp:
                     description: The local IP used for the tunnel. Defaults to the
                       WAN address when omitted.
@@ -111,7 +123,9 @@ spec:
                     description: The name of the site-to-site VPN.
                     type: string
                   peerIp:
-                    description: The public IP address of the remote VPN gateway (peer).
+                    description: The public IP address **or hostname** of the remote
+                      VPN gateway (peer). The controller accepts and stores a hostname,
+                      which is how a peer behind dynamic DNS is configured.
                     type: string
                   pfs:
                     description: Whether Perfect Forward Secrecy is enabled.
@@ -150,9 +164,17 @@ spec:
                       below; the controller may derive the ESP values from the IKE
                       ones.
                     type: string
+                  remoteIdentifier:
+                    description: IKE remote identifier used for peer authentication
+                      (the UI's "Remote Identifier"). See `local_identifier`.
+                    type: string
+                  remoteIdentifierEnabled:
+                    description: Whether the remote identifier is used for authentication.
+                      See `local_identifier_enabled`.
+                    type: boolean
                   remoteSubnets:
                     description: The remote site's subnets reachable through the tunnel
-                      (CIDR).
+                      (CIDR). May be empty when dynamic routing is enabled.
                     items:
                       type: string
                     type: array
@@ -252,6 +274,18 @@ spec:
                   keyExchange:
                     description: IKE key-exchange version. One of `ikev1` or `ikev2`.
                     type: string
+                  localIdentifier:
+                    description: IKE local identifier used for peer authentication
+                      (the UI's "Local Identifier"). Setting it also enables identifier
+                      authentication; left unset, the attribute is not written and
+                      whatever the controller holds is preserved.
+                    type: string
+                  localIdentifierEnabled:
+                    description: Whether the local identifier is used for authentication.
+                      Set automatically when `local_identifier` is configured; declare
+                      it explicitly to enable identifier authentication without pinning
+                      a value.
+                    type: boolean
                   localIp:
                     description: The local IP used for the tunnel. Defaults to the
                       WAN address when omitted.
@@ -260,7 +294,9 @@ spec:
                     description: The name of the site-to-site VPN.
                     type: string
                   peerIp:
-                    description: The public IP address of the remote VPN gateway (peer).
+                    description: The public IP address **or hostname** of the remote
+                      VPN gateway (peer). The controller accepts and stores a hostname,
+                      which is how a peer behind dynamic DNS is configured.
                     type: string
                   pfs:
                     description: Whether Perfect Forward Secrecy is enabled.
@@ -299,9 +335,17 @@ spec:
                       below; the controller may derive the ESP values from the IKE
                       ones.
                     type: string
+                  remoteIdentifier:
+                    description: IKE remote identifier used for peer authentication
+                      (the UI's "Remote Identifier"). See `local_identifier`.
+                    type: string
+                  remoteIdentifierEnabled:
+                    description: Whether the remote identifier is used for authentication.
+                      See `local_identifier_enabled`.
+                    type: boolean
                   remoteSubnets:
                     description: The remote site's subnets reachable through the tunnel
-                      (CIDR).
+                      (CIDR). May be empty when dynamic routing is enabled.
                     items:
                       type: string
                     type: array
@@ -466,6 +510,18 @@ spec:
                   keyExchange:
                     description: IKE key-exchange version. One of `ikev1` or `ikev2`.
                     type: string
+                  localIdentifier:
+                    description: IKE local identifier used for peer authentication
+                      (the UI's "Local Identifier"). Setting it also enables identifier
+                      authentication; left unset, the attribute is not written and
+                      whatever the controller holds is preserved.
+                    type: string
+                  localIdentifierEnabled:
+                    description: Whether the local identifier is used for authentication.
+                      Set automatically when `local_identifier` is configured; declare
+                      it explicitly to enable identifier authentication without pinning
+                      a value.
+                    type: boolean
                   localIp:
                     description: The local IP used for the tunnel. Defaults to the
                       WAN address when omitted.
@@ -474,7 +530,9 @@ spec:
                     description: The name of the site-to-site VPN.
                     type: string
                   peerIp:
-                    description: The public IP address of the remote VPN gateway (peer).
+                    description: The public IP address **or hostname** of the remote
+                      VPN gateway (peer). The controller accepts and stores a hostname,
+                      which is how a peer behind dynamic DNS is configured.
                     type: string
                   pfs:
                     description: Whether Perfect Forward Secrecy is enabled.
@@ -485,9 +543,17 @@ spec:
                       below; the controller may derive the ESP values from the IKE
                       ones.
                     type: string
+                  remoteIdentifier:
+                    description: IKE remote identifier used for peer authentication
+                      (the UI's "Remote Identifier"). See `local_identifier`.
+                    type: string
+                  remoteIdentifierEnabled:
+                    description: Whether the remote identifier is used for authentication.
+                      See `local_identifier_enabled`.
+                    type: boolean
                   remoteSubnets:
                     description: The remote site's subnets reachable through the tunnel
-                      (CIDR).
+                      (CIDR). May be empty when dynamic routing is enabled.
                     items:
                       type: string
                     type: array

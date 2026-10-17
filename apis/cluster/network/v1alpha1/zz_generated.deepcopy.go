@@ -9,6 +9,7 @@
 package v1alpha1
 
 import (
+	"github.com/crossplane/crossplane-runtime/v2/apis/common/v1"
 	runtime "k8s.io/apimachinery/pkg/runtime"
 )
 
@@ -703,6 +704,17 @@ func (in *DHCPServerInitParameters) DeepCopyInto(out *DHCPServerInitParameters) 
 		*out = new(bool)
 		**out = **in
 	}
+	if in.NtpServers != nil {
+		in, out := &in.NtpServers, &out.NtpServers
+		*out = make([]*string, len(*in))
+		for i := range *in {
+			if (*in)[i] != nil {
+				in, out := &(*in)[i], &(*out)[i]
+				*out = new(string)
+				**out = **in
+			}
+		}
+	}
 	if in.Start != nil {
 		in, out := &in.Start, &out.Start
 		*out = new(string)
@@ -799,6 +811,17 @@ func (in *DHCPServerObservation) DeepCopyInto(out *DHCPServerObservation) {
 		*out = new(bool)
 		**out = **in
 	}
+	if in.NtpServers != nil {
+		in, out := &in.NtpServers, &out.NtpServers
+		*out = make([]*string, len(*in))
+		for i := range *in {
+			if (*in)[i] != nil {
+				in, out := &(*in)[i], &(*out)[i]
+				*out = new(string)
+				**out = **in
+			}
+		}
+	}
 	if in.Start != nil {
 		in, out := &in.Start, &out.Start
 		*out = new(string)
@@ -894,6 +917,17 @@ func (in *DHCPServerParameters) DeepCopyInto(out *DHCPServerParameters) {
 		in, out := &in.NtpEnabled, &out.NtpEnabled
 		*out = new(bool)
 		**out = **in
+	}
+	if in.NtpServers != nil {
+		in, out := &in.NtpServers, &out.NtpServers
+		*out = make([]*string, len(*in))
+		for i := range *in {
+			if (*in)[i] != nil {
+				in, out := &(*in)[i], &(*out)[i]
+				*out = new(string)
+				**out = **in
+			}
+		}
 	}
 	if in.Start != nil {
 		in, out := &in.Start, &out.Start
@@ -1859,6 +1893,11 @@ func (in *NetworkInitParameters) DeepCopyInto(out *NetworkInitParameters) {
 		*out = new(bool)
 		**out = **in
 	}
+	if in.FirewallZoneID != nil {
+		in, out := &in.FirewallZoneID, &out.FirewallZoneID
+		*out = new(string)
+		**out = **in
+	}
 	if in.GatewayType != nil {
 		in, out := &in.GatewayType, &out.GatewayType
 		*out = new(string)
@@ -2100,6 +2139,11 @@ func (in *NetworkObservation) DeepCopyInto(out *NetworkObservation) {
 		*out = new(bool)
 		**out = **in
 	}
+	if in.FirewallZoneID != nil {
+		in, out := &in.FirewallZoneID, &out.FirewallZoneID
+		*out = new(string)
+		**out = **in
+	}
 	if in.GatewayType != nil {
 		in, out := &in.GatewayType, &out.GatewayType
 		*out = new(string)
@@ -2312,6 +2356,11 @@ func (in *NetworkParameters) DeepCopyInto(out *NetworkParameters) {
 	if in.Enabled != nil {
 		in, out := &in.Enabled, &out.Enabled
 		*out = new(bool)
+		**out = **in
+	}
+	if in.FirewallZoneID != nil {
+		in, out := &in.FirewallZoneID, &out.FirewallZoneID
+		*out = new(string)
 		**out = **in
 	}
 	if in.GatewayType != nil {
@@ -3369,6 +3418,16 @@ func (in *WanInitParameters) DeepCopyInto(out *WanInitParameters) {
 		*out = new(string)
 		**out = **in
 	}
+	if in.PasswordSecretRef != nil {
+		in, out := &in.PasswordSecretRef, &out.PasswordSecretRef
+		*out = new(v1.SecretKeySelector)
+		**out = **in
+	}
+	if in.PasswordWoSecretRef != nil {
+		in, out := &in.PasswordWoSecretRef, &out.PasswordWoSecretRef
+		*out = new(v1.SecretKeySelector)
+		**out = **in
+	}
 	if in.ProviderCapabilities != nil {
 		in, out := &in.ProviderCapabilities, &out.ProviderCapabilities
 		*out = new(ProviderCapabilitiesInitParameters)
@@ -3418,6 +3477,11 @@ func (in *WanInitParameters) DeepCopyInto(out *WanInitParameters) {
 		in, out := &in.Upnp, &out.Upnp
 		*out = new(UpnpInitParameters)
 		(*in).DeepCopyInto(*out)
+	}
+	if in.Username != nil {
+		in, out := &in.Username, &out.Username
+		*out = new(string)
+		**out = **in
 	}
 	if in.Vlan != nil {
 		in, out := &in.Vlan, &out.Vlan
@@ -3602,6 +3666,11 @@ func (in *WanObservation) DeepCopyInto(out *WanObservation) {
 		*out = new(UpnpObservation)
 		(*in).DeepCopyInto(*out)
 	}
+	if in.Username != nil {
+		in, out := &in.Username, &out.Username
+		*out = new(string)
+		**out = **in
+	}
 	if in.Vlan != nil {
 		in, out := &in.Vlan, &out.Vlan
 		*out = new(VlanObservation)
@@ -3698,6 +3767,16 @@ func (in *WanParameters) DeepCopyInto(out *WanParameters) {
 		*out = new(string)
 		**out = **in
 	}
+	if in.PasswordSecretRef != nil {
+		in, out := &in.PasswordSecretRef, &out.PasswordSecretRef
+		*out = new(v1.SecretKeySelector)
+		**out = **in
+	}
+	if in.PasswordWoSecretRef != nil {
+		in, out := &in.PasswordWoSecretRef, &out.PasswordWoSecretRef
+		*out = new(v1.SecretKeySelector)
+		**out = **in
+	}
 	if in.ProviderCapabilities != nil {
 		in, out := &in.ProviderCapabilities, &out.ProviderCapabilities
 		*out = new(ProviderCapabilitiesParameters)
@@ -3747,6 +3826,11 @@ func (in *WanParameters) DeepCopyInto(out *WanParameters) {
 		in, out := &in.Upnp, &out.Upnp
 		*out = new(UpnpParameters)
 		(*in).DeepCopyInto(*out)
+	}
+	if in.Username != nil {
+		in, out := &in.Username, &out.Username
+		*out = new(string)
+		**out = **in
 	}
 	if in.Vlan != nil {
 		in, out := &in.Vlan, &out.Vlan

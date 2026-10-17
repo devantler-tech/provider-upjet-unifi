@@ -37,7 +37,7 @@ type ProfileInitParameters struct {
 	// Forward Error Correction mode. Can be `rs-fec`, `fc-fec`, `default`, or `disabled`.
 	FecMode *string `json:"fecMode,omitempty" tf:"fec_mode,omitempty"`
 
-	// The type forwarding to use for the port profile. Can be `all`, `native`, `customize` or `disabled`.
+	// The type forwarding to use for the port profile. Can be `all`, `native`, `customize` or `disabled`. `customize` requires a native network that carries a VLAN id: the controller silently stores `all` for a profile whose native network is untagged, which the provider rejects at plan time rather than letting the apply leave the resource tainted.
 	Forward *string `json:"forward,omitempty" tf:"forward,omitempty"`
 
 	// Enable full duplex for the port profile.
@@ -169,7 +169,7 @@ type ProfileObservation struct {
 	// Forward Error Correction mode. Can be `rs-fec`, `fc-fec`, `default`, or `disabled`.
 	FecMode *string `json:"fecMode,omitempty" tf:"fec_mode,omitempty"`
 
-	// The type forwarding to use for the port profile. Can be `all`, `native`, `customize` or `disabled`.
+	// The type forwarding to use for the port profile. Can be `all`, `native`, `customize` or `disabled`. `customize` requires a native network that carries a VLAN id: the controller silently stores `all` for a profile whose native network is untagged, which the provider rejects at plan time rather than letting the apply leave the resource tainted.
 	Forward *string `json:"forward,omitempty" tf:"forward,omitempty"`
 
 	// Enable full duplex for the port profile.
@@ -310,7 +310,7 @@ type ProfileParameters struct {
 	// +kubebuilder:validation:Optional
 	FecMode *string `json:"fecMode,omitempty" tf:"fec_mode,omitempty"`
 
-	// The type forwarding to use for the port profile. Can be `all`, `native`, `customize` or `disabled`.
+	// The type forwarding to use for the port profile. Can be `all`, `native`, `customize` or `disabled`. `customize` requires a native network that carries a VLAN id: the controller silently stores `all` for a profile whose native network is untagged, which the provider rejects at plan time rather than letting the apply leave the resource tainted.
 	// +kubebuilder:validation:Optional
 	Forward *string `json:"forward,omitempty" tf:"forward,omitempty"`
 

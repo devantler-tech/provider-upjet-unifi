@@ -27,7 +27,7 @@ type ClientInitParameters struct {
 	// The MAC address of the access point to which this client should be fixed.
 	FixedApMac *string `json:"fixedApMac,omitempty" tf:"fixed_ap_mac,omitempty"`
 
-	// A fixed IPv4 address for this client.
+	// A fixed IPv4 address for this client. Set to an empty string to clear a previously assigned fixed IP.
 	FixedIP *string `json:"fixedIp,omitempty" tf:"fixed_ip,omitempty"`
 
 	// List of network members group names for this client.
@@ -73,7 +73,7 @@ type ClientObservation struct {
 	// The MAC address of the access point to which this client should be fixed.
 	FixedApMac *string `json:"fixedApMac,omitempty" tf:"fixed_ap_mac,omitempty"`
 
-	// A fixed IPv4 address for this client.
+	// A fixed IPv4 address for this client. Set to an empty string to clear a previously assigned fixed IP.
 	FixedIP *string `json:"fixedIp,omitempty" tf:"fixed_ip,omitempty"`
 
 	// List of network members group names for this client.
@@ -131,7 +131,7 @@ type ClientParameters struct {
 	// +kubebuilder:validation:Optional
 	FixedApMac *string `json:"fixedApMac,omitempty" tf:"fixed_ap_mac,omitempty"`
 
-	// A fixed IPv4 address for this client.
+	// A fixed IPv4 address for this client. Set to an empty string to clear a previously assigned fixed IP.
 	// +kubebuilder:validation:Optional
 	FixedIP *string `json:"fixedIp,omitempty" tf:"fixed_ip,omitempty"`
 

@@ -42,6 +42,55 @@ type AutoSpeedtestParameters struct {
 	Enabled *bool `json:"enabled,omitempty" tf:"enabled,omitempty"`
 }
 
+type ConnectivityInitParameters struct {
+
+	// Enable Wireless Meshing for the site.
+	Enabled *bool `json:"enabled,omitempty" tf:"enabled,omitempty"`
+
+	// Enable Multi-Link Operation (MLO) for the mesh backhaul. Requires WiFi 7 hardware.
+	MloMeshEnabled *bool `json:"mloMeshEnabled,omitempty" tf:"mlo_mesh_enabled,omitempty"`
+
+	// Host the site uses to verify connectivity when `uplink_type` is `internet`.
+	UplinkHost *string `json:"uplinkHost,omitempty" tf:"uplink_host,omitempty"`
+
+	// How the site reaches the controller: `gateway` or `internet`.
+	UplinkType *string `json:"uplinkType,omitempty" tf:"uplink_type,omitempty"`
+}
+
+type ConnectivityObservation struct {
+
+	// Enable Wireless Meshing for the site.
+	Enabled *bool `json:"enabled,omitempty" tf:"enabled,omitempty"`
+
+	// Enable Multi-Link Operation (MLO) for the mesh backhaul. Requires WiFi 7 hardware.
+	MloMeshEnabled *bool `json:"mloMeshEnabled,omitempty" tf:"mlo_mesh_enabled,omitempty"`
+
+	// Host the site uses to verify connectivity when `uplink_type` is `internet`.
+	UplinkHost *string `json:"uplinkHost,omitempty" tf:"uplink_host,omitempty"`
+
+	// How the site reaches the controller: `gateway` or `internet`.
+	UplinkType *string `json:"uplinkType,omitempty" tf:"uplink_type,omitempty"`
+}
+
+type ConnectivityParameters struct {
+
+	// Enable Wireless Meshing for the site.
+	// +kubebuilder:validation:Optional
+	Enabled *bool `json:"enabled,omitempty" tf:"enabled,omitempty"`
+
+	// Enable Multi-Link Operation (MLO) for the mesh backhaul. Requires WiFi 7 hardware.
+	// +kubebuilder:validation:Optional
+	MloMeshEnabled *bool `json:"mloMeshEnabled,omitempty" tf:"mlo_mesh_enabled,omitempty"`
+
+	// Host the site uses to verify connectivity when `uplink_type` is `internet`.
+	// +kubebuilder:validation:Optional
+	UplinkHost *string `json:"uplinkHost,omitempty" tf:"uplink_host,omitempty"`
+
+	// How the site reaches the controller: `gateway` or `internet`.
+	// +kubebuilder:validation:Optional
+	UplinkType *string `json:"uplinkType,omitempty" tf:"uplink_type,omitempty"`
+}
+
 type CountryInitParameters struct {
 
 	// Regulatory country code (ISO 3166-1 numeric).
@@ -210,6 +259,65 @@ type DpiParameters struct {
 	// Whether device fingerprinting is enabled.
 	// +kubebuilder:validation:Optional
 	FingerprintingEnabled *bool `json:"fingerprintingEnabled,omitempty" tf:"fingerprinting_enabled,omitempty"`
+}
+
+type GlobalSwitchInitParameters struct {
+
+	// Network IDs with Client Device Isolation enabled (Settings > Networks > "Device Isolation (ACL)"), which blocks all communication between devices in the same network. This is a switch ACL: it covers same-network traffic across access points, which `unifi_wlan.l2_isolation` (one access point) and `unifi_network.network_isolation` (between networks) do not. The controller only offers it for networks routed by a UniFi gateway or L3 switch, and some switch models do not support ACLs at all - it rejects an unsupported network rather than silently ignoring it.
+	ACLDeviceIsolation []*string `json:"aclDeviceIsolation,omitempty" tf:"acl_device_isolation,omitempty"`
+
+	// Enable Rogue DHCP Server Detection (DHCP snooping).
+	DHCPSnoop *bool `json:"dhcpSnoop,omitempty" tf:"dhcp_snoop,omitempty"`
+
+	// Enable 802.1X port control.
+	Dot1XPortctrlEnabled *bool `json:"dot1xPortctrlEnabled,omitempty" tf:"dot1x_portctrl_enabled,omitempty"`
+
+	// Enable jumbo frames on all switches.
+	JumboframeEnabled *bool `json:"jumboframeEnabled,omitempty" tf:"jumboframe_enabled,omitempty"`
+
+	// Spanning Tree Protocol mode for all switches: `stp`, `rstp`, or `disabled`.
+	StpVersion *string `json:"stpVersion,omitempty" tf:"stp_version,omitempty"`
+}
+
+type GlobalSwitchObservation struct {
+
+	// Network IDs with Client Device Isolation enabled (Settings > Networks > "Device Isolation (ACL)"), which blocks all communication between devices in the same network. This is a switch ACL: it covers same-network traffic across access points, which `unifi_wlan.l2_isolation` (one access point) and `unifi_network.network_isolation` (between networks) do not. The controller only offers it for networks routed by a UniFi gateway or L3 switch, and some switch models do not support ACLs at all - it rejects an unsupported network rather than silently ignoring it.
+	ACLDeviceIsolation []*string `json:"aclDeviceIsolation,omitempty" tf:"acl_device_isolation,omitempty"`
+
+	// Enable Rogue DHCP Server Detection (DHCP snooping).
+	DHCPSnoop *bool `json:"dhcpSnoop,omitempty" tf:"dhcp_snoop,omitempty"`
+
+	// Enable 802.1X port control.
+	Dot1XPortctrlEnabled *bool `json:"dot1xPortctrlEnabled,omitempty" tf:"dot1x_portctrl_enabled,omitempty"`
+
+	// Enable jumbo frames on all switches.
+	JumboframeEnabled *bool `json:"jumboframeEnabled,omitempty" tf:"jumboframe_enabled,omitempty"`
+
+	// Spanning Tree Protocol mode for all switches: `stp`, `rstp`, or `disabled`.
+	StpVersion *string `json:"stpVersion,omitempty" tf:"stp_version,omitempty"`
+}
+
+type GlobalSwitchParameters struct {
+
+	// Network IDs with Client Device Isolation enabled (Settings > Networks > "Device Isolation (ACL)"), which blocks all communication between devices in the same network. This is a switch ACL: it covers same-network traffic across access points, which `unifi_wlan.l2_isolation` (one access point) and `unifi_network.network_isolation` (between networks) do not. The controller only offers it for networks routed by a UniFi gateway or L3 switch, and some switch models do not support ACLs at all - it rejects an unsupported network rather than silently ignoring it.
+	// +kubebuilder:validation:Optional
+	ACLDeviceIsolation []*string `json:"aclDeviceIsolation,omitempty" tf:"acl_device_isolation,omitempty"`
+
+	// Enable Rogue DHCP Server Detection (DHCP snooping).
+	// +kubebuilder:validation:Optional
+	DHCPSnoop *bool `json:"dhcpSnoop,omitempty" tf:"dhcp_snoop,omitempty"`
+
+	// Enable 802.1X port control.
+	// +kubebuilder:validation:Optional
+	Dot1XPortctrlEnabled *bool `json:"dot1xPortctrlEnabled,omitempty" tf:"dot1x_portctrl_enabled,omitempty"`
+
+	// Enable jumbo frames on all switches.
+	// +kubebuilder:validation:Optional
+	JumboframeEnabled *bool `json:"jumboframeEnabled,omitempty" tf:"jumboframe_enabled,omitempty"`
+
+	// Spanning Tree Protocol mode for all switches: `stp`, `rstp`, or `disabled`.
+	// +kubebuilder:validation:Optional
+	StpVersion *string `json:"stpVersion,omitempty" tf:"stp_version,omitempty"`
 }
 
 type HoneypotInitParameters struct {
@@ -758,11 +866,15 @@ type SSHKeysParameters struct {
 type SettingInitParameters struct {
 	AutoSpeedtest *AutoSpeedtestInitParameters `json:"autoSpeedtest,omitempty" tf:"auto_speedtest,omitempty"`
 
+	Connectivity *ConnectivityInitParameters `json:"connectivity,omitempty" tf:"connectivity,omitempty"`
+
 	Country *CountryInitParameters `json:"country,omitempty" tf:"country,omitempty"`
 
 	Doh *DohInitParameters `json:"doh,omitempty" tf:"doh,omitempty"`
 
 	Dpi *DpiInitParameters `json:"dpi,omitempty" tf:"dpi,omitempty"`
+
+	GlobalSwitch *GlobalSwitchInitParameters `json:"globalSwitch,omitempty" tf:"global_switch,omitempty"`
 
 	IgmpSnooping *IgmpSnoopingInitParameters `json:"igmpSnooping,omitempty" tf:"igmp_snooping,omitempty"`
 
@@ -791,11 +903,15 @@ type SettingInitParameters struct {
 type SettingObservation struct {
 	AutoSpeedtest *AutoSpeedtestObservation `json:"autoSpeedtest,omitempty" tf:"auto_speedtest,omitempty"`
 
+	Connectivity *ConnectivityObservation `json:"connectivity,omitempty" tf:"connectivity,omitempty"`
+
 	Country *CountryObservation `json:"country,omitempty" tf:"country,omitempty"`
 
 	Doh *DohObservation `json:"doh,omitempty" tf:"doh,omitempty"`
 
 	Dpi *DpiObservation `json:"dpi,omitempty" tf:"dpi,omitempty"`
+
+	GlobalSwitch *GlobalSwitchObservation `json:"globalSwitch,omitempty" tf:"global_switch,omitempty"`
 
 	ID *string `json:"id,omitempty" tf:"id,omitempty"`
 
@@ -829,6 +945,9 @@ type SettingParameters struct {
 	AutoSpeedtest *AutoSpeedtestParameters `json:"autoSpeedtest,omitempty" tf:"auto_speedtest,omitempty"`
 
 	// +kubebuilder:validation:Optional
+	Connectivity *ConnectivityParameters `json:"connectivity,omitempty" tf:"connectivity,omitempty"`
+
+	// +kubebuilder:validation:Optional
 	Country *CountryParameters `json:"country,omitempty" tf:"country,omitempty"`
 
 	// +kubebuilder:validation:Optional
@@ -836,6 +955,9 @@ type SettingParameters struct {
 
 	// +kubebuilder:validation:Optional
 	Dpi *DpiParameters `json:"dpi,omitempty" tf:"dpi,omitempty"`
+
+	// +kubebuilder:validation:Optional
+	GlobalSwitch *GlobalSwitchParameters `json:"globalSwitch,omitempty" tf:"global_switch,omitempty"`
 
 	// +kubebuilder:validation:Optional
 	IgmpSnooping *IgmpSnoopingParameters `json:"igmpSnooping,omitempty" tf:"igmp_snooping,omitempty"`

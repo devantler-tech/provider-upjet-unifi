@@ -89,6 +89,47 @@ spec:
                     description: The ID of the WireGuard server network the peer connects
                       to.
                     type: string
+                  presharedKeySecretRef:
+                    description: Optional WireGuard pre-shared key for this peer (the
+                      UI's Pre-Shared Key toggle), adding a layer of symmetric encryption
+                      on top of the key pair. Left unset, the attribute is not written
+                      and a key configured out of band is preserved.
+                    properties:
+                      key:
+                        description: The key to select.
+                        type: string
+                      name:
+                        description: Name of the secret.
+                        type: string
+                      namespace:
+                        description: Namespace of the secret.
+                        type: string
+                    required:
+                    - key
+                    - name
+                    - namespace
+                    type: object
+                  presharedKeyWoSecretRef:
+                    description: 'Write-only equivalent of `preshared_key`. Write-only
+                      attributes need engine version 1.11 or later. This provider
+                      cannot set them: the engine it bundles predates that version
+                      and rejects any value, so setting this field fails validation.
+                      Set `presharedKeySecretRef` instead.'
+                    properties:
+                      key:
+                        description: The key to select.
+                        type: string
+                      name:
+                        description: Name of the secret.
+                        type: string
+                      namespace:
+                        description: Namespace of the secret.
+                        type: string
+                    required:
+                    - key
+                    - name
+                    - namespace
+                    type: object
                   publicKey:
                     description: The WireGuard public key of the peer.
                     type: string
@@ -157,6 +198,47 @@ spec:
                     description: The ID of the WireGuard server network the peer connects
                       to.
                     type: string
+                  presharedKeySecretRef:
+                    description: Optional WireGuard pre-shared key for this peer (the
+                      UI's Pre-Shared Key toggle), adding a layer of symmetric encryption
+                      on top of the key pair. Left unset, the attribute is not written
+                      and a key configured out of band is preserved.
+                    properties:
+                      key:
+                        description: The key to select.
+                        type: string
+                      name:
+                        description: Name of the secret.
+                        type: string
+                      namespace:
+                        description: Namespace of the secret.
+                        type: string
+                    required:
+                    - key
+                    - name
+                    - namespace
+                    type: object
+                  presharedKeyWoSecretRef:
+                    description: 'Write-only equivalent of `preshared_key`. Write-only
+                      attributes need engine version 1.11 or later. This provider
+                      cannot set them: the engine it bundles predates that version
+                      and rejects any value, so setting this field fails validation.
+                      Set `presharedKeySecretRef` instead.'
+                    properties:
+                      key:
+                        description: The key to select.
+                        type: string
+                      name:
+                        description: Name of the secret.
+                        type: string
+                      namespace:
+                        description: Namespace of the secret.
+                        type: string
+                    required:
+                    - key
+                    - name
+                    - namespace
+                    type: object
                   publicKey:
                     description: The WireGuard public key of the peer.
                     type: string

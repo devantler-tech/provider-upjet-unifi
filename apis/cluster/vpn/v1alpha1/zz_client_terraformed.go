@@ -21,7 +21,7 @@ func (mg *Client) GetTerraformResourceType() string {
 
 // GetConnectionDetailsMapping for this Client
 func (tr *Client) GetConnectionDetailsMapping() map[string]string {
-	return map[string]string{"wireguard.configuration.content": "wireguard.configuration.contentSecretRef", "wireguard.peer.public_key": "wireguard.peer.publicKeySecretRef", "wireguard.preshared_key": "wireguard.presharedKeySecretRef", "wireguard.private_key": "wireguard.privateKeySecretRef"}
+	return map[string]string{"wireguard.configuration.content": "wireguard.configuration.contentSecretRef", "wireguard.peer.public_key": "wireguard.peer.publicKeySecretRef", "wireguard.preshared_key": "wireguard.presharedKeySecretRef", "wireguard.private_key": "wireguard.privateKeySecretRef", "wireguard.private_key_wo": "wireguard.privateKeyWoSecretRef"}
 }
 
 // GetObservation of this Client

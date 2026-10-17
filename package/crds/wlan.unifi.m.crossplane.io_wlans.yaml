@@ -151,6 +151,15 @@ spec:
                   apGroupMode:
                     description: Access point group mode.
                     type: string
+                  bandsteeringMode:
+                    description: 'Deprecated and no longer applied. UniFi moved band
+                      steering off the WLAN object: `bandsteering_mode` is absent
+                      from the controller''s WLAN field definitions as of Network
+                      10.6, while it is still present on the device, so the setting
+                      now lives on `unifi_device`''s `bandsteering_mode` instead.
+                      This attribute is neither read nor written and always reads
+                      back null.'
+                    type: string
                   bcFilterList:
                     description: List of MAC addresses for the broadcast filter. The
                       controller may populate this on its own, so it is computed when
@@ -197,7 +206,8 @@ spec:
                     description: Enable fast roaming, aka 802.11r.
                     type: boolean
                   groupRekey:
-                    description: Group rekey interval in seconds (0 to disable).
+                    description: Group rekey interval in seconds (0 to disable). Computed
+                      from the controller when not set.
                     type: number
                   hideSsid:
                     description: Indicates whether or not to hide the SSID from broadcast.
@@ -593,7 +603,8 @@ spec:
                     type: boolean
                   wpaEnc:
                     description: WPA encryption. Can be one of `auto`, `ccmp`, `gcmp`,
-                      `ccmp-256`, or `gcmp-256`.
+                      `ccmp-256`, or `gcmp-256`. Computed from the controller when
+                      not set.
                     type: string
                   wpaMode:
                     description: WPA mode. Can be one of `auto`, `wpa1`, or `wpa2`.
@@ -705,6 +716,15 @@ spec:
                   apGroupMode:
                     description: Access point group mode.
                     type: string
+                  bandsteeringMode:
+                    description: 'Deprecated and no longer applied. UniFi moved band
+                      steering off the WLAN object: `bandsteering_mode` is absent
+                      from the controller''s WLAN field definitions as of Network
+                      10.6, while it is still present on the device, so the setting
+                      now lives on `unifi_device`''s `bandsteering_mode` instead.
+                      This attribute is neither read nor written and always reads
+                      back null.'
+                    type: string
                   bcFilterList:
                     description: List of MAC addresses for the broadcast filter. The
                       controller may populate this on its own, so it is computed when
@@ -751,7 +771,8 @@ spec:
                     description: Enable fast roaming, aka 802.11r.
                     type: boolean
                   groupRekey:
-                    description: Group rekey interval in seconds (0 to disable).
+                    description: Group rekey interval in seconds (0 to disable). Computed
+                      from the controller when not set.
                     type: number
                   hideSsid:
                     description: Indicates whether or not to hide the SSID from broadcast.
@@ -1149,7 +1170,8 @@ spec:
                     type: boolean
                   wpaEnc:
                     description: WPA encryption. Can be one of `auto`, `ccmp`, `gcmp`,
-                      `ccmp-256`, or `gcmp-256`.
+                      `ccmp-256`, or `gcmp-256`. Computed from the controller when
+                      not set.
                     type: string
                   wpaMode:
                     description: WPA mode. Can be one of `auto`, `wpa1`, or `wpa2`.
@@ -1240,6 +1262,15 @@ spec:
                   apGroupMode:
                     description: Access point group mode.
                     type: string
+                  bandsteeringMode:
+                    description: 'Deprecated and no longer applied. UniFi moved band
+                      steering off the WLAN object: `bandsteering_mode` is absent
+                      from the controller''s WLAN field definitions as of Network
+                      10.6, while it is still present on the device, so the setting
+                      now lives on `unifi_device`''s `bandsteering_mode` instead.
+                      This attribute is neither read nor written and always reads
+                      back null.'
+                    type: string
                   bcFilterList:
                     description: List of MAC addresses for the broadcast filter. The
                       controller may populate this on its own, so it is computed when
@@ -1286,7 +1317,8 @@ spec:
                     description: Enable fast roaming, aka 802.11r.
                     type: boolean
                   groupRekey:
-                    description: Group rekey interval in seconds (0 to disable).
+                    description: Group rekey interval in seconds (0 to disable). Computed
+                      from the controller when not set.
                     type: number
                   hideSsid:
                     description: Indicates whether or not to hide the SSID from broadcast.
@@ -1483,7 +1515,8 @@ spec:
                     type: boolean
                   wpaEnc:
                     description: WPA encryption. Can be one of `auto`, `ccmp`, `gcmp`,
-                      `ccmp-256`, or `gcmp-256`.
+                      `ccmp-256`, or `gcmp-256`. Computed from the controller when
+                      not set.
                     type: string
                   wpaMode:
                     description: WPA mode. Can be one of `auto`, `wpa1`, or `wpa2`.

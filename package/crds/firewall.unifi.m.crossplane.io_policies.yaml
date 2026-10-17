@@ -106,9 +106,35 @@ spec:
                         items:
                           type: string
                         type: array
+                      matchMac:
+                        description: Match the clients in `client_macs` by MAC address
+                          rather than by their current IP address. Corresponds to
+                          the controller's `match_mac` flag on a `CLIENT` matching
+                          target. Defaults to `false`.
+                        type: boolean
+                      matchOppositeIps:
+                        description: 'Invert the IP match: when `true`, the endpoint
+                          matches every address **except** those in `ips` / `ip_group_id`.
+                          Corresponds to the "Match Opposite" toggle on an `IP` matching
+                          target in the UniFi UI. Defaults to `false`.'
+                        type: boolean
+                      matchOppositeNetworks:
+                        description: 'Invert the network match: when `true`, the endpoint
+                          matches every network **except** those in `network_ids`.
+                          Corresponds to the "Match Opposite" toggle on a `NETWORK`
+                          matching target in the UniFi UI. Defaults to `false`.'
+                        type: boolean
+                      matchOppositePorts:
+                        description: 'Invert the port match: when `true`, the endpoint
+                          matches every port **except** those in `port` / `port_group_id`.
+                          Corresponds to the "Match Opposite" toggle on the port selector
+                          in the UniFi UI. Defaults to `false`.'
+                        type: boolean
                       matchingTarget:
                         description: 'What to match: `ANY`, `NETWORK`, `CLIENT`, `IP`,
-                          `DEVICE`, `MAC`, or `WEB` (domains/FQDN).'
+                          `DEVICE`, `MAC`, `WEB` (domains/FQDN), or `REGION` (country
+                          codes, set `regions`). The controller only accepts `REGION`
+                          on an external zone.'
                         type: string
                       networkIds:
                         description: List of UniFi network IDs to match. Used when
@@ -215,6 +241,16 @@ spec:
                         description: 'How to match ports: `ANY`, `SPECIFIC`, or `OBJECT`
                           (port group).'
                         type: string
+                      regions:
+                        description: Two-letter ISO country codes to match (for example
+                          `["DE", "US"]`). Used when `matching_target` is `REGION`,
+                          which the controller only accepts on an external zone. The
+                          controller rejects an update that leaves the list empty,
+                          so a policy matching on region must always carry at least
+                          one code.
+                        items:
+                          type: string
+                        type: array
                       webDomains:
                         description: List of domains/FQDNs to match. Used when `matching_target`
                           is `WEB`.
@@ -312,11 +348,20 @@ spec:
                     type: boolean
                   ipVersion:
                     description: 'The IP version to match: `BOTH`, `IPV4`, or `IPV6`.
-                      Defaults to `IPV4`.'
+                      Defaults to `IPV4` for a newly created policy; an existing policy
+                      keeps whatever the controller holds, so adopting a dual-stack
+                      policy does not narrow it to IPv4 (#544). The controller requires
+                      this field, so it is always sent.'
                     type: string
                   logging:
                     description: Whether to log packets matching this policy. Defaults
                       to `false`.
+                    type: boolean
+                  matchOppositeProtocol:
+                    description: 'Invert the protocol match: when `true`, the policy
+                      matches every protocol **except** `protocol`. Corresponds to
+                      the "Match Opposite" toggle next to the protocol selector in
+                      the UniFi UI. Defaults to `false`.'
                     type: boolean
                   name:
                     description: The name of the firewall policy.
@@ -329,6 +374,42 @@ spec:
                       it `false` and add an explicit reverse policy if you need the
                       reply.'
                     type: string
+                  schedule:
+                    properties:
+                      date:
+                        description: Date used by `ONE_TIME_ONLY`, in `YYYY-MM-DD`
+                          format.
+                        type: string
+                      dateEnd:
+                        description: End date used by `CUSTOM`, in `YYYY-MM-DD` format.
+                        type: string
+                      dateStart:
+                        description: Start date used by `CUSTOM`, in `YYYY-MM-DD`
+                          format.
+                        type: string
+                      mode:
+                        description: Schedule mode.
+                        type: string
+                      normalize:
+                        description: Clear inherited fields that are unused by the
+                          selected mode.
+                        type: boolean
+                      repeatOnDays:
+                        description: Weekdays on which the policy is active.
+                        items:
+                          type: string
+                        type: array
+                        x-kubernetes-list-type: set
+                      timeAllDay:
+                        description: Whether the policy is active all day.
+                        type: boolean
+                      timeRangeEnd:
+                        description: End time in 24-hour `HH:MM` format.
+                        type: string
+                      timeRangeStart:
+                        description: Start time in 24-hour `HH:MM` format.
+                        type: string
+                    type: object
                   site:
                     description: The name of the UniFi site. Defaults to the site
                       configured in the provider.
@@ -352,9 +433,35 @@ spec:
                         items:
                           type: string
                         type: array
+                      matchMac:
+                        description: Match the clients in `client_macs` by MAC address
+                          rather than by their current IP address. Corresponds to
+                          the controller's `match_mac` flag on a `CLIENT` matching
+                          target. Defaults to `false`.
+                        type: boolean
+                      matchOppositeIps:
+                        description: 'Invert the IP match: when `true`, the endpoint
+                          matches every address **except** those in `ips` / `ip_group_id`.
+                          Corresponds to the "Match Opposite" toggle on an `IP` matching
+                          target in the UniFi UI. Defaults to `false`.'
+                        type: boolean
+                      matchOppositeNetworks:
+                        description: 'Invert the network match: when `true`, the endpoint
+                          matches every network **except** those in `network_ids`.
+                          Corresponds to the "Match Opposite" toggle on a `NETWORK`
+                          matching target in the UniFi UI. Defaults to `false`.'
+                        type: boolean
+                      matchOppositePorts:
+                        description: 'Invert the port match: when `true`, the endpoint
+                          matches every port **except** those in `port` / `port_group_id`.
+                          Corresponds to the "Match Opposite" toggle on the port selector
+                          in the UniFi UI. Defaults to `false`.'
+                        type: boolean
                       matchingTarget:
                         description: 'What to match: `ANY`, `NETWORK`, `CLIENT`, `IP`,
-                          `DEVICE`, `MAC`, or `WEB` (domains/FQDN).'
+                          `DEVICE`, `MAC`, `WEB` (domains/FQDN), or `REGION` (country
+                          codes, set `regions`). The controller only accepts `REGION`
+                          on an external zone.'
                         type: string
                       networkIds:
                         description: List of UniFi network IDs to match. Used when
@@ -461,6 +568,16 @@ spec:
                         description: 'How to match ports: `ANY`, `SPECIFIC`, or `OBJECT`
                           (port group).'
                         type: string
+                      regions:
+                        description: Two-letter ISO country codes to match (for example
+                          `["DE", "US"]`). Used when `matching_target` is `REGION`,
+                          which the controller only accepts on an external zone. The
+                          controller rejects an update that leaves the list empty,
+                          so a policy matching on region must always carry at least
+                          one code.
+                        items:
+                          type: string
+                        type: array
                       webDomains:
                         description: List of domains/FQDNs to match. Used when `matching_target`
                           is `WEB`.
@@ -645,9 +762,35 @@ spec:
                         items:
                           type: string
                         type: array
+                      matchMac:
+                        description: Match the clients in `client_macs` by MAC address
+                          rather than by their current IP address. Corresponds to
+                          the controller's `match_mac` flag on a `CLIENT` matching
+                          target. Defaults to `false`.
+                        type: boolean
+                      matchOppositeIps:
+                        description: 'Invert the IP match: when `true`, the endpoint
+                          matches every address **except** those in `ips` / `ip_group_id`.
+                          Corresponds to the "Match Opposite" toggle on an `IP` matching
+                          target in the UniFi UI. Defaults to `false`.'
+                        type: boolean
+                      matchOppositeNetworks:
+                        description: 'Invert the network match: when `true`, the endpoint
+                          matches every network **except** those in `network_ids`.
+                          Corresponds to the "Match Opposite" toggle on a `NETWORK`
+                          matching target in the UniFi UI. Defaults to `false`.'
+                        type: boolean
+                      matchOppositePorts:
+                        description: 'Invert the port match: when `true`, the endpoint
+                          matches every port **except** those in `port` / `port_group_id`.
+                          Corresponds to the "Match Opposite" toggle on the port selector
+                          in the UniFi UI. Defaults to `false`.'
+                        type: boolean
                       matchingTarget:
                         description: 'What to match: `ANY`, `NETWORK`, `CLIENT`, `IP`,
-                          `DEVICE`, `MAC`, or `WEB` (domains/FQDN).'
+                          `DEVICE`, `MAC`, `WEB` (domains/FQDN), or `REGION` (country
+                          codes, set `regions`). The controller only accepts `REGION`
+                          on an external zone.'
                         type: string
                       networkIds:
                         description: List of UniFi network IDs to match. Used when
@@ -754,6 +897,16 @@ spec:
                         description: 'How to match ports: `ANY`, `SPECIFIC`, or `OBJECT`
                           (port group).'
                         type: string
+                      regions:
+                        description: Two-letter ISO country codes to match (for example
+                          `["DE", "US"]`). Used when `matching_target` is `REGION`,
+                          which the controller only accepts on an external zone. The
+                          controller rejects an update that leaves the list empty,
+                          so a policy matching on region must always carry at least
+                          one code.
+                        items:
+                          type: string
+                        type: array
                       webDomains:
                         description: List of domains/FQDNs to match. Used when `matching_target`
                           is `WEB`.
@@ -851,11 +1004,20 @@ spec:
                     type: boolean
                   ipVersion:
                     description: 'The IP version to match: `BOTH`, `IPV4`, or `IPV6`.
-                      Defaults to `IPV4`.'
+                      Defaults to `IPV4` for a newly created policy; an existing policy
+                      keeps whatever the controller holds, so adopting a dual-stack
+                      policy does not narrow it to IPv4 (#544). The controller requires
+                      this field, so it is always sent.'
                     type: string
                   logging:
                     description: Whether to log packets matching this policy. Defaults
                       to `false`.
+                    type: boolean
+                  matchOppositeProtocol:
+                    description: 'Invert the protocol match: when `true`, the policy
+                      matches every protocol **except** `protocol`. Corresponds to
+                      the "Match Opposite" toggle next to the protocol selector in
+                      the UniFi UI. Defaults to `false`.'
                     type: boolean
                   name:
                     description: The name of the firewall policy.
@@ -868,6 +1030,42 @@ spec:
                       it `false` and add an explicit reverse policy if you need the
                       reply.'
                     type: string
+                  schedule:
+                    properties:
+                      date:
+                        description: Date used by `ONE_TIME_ONLY`, in `YYYY-MM-DD`
+                          format.
+                        type: string
+                      dateEnd:
+                        description: End date used by `CUSTOM`, in `YYYY-MM-DD` format.
+                        type: string
+                      dateStart:
+                        description: Start date used by `CUSTOM`, in `YYYY-MM-DD`
+                          format.
+                        type: string
+                      mode:
+                        description: Schedule mode.
+                        type: string
+                      normalize:
+                        description: Clear inherited fields that are unused by the
+                          selected mode.
+                        type: boolean
+                      repeatOnDays:
+                        description: Weekdays on which the policy is active.
+                        items:
+                          type: string
+                        type: array
+                        x-kubernetes-list-type: set
+                      timeAllDay:
+                        description: Whether the policy is active all day.
+                        type: boolean
+                      timeRangeEnd:
+                        description: End time in 24-hour `HH:MM` format.
+                        type: string
+                      timeRangeStart:
+                        description: Start time in 24-hour `HH:MM` format.
+                        type: string
+                    type: object
                   site:
                     description: The name of the UniFi site. Defaults to the site
                       configured in the provider.
@@ -891,9 +1089,35 @@ spec:
                         items:
                           type: string
                         type: array
+                      matchMac:
+                        description: Match the clients in `client_macs` by MAC address
+                          rather than by their current IP address. Corresponds to
+                          the controller's `match_mac` flag on a `CLIENT` matching
+                          target. Defaults to `false`.
+                        type: boolean
+                      matchOppositeIps:
+                        description: 'Invert the IP match: when `true`, the endpoint
+                          matches every address **except** those in `ips` / `ip_group_id`.
+                          Corresponds to the "Match Opposite" toggle on an `IP` matching
+                          target in the UniFi UI. Defaults to `false`.'
+                        type: boolean
+                      matchOppositeNetworks:
+                        description: 'Invert the network match: when `true`, the endpoint
+                          matches every network **except** those in `network_ids`.
+                          Corresponds to the "Match Opposite" toggle on a `NETWORK`
+                          matching target in the UniFi UI. Defaults to `false`.'
+                        type: boolean
+                      matchOppositePorts:
+                        description: 'Invert the port match: when `true`, the endpoint
+                          matches every port **except** those in `port` / `port_group_id`.
+                          Corresponds to the "Match Opposite" toggle on the port selector
+                          in the UniFi UI. Defaults to `false`.'
+                        type: boolean
                       matchingTarget:
                         description: 'What to match: `ANY`, `NETWORK`, `CLIENT`, `IP`,
-                          `DEVICE`, `MAC`, or `WEB` (domains/FQDN).'
+                          `DEVICE`, `MAC`, `WEB` (domains/FQDN), or `REGION` (country
+                          codes, set `regions`). The controller only accepts `REGION`
+                          on an external zone.'
                         type: string
                       networkIds:
                         description: List of UniFi network IDs to match. Used when
@@ -1000,6 +1224,16 @@ spec:
                         description: 'How to match ports: `ANY`, `SPECIFIC`, or `OBJECT`
                           (port group).'
                         type: string
+                      regions:
+                        description: Two-letter ISO country codes to match (for example
+                          `["DE", "US"]`). Used when `matching_target` is `REGION`,
+                          which the controller only accepts on an external zone. The
+                          controller rejects an update that leaves the list empty,
+                          so a policy matching on region must always carry at least
+                          one code.
+                        items:
+                          type: string
+                        type: array
                       webDomains:
                         description: List of domains/FQDNs to match. Used when `matching_target`
                           is `WEB`.
@@ -1251,9 +1485,35 @@ spec:
                         items:
                           type: string
                         type: array
+                      matchMac:
+                        description: Match the clients in `client_macs` by MAC address
+                          rather than by their current IP address. Corresponds to
+                          the controller's `match_mac` flag on a `CLIENT` matching
+                          target. Defaults to `false`.
+                        type: boolean
+                      matchOppositeIps:
+                        description: 'Invert the IP match: when `true`, the endpoint
+                          matches every address **except** those in `ips` / `ip_group_id`.
+                          Corresponds to the "Match Opposite" toggle on an `IP` matching
+                          target in the UniFi UI. Defaults to `false`.'
+                        type: boolean
+                      matchOppositeNetworks:
+                        description: 'Invert the network match: when `true`, the endpoint
+                          matches every network **except** those in `network_ids`.
+                          Corresponds to the "Match Opposite" toggle on a `NETWORK`
+                          matching target in the UniFi UI. Defaults to `false`.'
+                        type: boolean
+                      matchOppositePorts:
+                        description: 'Invert the port match: when `true`, the endpoint
+                          matches every port **except** those in `port` / `port_group_id`.
+                          Corresponds to the "Match Opposite" toggle on the port selector
+                          in the UniFi UI. Defaults to `false`.'
+                        type: boolean
                       matchingTarget:
                         description: 'What to match: `ANY`, `NETWORK`, `CLIENT`, `IP`,
-                          `DEVICE`, `MAC`, or `WEB` (domains/FQDN).'
+                          `DEVICE`, `MAC`, `WEB` (domains/FQDN), or `REGION` (country
+                          codes, set `regions`). The controller only accepts `REGION`
+                          on an external zone.'
                         type: string
                       matchingTargetType:
                         description: How the matching target is specified (`ANY`,
@@ -1280,6 +1540,16 @@ spec:
                         description: 'How to match ports: `ANY`, `SPECIFIC`, or `OBJECT`
                           (port group).'
                         type: string
+                      regions:
+                        description: Two-letter ISO country codes to match (for example
+                          `["DE", "US"]`). Used when `matching_target` is `REGION`,
+                          which the controller only accepts on an external zone. The
+                          controller rejects an update that leaves the list empty,
+                          so a policy matching on region must always carry at least
+                          one code.
+                        items:
+                          type: string
+                        type: array
                       webDomains:
                         description: List of domains/FQDNs to match. Used when `matching_target`
                           is `WEB`.
@@ -1316,11 +1586,20 @@ spec:
                     type: number
                   ipVersion:
                     description: 'The IP version to match: `BOTH`, `IPV4`, or `IPV6`.
-                      Defaults to `IPV4`.'
+                      Defaults to `IPV4` for a newly created policy; an existing policy
+                      keeps whatever the controller holds, so adopting a dual-stack
+                      policy does not narrow it to IPv4 (#544). The controller requires
+                      this field, so it is always sent.'
                     type: string
                   logging:
                     description: Whether to log packets matching this policy. Defaults
                       to `false`.
+                    type: boolean
+                  matchOppositeProtocol:
+                    description: 'Invert the protocol match: when `true`, the policy
+                      matches every protocol **except** `protocol`. Corresponds to
+                      the "Match Opposite" toggle next to the protocol selector in
+                      the UniFi UI. Defaults to `false`.'
                     type: boolean
                   name:
                     description: The name of the firewall policy.
@@ -1333,6 +1612,42 @@ spec:
                       it `false` and add an explicit reverse policy if you need the
                       reply.'
                     type: string
+                  schedule:
+                    properties:
+                      date:
+                        description: Date used by `ONE_TIME_ONLY`, in `YYYY-MM-DD`
+                          format.
+                        type: string
+                      dateEnd:
+                        description: End date used by `CUSTOM`, in `YYYY-MM-DD` format.
+                        type: string
+                      dateStart:
+                        description: Start date used by `CUSTOM`, in `YYYY-MM-DD`
+                          format.
+                        type: string
+                      mode:
+                        description: Schedule mode.
+                        type: string
+                      normalize:
+                        description: Clear inherited fields that are unused by the
+                          selected mode.
+                        type: boolean
+                      repeatOnDays:
+                        description: Weekdays on which the policy is active.
+                        items:
+                          type: string
+                        type: array
+                        x-kubernetes-list-type: set
+                      timeAllDay:
+                        description: Whether the policy is active all day.
+                        type: boolean
+                      timeRangeEnd:
+                        description: End time in 24-hour `HH:MM` format.
+                        type: string
+                      timeRangeStart:
+                        description: Start time in 24-hour `HH:MM` format.
+                        type: string
+                    type: object
                   site:
                     description: The name of the UniFi site. Defaults to the site
                       configured in the provider.
@@ -1356,9 +1671,35 @@ spec:
                         items:
                           type: string
                         type: array
+                      matchMac:
+                        description: Match the clients in `client_macs` by MAC address
+                          rather than by their current IP address. Corresponds to
+                          the controller's `match_mac` flag on a `CLIENT` matching
+                          target. Defaults to `false`.
+                        type: boolean
+                      matchOppositeIps:
+                        description: 'Invert the IP match: when `true`, the endpoint
+                          matches every address **except** those in `ips` / `ip_group_id`.
+                          Corresponds to the "Match Opposite" toggle on an `IP` matching
+                          target in the UniFi UI. Defaults to `false`.'
+                        type: boolean
+                      matchOppositeNetworks:
+                        description: 'Invert the network match: when `true`, the endpoint
+                          matches every network **except** those in `network_ids`.
+                          Corresponds to the "Match Opposite" toggle on a `NETWORK`
+                          matching target in the UniFi UI. Defaults to `false`.'
+                        type: boolean
+                      matchOppositePorts:
+                        description: 'Invert the port match: when `true`, the endpoint
+                          matches every port **except** those in `port` / `port_group_id`.
+                          Corresponds to the "Match Opposite" toggle on the port selector
+                          in the UniFi UI. Defaults to `false`.'
+                        type: boolean
                       matchingTarget:
                         description: 'What to match: `ANY`, `NETWORK`, `CLIENT`, `IP`,
-                          `DEVICE`, `MAC`, or `WEB` (domains/FQDN).'
+                          `DEVICE`, `MAC`, `WEB` (domains/FQDN), or `REGION` (country
+                          codes, set `regions`). The controller only accepts `REGION`
+                          on an external zone.'
                         type: string
                       matchingTargetType:
                         description: How the matching target is specified (`ANY`,
@@ -1385,6 +1726,16 @@ spec:
                         description: 'How to match ports: `ANY`, `SPECIFIC`, or `OBJECT`
                           (port group).'
                         type: string
+                      regions:
+                        description: Two-letter ISO country codes to match (for example
+                          `["DE", "US"]`). Used when `matching_target` is `REGION`,
+                          which the controller only accepts on an external zone. The
+                          controller rejects an update that leaves the list empty,
+                          so a policy matching on region must always carry at least
+                          one code.
+                        items:
+                          type: string
+                        type: array
                       webDomains:
                         description: List of domains/FQDNs to match. Used when `matching_target`
                           is `WEB`.

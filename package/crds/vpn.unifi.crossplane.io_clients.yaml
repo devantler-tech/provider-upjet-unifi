@@ -223,6 +223,31 @@ spec:
                         - name
                         - namespace
                         type: object
+                      privateKeyWoSecretRef:
+                        description: 'Write-only equivalent of `private_key`. Write-only
+                          attributes need engine version 1.11 or later. This provider
+                          cannot set them: the engine it bundles predates that version
+                          and rejects any value, so setting this field fails validation.
+                          Set `privateKeySecretRef` instead.'
+                        properties:
+                          key:
+                            description: The key to select.
+                            type: string
+                          name:
+                            description: Name of the secret.
+                            type: string
+                          namespace:
+                            description: Namespace of the secret.
+                            type: string
+                        required:
+                        - key
+                        - name
+                        - namespace
+                        type: object
+                      privateKeyWoVersion:
+                        description: Version counter for `private_key_wo`. Increment
+                          this value to trigger a private key update.
+                        type: number
                     type: object
                 type: object
               initProvider:
@@ -393,8 +418,31 @@ spec:
                         - name
                         - namespace
                         type: object
-                    required:
-                    - privateKeySecretRef
+                      privateKeyWoSecretRef:
+                        description: 'Write-only equivalent of `private_key`. Write-only
+                          attributes need engine version 1.11 or later. This provider
+                          cannot set them: the engine it bundles predates that version
+                          and rejects any value, so setting this field fails validation.
+                          Set `privateKeySecretRef` instead.'
+                        properties:
+                          key:
+                            description: The key to select.
+                            type: string
+                          name:
+                            description: Name of the secret.
+                            type: string
+                          namespace:
+                            description: Namespace of the secret.
+                            type: string
+                        required:
+                        - key
+                        - name
+                        - namespace
+                        type: object
+                      privateKeyWoVersion:
+                        description: Version counter for `private_key_wo`. Increment
+                          this value to trigger a private key update.
+                        type: number
                     type: object
                 type: object
               managementPolicies:
@@ -584,6 +632,10 @@ spec:
                         description: Specifies whether to use a preshared key for
                           additional security.
                         type: boolean
+                      privateKeyWoVersion:
+                        description: Version counter for `private_key_wo`. Increment
+                          this value to trigger a private key update.
+                        type: number
                     type: object
                 type: object
               conditions:

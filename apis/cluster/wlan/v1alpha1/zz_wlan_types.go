@@ -158,6 +158,9 @@ type WlanInitParameters struct {
 	// Access point group mode.
 	ApGroupMode *string `json:"apGroupMode,omitempty" tf:"ap_group_mode,omitempty"`
 
+	// Deprecated and no longer applied. UniFi moved band steering off the WLAN object: `bandsteering_mode` is absent from the controller's WLAN field definitions as of Network 10.6, while it is still present on the device, so the setting now lives on `unifi_device`'s `bandsteering_mode` instead. This attribute is neither read nor written and always reads back null.
+	BandsteeringMode *string `json:"bandsteeringMode,omitempty" tf:"bandsteering_mode,omitempty"`
+
 	// List of MAC addresses for the broadcast filter. The controller may populate this on its own, so it is computed when unset.
 	// +listType=set
 	BcFilterList []*string `json:"bcFilterList,omitempty" tf:"bc_filter_list,omitempty"`
@@ -186,7 +189,7 @@ type WlanInitParameters struct {
 	// Enable fast roaming, aka 802.11r.
 	FastRoamingEnabled *bool `json:"fastRoamingEnabled,omitempty" tf:"fast_roaming_enabled,omitempty"`
 
-	// Group rekey interval in seconds (0 to disable).
+	// Group rekey interval in seconds (0 to disable). Computed from the controller when not set.
 	GroupRekey *float64 `json:"groupRekey,omitempty" tf:"group_rekey,omitempty"`
 
 	// Indicates whether or not to hide the SSID from broadcast.
@@ -316,7 +319,7 @@ type WlanInitParameters struct {
 	// Enable WPA 3 and WPA 2 support (security must be `wpapsk` and `wpa3_support` must be true).
 	Wpa3Transition *bool `json:"wpa3Transition,omitempty" tf:"wpa3_transition,omitempty"`
 
-	// WPA encryption. Can be one of `auto`, `ccmp`, `gcmp`, `ccmp-256`, or `gcmp-256`.
+	// WPA encryption. Can be one of `auto`, `ccmp`, `gcmp`, `ccmp-256`, or `gcmp-256`. Computed from the controller when not set.
 	WpaEnc *string `json:"wpaEnc,omitempty" tf:"wpa_enc,omitempty"`
 
 	// WPA mode. Can be one of `auto`, `wpa1`, or `wpa2`.
@@ -331,6 +334,9 @@ type WlanObservation struct {
 
 	// Access point group mode.
 	ApGroupMode *string `json:"apGroupMode,omitempty" tf:"ap_group_mode,omitempty"`
+
+	// Deprecated and no longer applied. UniFi moved band steering off the WLAN object: `bandsteering_mode` is absent from the controller's WLAN field definitions as of Network 10.6, while it is still present on the device, so the setting now lives on `unifi_device`'s `bandsteering_mode` instead. This attribute is neither read nor written and always reads back null.
+	BandsteeringMode *string `json:"bandsteeringMode,omitempty" tf:"bandsteering_mode,omitempty"`
 
 	// List of MAC addresses for the broadcast filter. The controller may populate this on its own, so it is computed when unset.
 	// +listType=set
@@ -360,7 +366,7 @@ type WlanObservation struct {
 	// Enable fast roaming, aka 802.11r.
 	FastRoamingEnabled *bool `json:"fastRoamingEnabled,omitempty" tf:"fast_roaming_enabled,omitempty"`
 
-	// Group rekey interval in seconds (0 to disable).
+	// Group rekey interval in seconds (0 to disable). Computed from the controller when not set.
 	GroupRekey *float64 `json:"groupRekey,omitempty" tf:"group_rekey,omitempty"`
 
 	// Indicates whether or not to hide the SSID from broadcast.
@@ -468,7 +474,7 @@ type WlanObservation struct {
 	// Enable WPA 3 and WPA 2 support (security must be `wpapsk` and `wpa3_support` must be true).
 	Wpa3Transition *bool `json:"wpa3Transition,omitempty" tf:"wpa3_transition,omitempty"`
 
-	// WPA encryption. Can be one of `auto`, `ccmp`, `gcmp`, `ccmp-256`, or `gcmp-256`.
+	// WPA encryption. Can be one of `auto`, `ccmp`, `gcmp`, `ccmp-256`, or `gcmp-256`. Computed from the controller when not set.
 	WpaEnc *string `json:"wpaEnc,omitempty" tf:"wpa_enc,omitempty"`
 
 	// WPA mode. Can be one of `auto`, `wpa1`, or `wpa2`.
@@ -494,6 +500,10 @@ type WlanParameters struct {
 	// Access point group mode.
 	// +kubebuilder:validation:Optional
 	ApGroupMode *string `json:"apGroupMode,omitempty" tf:"ap_group_mode,omitempty"`
+
+	// Deprecated and no longer applied. UniFi moved band steering off the WLAN object: `bandsteering_mode` is absent from the controller's WLAN field definitions as of Network 10.6, while it is still present on the device, so the setting now lives on `unifi_device`'s `bandsteering_mode` instead. This attribute is neither read nor written and always reads back null.
+	// +kubebuilder:validation:Optional
+	BandsteeringMode *string `json:"bandsteeringMode,omitempty" tf:"bandsteering_mode,omitempty"`
 
 	// List of MAC addresses for the broadcast filter. The controller may populate this on its own, so it is computed when unset.
 	// +kubebuilder:validation:Optional
@@ -532,7 +542,7 @@ type WlanParameters struct {
 	// +kubebuilder:validation:Optional
 	FastRoamingEnabled *bool `json:"fastRoamingEnabled,omitempty" tf:"fast_roaming_enabled,omitempty"`
 
-	// Group rekey interval in seconds (0 to disable).
+	// Group rekey interval in seconds (0 to disable). Computed from the controller when not set.
 	// +kubebuilder:validation:Optional
 	GroupRekey *float64 `json:"groupRekey,omitempty" tf:"group_rekey,omitempty"`
 
@@ -700,7 +710,7 @@ type WlanParameters struct {
 	// +kubebuilder:validation:Optional
 	Wpa3Transition *bool `json:"wpa3Transition,omitempty" tf:"wpa3_transition,omitempty"`
 
-	// WPA encryption. Can be one of `auto`, `ccmp`, `gcmp`, `ccmp-256`, or `gcmp-256`.
+	// WPA encryption. Can be one of `auto`, `ccmp`, `gcmp`, `ccmp-256`, or `gcmp-256`. Computed from the controller when not set.
 	// +kubebuilder:validation:Optional
 	WpaEnc *string `json:"wpaEnc,omitempty" tf:"wpa_enc,omitempty"`
 

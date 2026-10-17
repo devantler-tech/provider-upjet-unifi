@@ -57,7 +57,7 @@ type DHCPGuardingInitParameters struct {
 	// Specifies whether DHCP guarding is enabled.
 	Enabled *bool `json:"enabled,omitempty" tf:"enabled,omitempty"`
 
-	// List of allowed DHCP server IP addresses (maximum 3).
+	// List of allowed DHCP server IP addresses (maximum 3). On `corporate` and `guest` networks the controller only honors DHCP guarding with `setting_preference = "manual"`; when `setting_preference` is not configured, the provider sets it to `manual` automatically whenever `dhcp_guarding.enabled` is `true`.
 	Servers []*string `json:"servers,omitempty" tf:"servers,omitempty"`
 }
 
@@ -66,7 +66,7 @@ type DHCPGuardingObservation struct {
 	// Specifies whether DHCP guarding is enabled.
 	Enabled *bool `json:"enabled,omitempty" tf:"enabled,omitempty"`
 
-	// List of allowed DHCP server IP addresses (maximum 3).
+	// List of allowed DHCP server IP addresses (maximum 3). On `corporate` and `guest` networks the controller only honors DHCP guarding with `setting_preference = "manual"`; when `setting_preference` is not configured, the provider sets it to `manual` automatically whenever `dhcp_guarding.enabled` is `true`.
 	Servers []*string `json:"servers,omitempty" tf:"servers,omitempty"`
 }
 
@@ -76,7 +76,7 @@ type DHCPGuardingParameters struct {
 	// +kubebuilder:validation:Optional
 	Enabled *bool `json:"enabled,omitempty" tf:"enabled,omitempty"`
 
-	// List of allowed DHCP server IP addresses (maximum 3).
+	// List of allowed DHCP server IP addresses (maximum 3). On `corporate` and `guest` networks the controller only honors DHCP guarding with `setting_preference = "manual"`; when `setting_preference` is not configured, the provider sets it to `manual` automatically whenever `dhcp_guarding.enabled` is `true`.
 	// +kubebuilder:validation:Optional
 	Servers []*string `json:"servers,omitempty" tf:"servers,omitempty"`
 }
@@ -134,6 +134,9 @@ type DHCPServerInitParameters struct {
 	// Specifies whether DHCP NTP is enabled.
 	NtpEnabled *bool `json:"ntpEnabled,omitempty" tf:"ntp_enabled,omitempty"`
 
+	// List of NTP server addresses for DHCP clients.
+	NtpServers []*string `json:"ntpServers,omitempty" tf:"ntp_servers,omitempty"`
+
 	// The IPv4 address where the DHCP range starts.
 	Start *string `json:"start,omitempty" tf:"start,omitempty"`
 
@@ -178,6 +181,9 @@ type DHCPServerObservation struct {
 
 	// Specifies whether DHCP NTP is enabled.
 	NtpEnabled *bool `json:"ntpEnabled,omitempty" tf:"ntp_enabled,omitempty"`
+
+	// List of NTP server addresses for DHCP clients.
+	NtpServers []*string `json:"ntpServers,omitempty" tf:"ntp_servers,omitempty"`
 
 	// The IPv4 address where the DHCP range starts.
 	Start *string `json:"start,omitempty" tf:"start,omitempty"`
@@ -232,6 +238,10 @@ type DHCPServerParameters struct {
 	// Specifies whether DHCP NTP is enabled.
 	// +kubebuilder:validation:Optional
 	NtpEnabled *bool `json:"ntpEnabled,omitempty" tf:"ntp_enabled,omitempty"`
+
+	// List of NTP server addresses for DHCP clients.
+	// +kubebuilder:validation:Optional
+	NtpServers []*string `json:"ntpServers,omitempty" tf:"ntp_servers,omitempty"`
 
 	// The IPv4 address where the DHCP range starts.
 	// +kubebuilder:validation:Optional
@@ -381,7 +391,7 @@ type NATOutboundIPAddressesParameters struct {
 
 type NetworkInitParameters struct {
 
-	// Specifies whether auto-scaling is enabled.
+	// Specifies whether auto-scaling is enabled. The controller stores no default: left unset, the attribute is not written and whatever the controller holds is preserved.
 	AutoScale *bool `json:"autoScale,omitempty" tf:"auto_scale,omitempty"`
 
 	DHCPGuarding *DHCPGuardingInitParameters `json:"dhcpGuarding,omitempty" tf:"dhcp_guarding,omitempty"`
@@ -398,19 +408,22 @@ type NetworkInitParameters struct {
 	// Specifies whether the network is enabled.
 	Enabled *bool `json:"enabled,omitempty" tf:"enabled,omitempty"`
 
+	// The firewall zone ID assigned to this network. Note: This field is dual-managed and can compete with `unifi_firewall_zone.network_ids`. To prevent state drift loops, ensure you manage zone membership from exactly one side. On Zone-Based Firewall (ZBF) controllers, this field is tightly coupled to the network's `purpose` field.
+	FirewallZoneID *string `json:"firewallZoneId,omitempty" tf:"firewall_zone_id,omitempty"`
+
 	// The gateway type. Must be one of `default` or `switch`.
 	GatewayType *string `json:"gatewayType,omitempty" tf:"gateway_type,omitempty"`
 
-	// List of IP aliases for the network.
+	// List of IP aliases for the network, in CIDR notation (e.g. `192.168.2.1/24`). The controller rejects entries without a prefix length.
 	IPAliases []*string `json:"ipAliases,omitempty" tf:"ip_aliases,omitempty"`
 
-	// List of IPv6 aliases for the network.
+	// List of IPv6 aliases for the network. Not currently supported: the underlying UniFi API client has no field for this value, so a non-empty list is rejected at plan time (#413).
 	IPv6Aliases []*string `json:"ipv6Aliases,omitempty" tf:"ipv6_aliases,omitempty"`
 
 	// How clients on this network obtain an IPv6 address (UI: Networks → IPv6 → Client Address Assignment). One of `slaac` (SLAAC only), `dhcpv6` (DHCPv6 only), or `slaac-dhcpv6` (both). Computed from the controller when not set.
 	IPv6ClientAddressAssignment *string `json:"ipv6ClientAddressAssignment,omitempty" tf:"ipv6_client_address_assignment,omitempty"`
 
-	// Specifies which type of IPv6 connection to use. Must be one of `none`, `pd`, or `static`.
+	// Specifies which type of IPv6 connection to use. Must be one of `none`, `pd`, or `static`. Taken from the controller when not set; an adopted network keeps the type it already has (#544).
 	IPv6InterfaceType *string `json:"ipv6InterfaceType,omitempty" tf:"ipv6_interface_type,omitempty"`
 
 	// Specifies whether automatic prefix ID assignment is enabled for IPv6 Prefix Delegation.
@@ -449,7 +462,7 @@ type NetworkInitParameters struct {
 	// Specifies whether internet access is enabled.
 	InternetAccess *bool `json:"internetAccess,omitempty" tf:"internet_access,omitempty"`
 
-	// Whether this network/VLAN stays active when the gateway fails over to a UniFi LTE (cellular) backup WAN. Maps to the controller's `lte_lan_enabled` flag and only matters when a UniFi LTE failover device is in use; otherwise it is cosmetic. Defaults to `true` (network stays available during LTE failover); set to `false` to disable it while on the LTE backup link. The controller may set this automatically, which is why existing networks can show differing values.
+	// Whether this network/VLAN stays active when the gateway fails over to a UniFi LTE (cellular) backup WAN. Maps to the controller's `lte_lan_enabled` flag and only matters when a UniFi LTE failover device is in use; otherwise it is cosmetic. The controller stores no default: left unset, the attribute is not written and whatever the controller holds is preserved, which is why existing networks show differing values.
 	LteLan *bool `json:"lteLan,omitempty" tf:"lte_lan,omitempty"`
 
 	// Specifies whether mDNS is enabled. This is read back from the controller rather than defaulted: some controllers (notably UniFi OS gateways) ignore `mdns_enabled` at create/update time and always store `false`, so forcing a `true` default produced a "provider produced inconsistent result after apply" error.
@@ -466,7 +479,7 @@ type NetworkInitParameters struct {
 	// The network purpose: `corporate` (default), `guest`, or `vlan-only`. Leave unset to let the controller manage it (a `third_party_gateway` network is always `vlan-only`). **Note:** on Zone-Based-Firewall controllers the purpose is coupled to the firewall zone — a `guest` network only keeps `purpose = "guest"` while it belongs to the guest/Hotspot zone (assign it there via `unifi_firewall_zone`), otherwise the controller rewrites it back to `corporate` and the apply fails with an inconsistent-result error.
 	Purpose *string `json:"purpose,omitempty" tf:"purpose,omitempty"`
 
-	// Setting preference. Must be one of `auto` or `manual`.
+	// Setting preference. Must be one of `auto` or `manual`. Taken from the controller when not set; an adopted network keeps its own preference, so importing a `manual` network no longer proposes `auto` - which would also reset DHCP guarding (#544).
 	SettingPreference *string `json:"settingPreference,omitempty" tf:"setting_preference,omitempty"`
 
 	// The name of the site to associate the network with.
@@ -486,7 +499,7 @@ type NetworkInitParameters struct {
 
 type NetworkObservation struct {
 
-	// Specifies whether auto-scaling is enabled.
+	// Specifies whether auto-scaling is enabled. The controller stores no default: left unset, the attribute is not written and whatever the controller holds is preserved.
 	AutoScale *bool `json:"autoScale,omitempty" tf:"auto_scale,omitempty"`
 
 	DHCPGuarding *DHCPGuardingObservation `json:"dhcpGuarding,omitempty" tf:"dhcp_guarding,omitempty"`
@@ -503,21 +516,24 @@ type NetworkObservation struct {
 	// Specifies whether the network is enabled.
 	Enabled *bool `json:"enabled,omitempty" tf:"enabled,omitempty"`
 
+	// The firewall zone ID assigned to this network. Note: This field is dual-managed and can compete with `unifi_firewall_zone.network_ids`. To prevent state drift loops, ensure you manage zone membership from exactly one side. On Zone-Based Firewall (ZBF) controllers, this field is tightly coupled to the network's `purpose` field.
+	FirewallZoneID *string `json:"firewallZoneId,omitempty" tf:"firewall_zone_id,omitempty"`
+
 	// The gateway type. Must be one of `default` or `switch`.
 	GatewayType *string `json:"gatewayType,omitempty" tf:"gateway_type,omitempty"`
 
 	ID *string `json:"id,omitempty" tf:"id,omitempty"`
 
-	// List of IP aliases for the network.
+	// List of IP aliases for the network, in CIDR notation (e.g. `192.168.2.1/24`). The controller rejects entries without a prefix length.
 	IPAliases []*string `json:"ipAliases,omitempty" tf:"ip_aliases,omitempty"`
 
-	// List of IPv6 aliases for the network.
+	// List of IPv6 aliases for the network. Not currently supported: the underlying UniFi API client has no field for this value, so a non-empty list is rejected at plan time (#413).
 	IPv6Aliases []*string `json:"ipv6Aliases,omitempty" tf:"ipv6_aliases,omitempty"`
 
 	// How clients on this network obtain an IPv6 address (UI: Networks → IPv6 → Client Address Assignment). One of `slaac` (SLAAC only), `dhcpv6` (DHCPv6 only), or `slaac-dhcpv6` (both). Computed from the controller when not set.
 	IPv6ClientAddressAssignment *string `json:"ipv6ClientAddressAssignment,omitempty" tf:"ipv6_client_address_assignment,omitempty"`
 
-	// Specifies which type of IPv6 connection to use. Must be one of `none`, `pd`, or `static`.
+	// Specifies which type of IPv6 connection to use. Must be one of `none`, `pd`, or `static`. Taken from the controller when not set; an adopted network keeps the type it already has (#544).
 	IPv6InterfaceType *string `json:"ipv6InterfaceType,omitempty" tf:"ipv6_interface_type,omitempty"`
 
 	// Specifies whether automatic prefix ID assignment is enabled for IPv6 Prefix Delegation.
@@ -556,7 +572,7 @@ type NetworkObservation struct {
 	// Specifies whether internet access is enabled.
 	InternetAccess *bool `json:"internetAccess,omitempty" tf:"internet_access,omitempty"`
 
-	// Whether this network/VLAN stays active when the gateway fails over to a UniFi LTE (cellular) backup WAN. Maps to the controller's `lte_lan_enabled` flag and only matters when a UniFi LTE failover device is in use; otherwise it is cosmetic. Defaults to `true` (network stays available during LTE failover); set to `false` to disable it while on the LTE backup link. The controller may set this automatically, which is why existing networks can show differing values.
+	// Whether this network/VLAN stays active when the gateway fails over to a UniFi LTE (cellular) backup WAN. Maps to the controller's `lte_lan_enabled` flag and only matters when a UniFi LTE failover device is in use; otherwise it is cosmetic. The controller stores no default: left unset, the attribute is not written and whatever the controller holds is preserved, which is why existing networks show differing values.
 	LteLan *bool `json:"lteLan,omitempty" tf:"lte_lan,omitempty"`
 
 	// Specifies whether mDNS is enabled. This is read back from the controller rather than defaulted: some controllers (notably UniFi OS gateways) ignore `mdns_enabled` at create/update time and always store `false`, so forcing a `true` default produced a "provider produced inconsistent result after apply" error.
@@ -573,7 +589,7 @@ type NetworkObservation struct {
 	// The network purpose: `corporate` (default), `guest`, or `vlan-only`. Leave unset to let the controller manage it (a `third_party_gateway` network is always `vlan-only`). **Note:** on Zone-Based-Firewall controllers the purpose is coupled to the firewall zone — a `guest` network only keeps `purpose = "guest"` while it belongs to the guest/Hotspot zone (assign it there via `unifi_firewall_zone`), otherwise the controller rewrites it back to `corporate` and the apply fails with an inconsistent-result error.
 	Purpose *string `json:"purpose,omitempty" tf:"purpose,omitempty"`
 
-	// Setting preference. Must be one of `auto` or `manual`.
+	// Setting preference. Must be one of `auto` or `manual`. Taken from the controller when not set; an adopted network keeps its own preference, so importing a `manual` network no longer proposes `auto` - which would also reset DHCP guarding (#544).
 	SettingPreference *string `json:"settingPreference,omitempty" tf:"setting_preference,omitempty"`
 
 	// The name of the site to associate the network with.
@@ -593,7 +609,7 @@ type NetworkObservation struct {
 
 type NetworkParameters struct {
 
-	// Specifies whether auto-scaling is enabled.
+	// Specifies whether auto-scaling is enabled. The controller stores no default: left unset, the attribute is not written and whatever the controller holds is preserved.
 	// +kubebuilder:validation:Optional
 	AutoScale *bool `json:"autoScale,omitempty" tf:"auto_scale,omitempty"`
 
@@ -617,15 +633,19 @@ type NetworkParameters struct {
 	// +kubebuilder:validation:Optional
 	Enabled *bool `json:"enabled,omitempty" tf:"enabled,omitempty"`
 
+	// The firewall zone ID assigned to this network. Note: This field is dual-managed and can compete with `unifi_firewall_zone.network_ids`. To prevent state drift loops, ensure you manage zone membership from exactly one side. On Zone-Based Firewall (ZBF) controllers, this field is tightly coupled to the network's `purpose` field.
+	// +kubebuilder:validation:Optional
+	FirewallZoneID *string `json:"firewallZoneId,omitempty" tf:"firewall_zone_id,omitempty"`
+
 	// The gateway type. Must be one of `default` or `switch`.
 	// +kubebuilder:validation:Optional
 	GatewayType *string `json:"gatewayType,omitempty" tf:"gateway_type,omitempty"`
 
-	// List of IP aliases for the network.
+	// List of IP aliases for the network, in CIDR notation (e.g. `192.168.2.1/24`). The controller rejects entries without a prefix length.
 	// +kubebuilder:validation:Optional
 	IPAliases []*string `json:"ipAliases,omitempty" tf:"ip_aliases,omitempty"`
 
-	// List of IPv6 aliases for the network.
+	// List of IPv6 aliases for the network. Not currently supported: the underlying UniFi API client has no field for this value, so a non-empty list is rejected at plan time (#413).
 	// +kubebuilder:validation:Optional
 	IPv6Aliases []*string `json:"ipv6Aliases,omitempty" tf:"ipv6_aliases,omitempty"`
 
@@ -633,7 +653,7 @@ type NetworkParameters struct {
 	// +kubebuilder:validation:Optional
 	IPv6ClientAddressAssignment *string `json:"ipv6ClientAddressAssignment,omitempty" tf:"ipv6_client_address_assignment,omitempty"`
 
-	// Specifies which type of IPv6 connection to use. Must be one of `none`, `pd`, or `static`.
+	// Specifies which type of IPv6 connection to use. Must be one of `none`, `pd`, or `static`. Taken from the controller when not set; an adopted network keeps the type it already has (#544).
 	// +kubebuilder:validation:Optional
 	IPv6InterfaceType *string `json:"ipv6InterfaceType,omitempty" tf:"ipv6_interface_type,omitempty"`
 
@@ -685,7 +705,7 @@ type NetworkParameters struct {
 	// +kubebuilder:validation:Optional
 	InternetAccess *bool `json:"internetAccess,omitempty" tf:"internet_access,omitempty"`
 
-	// Whether this network/VLAN stays active when the gateway fails over to a UniFi LTE (cellular) backup WAN. Maps to the controller's `lte_lan_enabled` flag and only matters when a UniFi LTE failover device is in use; otherwise it is cosmetic. Defaults to `true` (network stays available during LTE failover); set to `false` to disable it while on the LTE backup link. The controller may set this automatically, which is why existing networks can show differing values.
+	// Whether this network/VLAN stays active when the gateway fails over to a UniFi LTE (cellular) backup WAN. Maps to the controller's `lte_lan_enabled` flag and only matters when a UniFi LTE failover device is in use; otherwise it is cosmetic. The controller stores no default: left unset, the attribute is not written and whatever the controller holds is preserved, which is why existing networks show differing values.
 	// +kubebuilder:validation:Optional
 	LteLan *bool `json:"lteLan,omitempty" tf:"lte_lan,omitempty"`
 
@@ -708,7 +728,7 @@ type NetworkParameters struct {
 	// +kubebuilder:validation:Optional
 	Purpose *string `json:"purpose,omitempty" tf:"purpose,omitempty"`
 
-	// Setting preference. Must be one of `auto` or `manual`.
+	// Setting preference. Must be one of `auto` or `manual`. Taken from the controller when not set; an adopted network keeps its own preference, so importing a `manual` network no longer proposes `auto` - which would also reset DHCP guarding (#544).
 	// +kubebuilder:validation:Optional
 	SettingPreference *string `json:"settingPreference,omitempty" tf:"setting_preference,omitempty"`
 

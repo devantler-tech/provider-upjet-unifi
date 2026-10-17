@@ -17,5 +17,9 @@ spec:
     # Replace with a controller user-group id (e.g. the Default group).
     userGroupId: REPLACE_WITH_USER_GROUP_ID
     wlanBand: both
+    # Set explicitly: upstream v0.59.0 no longer defaults these two for a new
+    # SSID. The other WLAN defaults it removed are tracked on issue #73.
+    groupRekey: 3600
+    wpaEnc: ccmp
   providerConfigRef:
     name: default

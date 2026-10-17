@@ -570,6 +570,7 @@ type PortOverrideInitParameters struct {
 	EgressRateLimitKbpsEnabled *bool `json:"egressRateLimitKbpsEnabled,omitempty" tf:"egress_rate_limit_kbps_enabled,omitempty"`
 
 	// List of network IDs to exclude from this port.
+	// +listType=set
 	ExcludedNetworkconfIds []*string `json:"excludedNetworkconfIds,omitempty" tf:"excluded_networkconf_ids,omitempty"`
 
 	// Forward Error Correction mode.
@@ -600,6 +601,7 @@ type PortOverrideInitParameters struct {
 	MirrorPortIdx *float64 `json:"mirrorPortIdx,omitempty" tf:"mirror_port_idx,omitempty"`
 
 	// List of network IDs for multicast router.
+	// +listType=set
 	MulticastRouterNetworkconfIds []*string `json:"multicastRouterNetworkconfIds,omitempty" tf:"multicast_router_networkconf_ids,omitempty"`
 
 	// Human-readable name of the port.
@@ -678,6 +680,7 @@ type PortOverrideInitParameters struct {
 	StpPortMode *bool `json:"stpPortMode,omitempty" tf:"stp_port_mode,omitempty"`
 
 	// List of network IDs to tag on this port.
+	// +listType=set
 	TaggedNetworkconfIds []*string `json:"taggedNetworkconfIds,omitempty" tf:"tagged_networkconf_ids,omitempty"`
 
 	// Tagged VLAN management.
@@ -708,6 +711,7 @@ type PortOverrideObservation struct {
 	EgressRateLimitKbpsEnabled *bool `json:"egressRateLimitKbpsEnabled,omitempty" tf:"egress_rate_limit_kbps_enabled,omitempty"`
 
 	// List of network IDs to exclude from this port.
+	// +listType=set
 	ExcludedNetworkconfIds []*string `json:"excludedNetworkconfIds,omitempty" tf:"excluded_networkconf_ids,omitempty"`
 
 	// Forward Error Correction mode.
@@ -738,6 +742,7 @@ type PortOverrideObservation struct {
 	MirrorPortIdx *float64 `json:"mirrorPortIdx,omitempty" tf:"mirror_port_idx,omitempty"`
 
 	// List of network IDs for multicast router.
+	// +listType=set
 	MulticastRouterNetworkconfIds []*string `json:"multicastRouterNetworkconfIds,omitempty" tf:"multicast_router_networkconf_ids,omitempty"`
 
 	// Human-readable name of the port.
@@ -816,6 +821,7 @@ type PortOverrideObservation struct {
 	StpPortMode *bool `json:"stpPortMode,omitempty" tf:"stp_port_mode,omitempty"`
 
 	// List of network IDs to tag on this port.
+	// +listType=set
 	TaggedNetworkconfIds []*string `json:"taggedNetworkconfIds,omitempty" tf:"tagged_networkconf_ids,omitempty"`
 
 	// Tagged VLAN management.
@@ -853,6 +859,7 @@ type PortOverrideParameters struct {
 
 	// List of network IDs to exclude from this port.
 	// +kubebuilder:validation:Optional
+	// +listType=set
 	ExcludedNetworkconfIds []*string `json:"excludedNetworkconfIds,omitempty" tf:"excluded_networkconf_ids,omitempty"`
 
 	// Forward Error Correction mode.
@@ -893,6 +900,7 @@ type PortOverrideParameters struct {
 
 	// List of network IDs for multicast router.
 	// +kubebuilder:validation:Optional
+	// +listType=set
 	MulticastRouterNetworkconfIds []*string `json:"multicastRouterNetworkconfIds,omitempty" tf:"multicast_router_networkconf_ids,omitempty"`
 
 	// Human-readable name of the port.
@@ -997,6 +1005,7 @@ type PortOverrideParameters struct {
 
 	// List of network IDs to tag on this port.
 	// +kubebuilder:validation:Optional
+	// +listType=set
 	TaggedNetworkconfIds []*string `json:"taggedNetworkconfIds,omitempty" tf:"tagged_networkconf_ids,omitempty"`
 
 	// Tagged VLAN management.
@@ -1016,10 +1025,10 @@ type RadioTableInitParameters struct {
 	// Antenna ID.
 	AntennaID *float64 `json:"antennaId,omitempty" tf:"antenna_id,omitempty"`
 
-	// Enable assisted roaming.
+	// Deprecated and no longer applied. UniFi removed 802.11k assisted roaming from the radio table; the field is absent from the controller API and from the firmware's own field definitions as of Network 10.6, so the provider can neither read nor write it. Always null.
 	AssistedRoamingEnabled *bool `json:"assistedRoamingEnabled,omitempty" tf:"assisted_roaming_enabled,omitempty"`
 
-	// Assisted roaming RSSI threshold.
+	// Deprecated and no longer applied. See `assisted_roaming_enabled`. Always null.
 	AssistedRoamingRssi *float64 `json:"assistedRoamingRssi,omitempty" tf:"assisted_roaming_rssi,omitempty"`
 
 	// Channel number or 'auto'.
@@ -1076,10 +1085,10 @@ type RadioTableObservation struct {
 	// Antenna ID.
 	AntennaID *float64 `json:"antennaId,omitempty" tf:"antenna_id,omitempty"`
 
-	// Enable assisted roaming.
+	// Deprecated and no longer applied. UniFi removed 802.11k assisted roaming from the radio table; the field is absent from the controller API and from the firmware's own field definitions as of Network 10.6, so the provider can neither read nor write it. Always null.
 	AssistedRoamingEnabled *bool `json:"assistedRoamingEnabled,omitempty" tf:"assisted_roaming_enabled,omitempty"`
 
-	// Assisted roaming RSSI threshold.
+	// Deprecated and no longer applied. See `assisted_roaming_enabled`. Always null.
 	AssistedRoamingRssi *float64 `json:"assistedRoamingRssi,omitempty" tf:"assisted_roaming_rssi,omitempty"`
 
 	// Channel number or 'auto'.
@@ -1138,11 +1147,11 @@ type RadioTableParameters struct {
 	// +kubebuilder:validation:Optional
 	AntennaID *float64 `json:"antennaId,omitempty" tf:"antenna_id,omitempty"`
 
-	// Enable assisted roaming.
+	// Deprecated and no longer applied. UniFi removed 802.11k assisted roaming from the radio table; the field is absent from the controller API and from the firmware's own field definitions as of Network 10.6, so the provider can neither read nor write it. Always null.
 	// +kubebuilder:validation:Optional
 	AssistedRoamingEnabled *bool `json:"assistedRoamingEnabled,omitempty" tf:"assisted_roaming_enabled,omitempty"`
 
-	// Assisted roaming RSSI threshold.
+	// Deprecated and no longer applied. See `assisted_roaming_enabled`. Always null.
 	// +kubebuilder:validation:Optional
 	AssistedRoamingRssi *float64 `json:"assistedRoamingRssi,omitempty" tf:"assisted_roaming_rssi,omitempty"`
 
