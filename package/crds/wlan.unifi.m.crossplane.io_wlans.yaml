@@ -348,8 +348,7 @@ spec:
                     type: boolean
                   passphraseSecretRef:
                     description: The passphrase for the network, only required if
-                      `security` is not `open`. Stored in state — use `passphrase_wo`
-                      to avoid persisting the secret.
+                      `security` is not `open`.
                     properties:
                       key:
                         type: string
@@ -364,7 +363,7 @@ spec:
                     description: 'Write-only equivalent of `passphrase`. This provider
                       cannot set write-only attributes: the engine it bundles predates
                       them and rejects any value, so setting this field fails validation.
-                      Set `passphrase` instead.'
+                      Set `passphraseSecretRef` instead.'
                     properties:
                       key:
                         type: string
@@ -902,8 +901,7 @@ spec:
                     type: boolean
                   passphraseSecretRef:
                     description: The passphrase for the network, only required if
-                      `security` is not `open`. Stored in state — use `passphrase_wo`
-                      to avoid persisting the secret.
+                      `security` is not `open`.
                     properties:
                       key:
                         type: string
@@ -918,7 +916,7 @@ spec:
                     description: 'Write-only equivalent of `passphrase`. This provider
                       cannot set write-only attributes: the engine it bundles predates
                       them and rejects any value, so setting this field fails validation.
-                      Set `passphrase` instead.'
+                      Set `passphraseSecretRef` instead.'
                     properties:
                       key:
                         type: string

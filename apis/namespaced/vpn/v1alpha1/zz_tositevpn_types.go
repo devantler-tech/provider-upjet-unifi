@@ -113,10 +113,10 @@ type ToSiteVPNInitParameters struct {
 	// Whether Perfect Forward Secrecy is enabled.
 	Pfs *bool `json:"pfs,omitempty" tf:"pfs,omitempty"`
 
-	// The IPsec pre-shared key. Stored in state — use `pre_shared_key_wo` to avoid persisting the secret.
+	// The IPsec pre-shared key.
 	PreSharedKeySecretRef *v1.LocalSecretKeySelector `json:"preSharedKeySecretRef,omitempty" tf:"-"`
 
-	// Write-only equivalent of `pre_shared_key`. This provider cannot set write-only attributes: the engine it bundles predates them and rejects any value, so setting this field fails validation. Set `pre_shared_key` instead.
+	// Write-only equivalent of `pre_shared_key`. This provider cannot set write-only attributes: the engine it bundles predates them and rejects any value, so setting this field fails validation. Set `preSharedKeySecretRef` instead.
 	PreSharedKeyWoSecretRef *v1.LocalSecretKeySelector `json:"preSharedKeyWoSecretRef,omitempty" tf:"-"`
 
 	// IPsec profile. One of `customized`, `azure_dynamic`, or `azure_static`. Set to `customized` to tune the IKE/ESP attributes below; the controller may derive the ESP values from the IKE ones.
@@ -267,11 +267,11 @@ type ToSiteVPNParameters struct {
 	// +kubebuilder:validation:Optional
 	Pfs *bool `json:"pfs,omitempty" tf:"pfs,omitempty"`
 
-	// The IPsec pre-shared key. Stored in state — use `pre_shared_key_wo` to avoid persisting the secret.
+	// The IPsec pre-shared key.
 	// +kubebuilder:validation:Optional
 	PreSharedKeySecretRef *v1.LocalSecretKeySelector `json:"preSharedKeySecretRef,omitempty" tf:"-"`
 
-	// Write-only equivalent of `pre_shared_key`. This provider cannot set write-only attributes: the engine it bundles predates them and rejects any value, so setting this field fails validation. Set `pre_shared_key` instead.
+	// Write-only equivalent of `pre_shared_key`. This provider cannot set write-only attributes: the engine it bundles predates them and rejects any value, so setting this field fails validation. Set `preSharedKeySecretRef` instead.
 	// +kubebuilder:validation:Optional
 	PreSharedKeyWoSecretRef *v1.LocalSecretKeySelector `json:"preSharedKeyWoSecretRef,omitempty" tf:"-"`
 

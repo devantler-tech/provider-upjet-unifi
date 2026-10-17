@@ -117,8 +117,7 @@ spec:
                     description: Whether Perfect Forward Secrecy is enabled.
                     type: boolean
                   preSharedKeySecretRef:
-                    description: The IPsec pre-shared key. Stored in state — use `pre_shared_key_wo`
-                      to avoid persisting the secret.
+                    description: The IPsec pre-shared key.
                     properties:
                       key:
                         type: string
@@ -133,7 +132,7 @@ spec:
                     description: 'Write-only equivalent of `pre_shared_key`. This
                       provider cannot set write-only attributes: the engine it bundles
                       predates them and rejects any value, so setting this field fails
-                      validation. Set `pre_shared_key` instead.'
+                      validation. Set `preSharedKeySecretRef` instead.'
                     properties:
                       key:
                         type: string
@@ -266,8 +265,7 @@ spec:
                     description: Whether Perfect Forward Secrecy is enabled.
                     type: boolean
                   preSharedKeySecretRef:
-                    description: The IPsec pre-shared key. Stored in state — use `pre_shared_key_wo`
-                      to avoid persisting the secret.
+                    description: The IPsec pre-shared key.
                     properties:
                       key:
                         type: string
@@ -282,7 +280,7 @@ spec:
                     description: 'Write-only equivalent of `pre_shared_key`. This
                       provider cannot set write-only attributes: the engine it bundles
                       predates them and rejects any value, so setting this field fails
-                      validation. Set `pre_shared_key` instead.'
+                      validation. Set `preSharedKeySecretRef` instead.'
                     properties:
                       key:
                         type: string

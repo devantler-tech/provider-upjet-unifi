@@ -64,8 +64,12 @@ func TestWriteOnlyAttributesKeepTheirFirstSentence(t *testing.T) {
 		if !strings.HasPrefix(attribute.Description, want) {
 			t.Errorf("%s.%s: description does not start with %q: %q", path, name, want, attribute.Description)
 		}
-		if !strings.HasSuffix(attribute.Description, "Set `"+base+"` instead.") {
-			t.Errorf("%s.%s: description does not name %q as the attribute to set: %q", path, name, base, attribute.Description)
+		field := apiFieldName(base, siblings[base])
+		if !strings.HasSuffix(attribute.Description, "Set `"+field+"` instead.") {
+			t.Errorf("%s.%s: description does not name %q as the field to set: %q", path, name, field, attribute.Description)
+		}
+		if strings.Contains(siblings[base].Description, "`"+name+"`") {
+			t.Errorf("%s.%s: description still points users at %q, which fails validation: %q", path, base, name, siblings[base].Description)
 		}
 	})
 	if found == 0 {
@@ -93,6 +97,37 @@ func TestWriteOnlyBase(t *testing.T) {
 		base, ok := writeOnlyBase(name, siblings)
 		if base != want.base || ok != want.ok {
 			t.Errorf("writeOnlyBase(%q) = (%q, %v), want (%q, %v)", name, base, ok, want.base, want.ok)
+		}
+	}
+}
+
+func TestAPIFieldName(t *testing.T) {
+	cases := map[string]struct {
+		attribute *schema.Schema
+		want      string
+	}{
+		"pre_shared_key": {attribute: &schema.Schema{Sensitive: true}, want: "preSharedKeySecretRef"},
+		"passphrase":     {attribute: &schema.Schema{Sensitive: true}, want: "passphraseSecretRef"},
+		"network_id":     {attribute: &schema.Schema{}, want: "networkId"},
+	}
+	for attributeName, c := range cases {
+		if got := apiFieldName(attributeName, c.attribute); got != c.want {
+			t.Errorf("apiFieldName(%q) = %q, want %q", attributeName, got, c.want)
+		}
+	}
+}
+
+func TestWithoutSentencesNaming(t *testing.T) {
+	cases := map[string]string{
+		"The passphrase for the network, only required if `security` is not `open`. Stored in state — use `passphrase_wo` to avoid persisting the secret.": "The passphrase for the network, only required if `security` is not `open`.",
+		"The IPsec pre-shared key. Stored in state — use `passphrase_wo` to avoid persisting the secret.":                                                  "The IPsec pre-shared key.",
+		"Use `passphrase_wo` instead.":                    "",
+		"No mention of the write-only attribute here.":    "No mention of the write-only attribute here.",
+		"Mentions passphrase_wo without backticks. Kept.": "Mentions passphrase_wo without backticks. Kept.",
+	}
+	for description, want := range cases {
+		if got := withoutSentencesNaming(description, "passphrase_wo"); got != want {
+			t.Errorf("withoutSentencesNaming(%q) = %q, want %q", description, got, want)
 		}
 	}
 }
