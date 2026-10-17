@@ -147,7 +147,7 @@ $(TERRAFORM_PROVIDER_SCHEMA): $(TERRAFORM)
 # instead of reusing a broken checkout.
 pull-docs:
 	@if [ ! -d "$(WORK_DIR)/$(TERRAFORM_PROVIDER_SOURCE)" ]; then \
-		mkdir -p "$(WORK_DIR)/$(TERRAFORM_PROVIDER_SOURCE)" && \
+		mkdir -p "$(WORK_DIR)/$(TERRAFORM_PROVIDER_SOURCE)" || exit 1; \
 		git clone -c advice.detachedHead=false --depth 1 --branch "v$(TERRAFORM_PROVIDER_VERSION)" --sparse "$(TERRAFORM_PROVIDER_REPO)" "$(WORK_DIR)/$(TERRAFORM_PROVIDER_SOURCE)" || \
 			{ rm -rf "$(WORK_DIR)/$(TERRAFORM_PROVIDER_SOURCE)"; exit 1; }; \
 	fi
