@@ -147,7 +147,7 @@ $(TERRAFORM_PROVIDER_SCHEMA): $(TERRAFORM)
 # instead of reusing a broken checkout.
 pull-docs:
 	@if [ ! -d "$(WORK_DIR)/$(TERRAFORM_PROVIDER_SOURCE)" ]; then \
-		mkdir -p "$(WORK_DIR)/$(TERRAFORM_PROVIDER_SOURCE)" && \
+		mkdir -p "$(WORK_DIR)/$(TERRAFORM_PROVIDER_SOURCE)" || exit 1; \
 		git clone -c advice.detachedHead=false --depth 1 --branch "v$(TERRAFORM_PROVIDER_VERSION)" --sparse "$(TERRAFORM_PROVIDER_REPO)" "$(WORK_DIR)/$(TERRAFORM_PROVIDER_SOURCE)" || \
 			{ rm -rf "$(WORK_DIR)/$(TERRAFORM_PROVIDER_SOURCE)"; exit 1; }; \
 	fi
@@ -224,21 +224,26 @@ local-deploy: build controlplane.up local.xpkg.deploy.provider.$(PROJECT_NAME)
 
 e2e: local-deploy uptest
 
-crddiff: $(UPTEST)
+# crddiff ships in the github.com/upbound/uptest module (CRDDIFF_VERSION pins
+# its release); github.com/crossplane/uptest does not include the command.
+CRDDIFF := $(TOOLS_HOST_DIR)/crddiff-$(CRDDIFF_VERSION)
+
+$(CRDDIFF):
+	@$(INFO) installing crddiff $(CRDDIFF_VERSION)
+	@mkdir -p $(TOOLS_HOST_DIR)/tmp-crddiff
+	@GOBIN=$(TOOLS_HOST_DIR)/tmp-crddiff $(GOHOST) install github.com/upbound/uptest/cmd/crddiff@$(CRDDIFF_VERSION) || $(FAIL)
+	@mv $(TOOLS_HOST_DIR)/tmp-crddiff/crddiff $(CRDDIFF)
+	@rm -fr $(TOOLS_HOST_DIR)/tmp-crddiff
+	@$(OK) installing crddiff $(CRDDIFF_VERSION)
+
+# Fails on a breaking change to any CRD in MODIFIED_CRD_LIST, compared against
+# CRDDIFF_BASE (a revision that must resolve locally; CI passes the pull
+# request's base commit).
+CRDDIFF_BASE ?= origin/main
+
+crddiff: $(CRDDIFF)
 	@$(INFO) Checking breaking CRD schema changes
-	@for crd in $${MODIFIED_CRD_LIST}; do \
-		if ! git cat-file -e "$${GITHUB_BASE_REF}:$${crd}" 2>/dev/null; then \
-			echo "CRD $${crd} does not exist in the $${GITHUB_BASE_REF} branch. Skipping..." ; \
-			continue ; \
-		fi ; \
-		echo "Checking $${crd} for breaking API changes..." ; \
-		changes_detected=$$(go run github.com/crossplane/uptest/cmd/crddiff@$(CRDDIFF_VERSION) revision --enable-upjet-extensions <(git cat-file -p "$${GITHUB_BASE_REF}:$${crd}") "$${crd}" 2>&1) ; \
-		if [[ $$? != 0 ]] ; then \
-			printf "\033[31m"; echo "Breaking change detected!"; printf "\033[0m" ; \
-			echo "$${changes_detected}" ; \
-			echo ; \
-		fi ; \
-	done
+	@./scripts/crddiff.sh "$(CRDDIFF_BASE)" "$(CRDDIFF)" $${MODIFIED_CRD_LIST} || $(FAIL)
 	@$(OK) Checking breaking CRD schema changes
 
 schema-version-diff:
@@ -262,7 +267,12 @@ schema-version-diff:
 # Hook the version_diff regression suite into `make test` (the CI unit-test
 # job) — makelib's test.run accumulates prerequisites, so this runs alongside
 # go.test.unit.
-test.run: version-diff.test go-floor.test release-version.test publish-workflow.test
+test.run: version-diff.test go-floor.test release-version.test publish-workflow.test crddiff.test
+
+crddiff.test: $(CRDDIFF)
+	@$(INFO) running crddiff gate regression tests
+	@CRDDIFF=$(CRDDIFF) ./scripts/crddiff_test.sh || $(FAIL)
+	@$(OK) crddiff gate regression tests
 
 version-diff.test:
 	@$(INFO) running version_diff regression tests
@@ -284,7 +294,7 @@ publish-workflow.test:
 	@./scripts/publish-workflow_test.sh || $(FAIL)
 	@$(OK) checking release workflow wiring
 
-.PHONY: cobertura submodules fallthrough run crds.clean version-diff.test go-floor.test release-version.test publish-workflow.test
+.PHONY: cobertura submodules fallthrough run crds.clean crddiff version-diff.test go-floor.test release-version.test publish-workflow.test crddiff.test
 
 # ====================================================================================
 # Special Targets
