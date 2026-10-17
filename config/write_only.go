@@ -1,3 +1,5 @@
+// Package config also rewrites the descriptions of write-only attributes, which
+// this provider cannot set, before upjet generates the API from them.
 package config
 
 import (
