@@ -131,8 +131,7 @@ spec:
                     description: Whether Perfect Forward Secrecy is enabled.
                     type: boolean
                   preSharedKeySecretRef:
-                    description: The IPsec pre-shared key. Stored in state — use `pre_shared_key_wo`
-                      to avoid persisting the secret.
+                    description: The IPsec pre-shared key. Stored in state.
                     properties:
                       key:
                         type: string
@@ -144,9 +143,11 @@ spec:
                     - name
                     type: object
                   preSharedKeyWoSecretRef:
-                    description: 11+). Used at apply time but never written to state,
-                      so it can be sourced from an ephemeral resource (e.g. a Vault
-                      secret). Mutually exclusive with `pre_shared_key`.
+                    description: 'Write-only equivalent of `pre_shared_key`. Write-only
+                      attributes need engine version 1.11 or later. This provider
+                      cannot set them: the engine it bundles predates that version
+                      and rejects any value, so setting this field fails validation.
+                      Set `preSharedKeySecretRef` instead.'
                     properties:
                       key:
                         type: string
@@ -301,8 +302,7 @@ spec:
                     description: Whether Perfect Forward Secrecy is enabled.
                     type: boolean
                   preSharedKeySecretRef:
-                    description: The IPsec pre-shared key. Stored in state — use `pre_shared_key_wo`
-                      to avoid persisting the secret.
+                    description: The IPsec pre-shared key. Stored in state.
                     properties:
                       key:
                         type: string
@@ -314,9 +314,11 @@ spec:
                     - name
                     type: object
                   preSharedKeyWoSecretRef:
-                    description: 11+). Used at apply time but never written to state,
-                      so it can be sourced from an ephemeral resource (e.g. a Vault
-                      secret). Mutually exclusive with `pre_shared_key`.
+                    description: 'Write-only equivalent of `pre_shared_key`. Write-only
+                      attributes need engine version 1.11 or later. This provider
+                      cannot set them: the engine it bundles predates that version
+                      and rejects any value, so setting this field fails validation.
+                      Set `preSharedKeySecretRef` instead.'
                     properties:
                       key:
                         type: string

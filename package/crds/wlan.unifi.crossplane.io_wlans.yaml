@@ -360,8 +360,7 @@ spec:
                     type: boolean
                   passphraseSecretRef:
                     description: The passphrase for the network, only required if
-                      `security` is not `open`. Stored in state — use `passphrase_wo`
-                      to avoid persisting the secret.
+                      `security` is not `open`. Stored in state.
                     properties:
                       key:
                         description: The key to select.
@@ -378,9 +377,11 @@ spec:
                     - namespace
                     type: object
                   passphraseWoSecretRef:
-                    description: 11+). Used at apply time but never written to state,
-                      so it can be sourced from an ephemeral resource (e.g. a Vault
-                      secret). Mutually exclusive with `passphrase`.
+                    description: 'Write-only equivalent of `passphrase`. Write-only
+                      attributes need engine version 1.11 or later. This provider
+                      cannot set them: the engine it bundles predates that version
+                      and rejects any value, so setting this field fails validation.
+                      Set `passphraseSecretRef` instead.'
                     properties:
                       key:
                         description: The key to select.
@@ -921,8 +922,7 @@ spec:
                     type: boolean
                   passphraseSecretRef:
                     description: The passphrase for the network, only required if
-                      `security` is not `open`. Stored in state — use `passphrase_wo`
-                      to avoid persisting the secret.
+                      `security` is not `open`. Stored in state.
                     properties:
                       key:
                         description: The key to select.
@@ -939,9 +939,11 @@ spec:
                     - namespace
                     type: object
                   passphraseWoSecretRef:
-                    description: 11+). Used at apply time but never written to state,
-                      so it can be sourced from an ephemeral resource (e.g. a Vault
-                      secret). Mutually exclusive with `passphrase`.
+                    description: 'Write-only equivalent of `passphrase`. Write-only
+                      attributes need engine version 1.11 or later. This provider
+                      cannot set them: the engine it bundles predates that version
+                      and rejects any value, so setting this field fails validation.
+                      Set `passphraseSecretRef` instead.'
                     properties:
                       key:
                         description: The key to select.
