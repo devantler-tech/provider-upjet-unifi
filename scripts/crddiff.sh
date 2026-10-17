@@ -14,8 +14,8 @@
 #
 # CRDDIFF_ACCEPT_BREAKING=true accepts the breaking changes found, after
 # printing them, for a change that intends them. It never accepts a check that
-# could not run: only a report crddiff recognisably produced counts as a
-# breaking change.
+# could not run: only a report in crddiff's own format counts as a breaking
+# change.
 #
 # Exit codes: 0 no breaking change (or accepted ones), 1 a breaking change,
 # 2 the check could not run.
