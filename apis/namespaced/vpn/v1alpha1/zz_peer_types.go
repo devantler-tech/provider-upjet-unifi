@@ -28,10 +28,10 @@ type PeerInitParameters_2 struct {
 	// The ID of the WireGuard server network the peer connects to.
 	NetworkID *string `json:"networkId,omitempty" tf:"network_id,omitempty"`
 
-	// Optional WireGuard pre-shared key for this peer (the UI's Pre-Shared Key toggle), adding a layer of symmetric encryption on top of the key pair. The controller stores and returns it in clear text, so it is kept in state - use `preshared_key_wo` to avoid persisting the secret. Left unset, the attribute is not written and a key configured out of band is preserved.
+	// Optional WireGuard pre-shared key for this peer (the UI's Pre-Shared Key toggle), adding a layer of symmetric encryption on top of the key pair. Left unset, the attribute is not written and a key configured out of band is preserved.
 	PresharedKeySecretRef *v1.LocalSecretKeySelector `json:"presharedKeySecretRef,omitempty" tf:"-"`
 
-	// 11+). Used at apply time but never written to state, so it can be sourced from an ephemeral resource. Mutually exclusive with `preshared_key`.
+	// Write-only equivalent of `preshared_key`. Write-only attributes need engine version 1.11 or later. This provider cannot set them: the engine it bundles predates that version and rejects any value, so setting this field fails validation. Set `presharedKeySecretRef` instead.
 	PresharedKeyWoSecretRef *v1.LocalSecretKeySelector `json:"presharedKeyWoSecretRef,omitempty" tf:"-"`
 
 	// The WireGuard public key of the peer.
@@ -86,11 +86,11 @@ type PeerParameters_2 struct {
 	// +kubebuilder:validation:Optional
 	NetworkID *string `json:"networkId,omitempty" tf:"network_id,omitempty"`
 
-	// Optional WireGuard pre-shared key for this peer (the UI's Pre-Shared Key toggle), adding a layer of symmetric encryption on top of the key pair. The controller stores and returns it in clear text, so it is kept in state - use `preshared_key_wo` to avoid persisting the secret. Left unset, the attribute is not written and a key configured out of band is preserved.
+	// Optional WireGuard pre-shared key for this peer (the UI's Pre-Shared Key toggle), adding a layer of symmetric encryption on top of the key pair. Left unset, the attribute is not written and a key configured out of band is preserved.
 	// +kubebuilder:validation:Optional
 	PresharedKeySecretRef *v1.LocalSecretKeySelector `json:"presharedKeySecretRef,omitempty" tf:"-"`
 
-	// 11+). Used at apply time but never written to state, so it can be sourced from an ephemeral resource. Mutually exclusive with `preshared_key`.
+	// Write-only equivalent of `preshared_key`. Write-only attributes need engine version 1.11 or later. This provider cannot set them: the engine it bundles predates that version and rejects any value, so setting this field fails validation. Set `presharedKeySecretRef` instead.
 	// +kubebuilder:validation:Optional
 	PresharedKeyWoSecretRef *v1.LocalSecretKeySelector `json:"presharedKeyWoSecretRef,omitempty" tf:"-"`
 

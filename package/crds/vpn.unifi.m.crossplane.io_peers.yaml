@@ -78,10 +78,8 @@ spec:
                   presharedKeySecretRef:
                     description: Optional WireGuard pre-shared key for this peer (the
                       UI's Pre-Shared Key toggle), adding a layer of symmetric encryption
-                      on top of the key pair. The controller stores and returns it
-                      in clear text, so it is kept in state - use `preshared_key_wo`
-                      to avoid persisting the secret. Left unset, the attribute is
-                      not written and a key configured out of band is preserved.
+                      on top of the key pair. Left unset, the attribute is not written
+                      and a key configured out of band is preserved.
                     properties:
                       key:
                         type: string
@@ -93,9 +91,11 @@ spec:
                     - name
                     type: object
                   presharedKeyWoSecretRef:
-                    description: 11+). Used at apply time but never written to state,
-                      so it can be sourced from an ephemeral resource. Mutually exclusive
-                      with `preshared_key`.
+                    description: 'Write-only equivalent of `preshared_key`. Write-only
+                      attributes need engine version 1.11 or later. This provider
+                      cannot set them: the engine it bundles predates that version
+                      and rejects any value, so setting this field fails validation.
+                      Set `presharedKeySecretRef` instead.'
                     properties:
                       key:
                         type: string
@@ -177,10 +177,8 @@ spec:
                   presharedKeySecretRef:
                     description: Optional WireGuard pre-shared key for this peer (the
                       UI's Pre-Shared Key toggle), adding a layer of symmetric encryption
-                      on top of the key pair. The controller stores and returns it
-                      in clear text, so it is kept in state - use `preshared_key_wo`
-                      to avoid persisting the secret. Left unset, the attribute is
-                      not written and a key configured out of band is preserved.
+                      on top of the key pair. Left unset, the attribute is not written
+                      and a key configured out of band is preserved.
                     properties:
                       key:
                         type: string
@@ -192,9 +190,11 @@ spec:
                     - name
                     type: object
                   presharedKeyWoSecretRef:
-                    description: 11+). Used at apply time but never written to state,
-                      so it can be sourced from an ephemeral resource. Mutually exclusive
-                      with `preshared_key`.
+                    description: 'Write-only equivalent of `preshared_key`. Write-only
+                      attributes need engine version 1.11 or later. This provider
+                      cannot set them: the engine it bundles predates that version
+                      and rejects any value, so setting this field fails validation.
+                      Set `presharedKeySecretRef` instead.'
                     properties:
                       key:
                         type: string

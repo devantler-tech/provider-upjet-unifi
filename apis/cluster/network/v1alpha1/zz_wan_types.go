@@ -496,10 +496,10 @@ type WanInitParameters struct {
 	// The WAN network group this interface belongs to (`WAN`, `WAN2`, …). The primary uplink is `WAN`; a secondary/SFP uplink is `WAN2`. Computed from the controller when unset (so an imported `WAN2` is preserved), defaulting to `WAN` on create. Required to manage multi-WAN (WAN2+) setups, where a hard-coded `WAN` collides with the primary (`api.err.WanConfigurationForNetworkGroupAlreadyExists`).
 	Networkgroup *string `json:"networkgroup,omitempty" tf:"networkgroup,omitempty"`
 
-	// PPPoE password supplied by the ISP. Stored in state - use `password_wo` to avoid persisting the secret. Only meaningful when `type` is `pppoe`.
+	// PPPoE password supplied by the ISP. Only meaningful when `type` is `pppoe`.
 	PasswordSecretRef *v1.SecretKeySelector `json:"passwordSecretRef,omitempty" tf:"-"`
 
-	// 11+). Used at apply time but never written to state, so it can be sourced from an ephemeral resource. Mutually exclusive with `password`.
+	// Write-only equivalent of `password`. Write-only attributes need engine version 1.11 or later. This provider cannot set them: the engine it bundles predates that version and rejects any value, so setting this field fails validation. Set `passwordSecretRef` instead.
 	PasswordWoSecretRef *v1.SecretKeySelector `json:"passwordWoSecretRef,omitempty" tf:"-"`
 
 	ProviderCapabilities *ProviderCapabilitiesInitParameters `json:"providerCapabilities,omitempty" tf:"provider_capabilities,omitempty"`
@@ -655,11 +655,11 @@ type WanParameters struct {
 	// +kubebuilder:validation:Optional
 	Networkgroup *string `json:"networkgroup,omitempty" tf:"networkgroup,omitempty"`
 
-	// PPPoE password supplied by the ISP. Stored in state - use `password_wo` to avoid persisting the secret. Only meaningful when `type` is `pppoe`.
+	// PPPoE password supplied by the ISP. Only meaningful when `type` is `pppoe`.
 	// +kubebuilder:validation:Optional
 	PasswordSecretRef *v1.SecretKeySelector `json:"passwordSecretRef,omitempty" tf:"-"`
 
-	// 11+). Used at apply time but never written to state, so it can be sourced from an ephemeral resource. Mutually exclusive with `password`.
+	// Write-only equivalent of `password`. Write-only attributes need engine version 1.11 or later. This provider cannot set them: the engine it bundles predates that version and rejects any value, so setting this field fails validation. Set `passwordSecretRef` instead.
 	// +kubebuilder:validation:Optional
 	PasswordWoSecretRef *v1.SecretKeySelector `json:"passwordWoSecretRef,omitempty" tf:"-"`
 

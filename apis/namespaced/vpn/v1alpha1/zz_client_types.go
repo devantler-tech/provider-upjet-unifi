@@ -227,10 +227,10 @@ type WireguardInitParameters struct {
 	// WireGuard preshared key. Required when preshared_key_enabled is true.
 	PresharedKeySecretRef *v1.LocalSecretKeySelector `json:"presharedKeySecretRef,omitempty" tf:"-"`
 
-	// WireGuard private key for this client. Stored in state; use `private_key_wo` to avoid persisting the secret.
+	// WireGuard private key for this client.
 	PrivateKeySecretRef *v1.LocalSecretKeySelector `json:"privateKeySecretRef,omitempty" tf:"-"`
 
-	// 11+). Used at apply time but never written to state. Mutually exclusive with `private_key`.
+	// Write-only equivalent of `private_key`. Write-only attributes need engine version 1.11 or later. This provider cannot set them: the engine it bundles predates that version and rejects any value, so setting this field fails validation. Set `privateKeySecretRef` instead.
 	PrivateKeyWoSecretRef *v1.LocalSecretKeySelector `json:"privateKeyWoSecretRef,omitempty" tf:"-"`
 
 	// Version counter for `private_key_wo`. Increment this value to trigger a private key update.
@@ -279,11 +279,11 @@ type WireguardParameters struct {
 	// +kubebuilder:validation:Optional
 	PresharedKeySecretRef *v1.LocalSecretKeySelector `json:"presharedKeySecretRef,omitempty" tf:"-"`
 
-	// WireGuard private key for this client. Stored in state; use `private_key_wo` to avoid persisting the secret.
+	// WireGuard private key for this client.
 	// +kubebuilder:validation:Optional
 	PrivateKeySecretRef *v1.LocalSecretKeySelector `json:"privateKeySecretRef,omitempty" tf:"-"`
 
-	// 11+). Used at apply time but never written to state. Mutually exclusive with `private_key`.
+	// Write-only equivalent of `private_key`. Write-only attributes need engine version 1.11 or later. This provider cannot set them: the engine it bundles predates that version and rejects any value, so setting this field fails validation. Set `privateKeySecretRef` instead.
 	// +kubebuilder:validation:Optional
 	PrivateKeyWoSecretRef *v1.LocalSecretKeySelector `json:"privateKeyWoSecretRef,omitempty" tf:"-"`
 

@@ -181,8 +181,7 @@ spec:
                       collides with the primary (`api.err.WanConfigurationForNetworkGroupAlreadyExists`).
                     type: string
                   passwordSecretRef:
-                    description: PPPoE password supplied by the ISP. Stored in state
-                      - use `password_wo` to avoid persisting the secret. Only meaningful
+                    description: PPPoE password supplied by the ISP. Only meaningful
                       when `type` is `pppoe`.
                     properties:
                       key:
@@ -195,9 +194,11 @@ spec:
                     - name
                     type: object
                   passwordWoSecretRef:
-                    description: 11+). Used at apply time but never written to state,
-                      so it can be sourced from an ephemeral resource. Mutually exclusive
-                      with `password`.
+                    description: 'Write-only equivalent of `password`. Write-only
+                      attributes need engine version 1.11 or later. This provider
+                      cannot set them: the engine it bundles predates that version
+                      and rejects any value, so setting this field fails validation.
+                      Set `passwordSecretRef` instead.'
                     properties:
                       key:
                         type: string
@@ -459,8 +460,7 @@ spec:
                       collides with the primary (`api.err.WanConfigurationForNetworkGroupAlreadyExists`).
                     type: string
                   passwordSecretRef:
-                    description: PPPoE password supplied by the ISP. Stored in state
-                      - use `password_wo` to avoid persisting the secret. Only meaningful
+                    description: PPPoE password supplied by the ISP. Only meaningful
                       when `type` is `pppoe`.
                     properties:
                       key:
@@ -473,9 +473,11 @@ spec:
                     - name
                     type: object
                   passwordWoSecretRef:
-                    description: 11+). Used at apply time but never written to state,
-                      so it can be sourced from an ephemeral resource. Mutually exclusive
-                      with `password`.
+                    description: 'Write-only equivalent of `password`. Write-only
+                      attributes need engine version 1.11 or later. This provider
+                      cannot set them: the engine it bundles predates that version
+                      and rejects any value, so setting this field fails validation.
+                      Set `passwordSecretRef` instead.'
                     properties:
                       key:
                         type: string

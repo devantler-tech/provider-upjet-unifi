@@ -178,8 +178,7 @@ spec:
                         - name
                         type: object
                       privateKeySecretRef:
-                        description: WireGuard private key for this client. Stored
-                          in state; use `private_key_wo` to avoid persisting the secret.
+                        description: WireGuard private key for this client.
                         properties:
                           key:
                             type: string
@@ -191,8 +190,11 @@ spec:
                         - name
                         type: object
                       privateKeyWoSecretRef:
-                        description: 11+). Used at apply time but never written to
-                          state. Mutually exclusive with `private_key`.
+                        description: 'Write-only equivalent of `private_key`. Write-only
+                          attributes need engine version 1.11 or later. This provider
+                          cannot set them: the engine it bundles predates that version
+                          and rejects any value, so setting this field fails validation.
+                          Set `privateKeySecretRef` instead.'
                         properties:
                           key:
                             type: string
@@ -346,8 +348,7 @@ spec:
                         - name
                         type: object
                       privateKeySecretRef:
-                        description: WireGuard private key for this client. Stored
-                          in state; use `private_key_wo` to avoid persisting the secret.
+                        description: WireGuard private key for this client.
                         properties:
                           key:
                             type: string
@@ -359,8 +360,11 @@ spec:
                         - name
                         type: object
                       privateKeyWoSecretRef:
-                        description: 11+). Used at apply time but never written to
-                          state. Mutually exclusive with `private_key`.
+                        description: 'Write-only equivalent of `private_key`. Write-only
+                          attributes need engine version 1.11 or later. This provider
+                          cannot set them: the engine it bundles predates that version
+                          and rejects any value, so setting this field fails validation.
+                          Set `privateKeySecretRef` instead.'
                         properties:
                           key:
                             type: string
