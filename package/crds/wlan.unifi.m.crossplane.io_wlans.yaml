@@ -361,9 +361,10 @@ spec:
                     - name
                     type: object
                   passphraseWoSecretRef:
-                    description: 11+). Used at apply time but never written to state,
-                      so it can be sourced from an ephemeral resource (e.g. a Vault
-                      secret). Mutually exclusive with `passphrase`.
+                    description: 'Write-only equivalent of `passphrase`. This provider
+                      cannot set write-only attributes: the engine it bundles predates
+                      them and rejects any value, so setting this field fails validation.
+                      Set `passphrase` instead.'
                     properties:
                       key:
                         type: string
@@ -914,9 +915,10 @@ spec:
                     - name
                     type: object
                   passphraseWoSecretRef:
-                    description: 11+). Used at apply time but never written to state,
-                      so it can be sourced from an ephemeral resource (e.g. a Vault
-                      secret). Mutually exclusive with `passphrase`.
+                    description: 'Write-only equivalent of `passphrase`. This provider
+                      cannot set write-only attributes: the engine it bundles predates
+                      them and rejects any value, so setting this field fails validation.
+                      Set `passphrase` instead.'
                     properties:
                       key:
                         type: string

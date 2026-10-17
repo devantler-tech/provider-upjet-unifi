@@ -245,7 +245,7 @@ type WlanInitParameters struct {
 	// The passphrase for the network, only required if `security` is not `open`. Stored in state — use `passphrase_wo` to avoid persisting the secret.
 	PassphraseSecretRef *v1.SecretKeySelector `json:"passphraseSecretRef,omitempty" tf:"-"`
 
-	// 11+). Used at apply time but never written to state, so it can be sourced from an ephemeral resource (e.g. a Vault secret). Mutually exclusive with `passphrase`.
+	// Write-only equivalent of `passphrase`. This provider cannot set write-only attributes: the engine it bundles predates them and rejects any value, so setting this field fails validation. Set `passphrase` instead.
 	PassphraseWoSecretRef *v1.SecretKeySelector `json:"passphraseWoSecretRef,omitempty" tf:"-"`
 
 	// Enable Protected Management Frames. This cannot be disabled if using WPA 3.
@@ -608,7 +608,7 @@ type WlanParameters struct {
 	// +kubebuilder:validation:Optional
 	PassphraseSecretRef *v1.SecretKeySelector `json:"passphraseSecretRef,omitempty" tf:"-"`
 
-	// 11+). Used at apply time but never written to state, so it can be sourced from an ephemeral resource (e.g. a Vault secret). Mutually exclusive with `passphrase`.
+	// Write-only equivalent of `passphrase`. This provider cannot set write-only attributes: the engine it bundles predates them and rejects any value, so setting this field fails validation. Set `passphrase` instead.
 	// +kubebuilder:validation:Optional
 	PassphraseWoSecretRef *v1.SecretKeySelector `json:"passphraseWoSecretRef,omitempty" tf:"-"`
 
