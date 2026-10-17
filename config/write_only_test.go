@@ -1,12 +1,16 @@
 package config
 
 import (
+	"os"
+	"path/filepath"
+	"regexp"
 	"strings"
 	"testing"
 
 	"github.com/crossplane/upjet/v2/pkg"
 	ujconfig "github.com/crossplane/upjet/v2/pkg/config"
 	"github.com/hashicorp/terraform-plugin-sdk/v2/helper/schema"
+	"golang.org/x/mod/semver"
 )
 
 // walkAttributes calls visit for every attribute of every configured resource,
@@ -77,6 +81,52 @@ func TestWriteOnlyAttributesKeepTheirFirstSentence(t *testing.T) {
 	})
 	if found == 0 {
 		t.Fatal("found no write-only attributes; the <name>_wo convention or the schema changed, so this test checks nothing")
+	}
+}
+
+// engineVersionAssignment matches the Makefile line that sets TERRAFORM_VERSION,
+// the engine version the image build passes to the provider's Dockerfile.
+var engineVersionAssignment = regexp.MustCompile(`(?m)^[ \t]*(?:export[ \t]+)?TERRAFORM_VERSION[ \t]*[?:]?=[ \t]*(\S+)[ \t]*$`)
+
+// bundledEngineVersion returns the engine version the provider image bundles,
+// read from the repository Makefile.
+func bundledEngineVersion(t *testing.T) string {
+	t.Helper()
+	makefile, err := os.ReadFile(filepath.Join("..", "Makefile"))
+	if err != nil {
+		t.Fatalf("read the Makefile: %v", err)
+	}
+	assignments := engineVersionAssignment.FindAllSubmatch(makefile, -1)
+	if len(assignments) != 1 {
+		t.Fatalf("the Makefile sets TERRAFORM_VERSION %d times, want exactly once; point this test at the bundled engine version", len(assignments))
+	}
+	dockerfile, err := os.ReadFile(filepath.Join("..", "cluster", "images", "provider-upjet-unifi", "Dockerfile"))
+	if err != nil {
+		t.Fatalf("read the provider Dockerfile: %v", err)
+	}
+	if engine := "releases.hashicorp.com/terraform/${TERRAFORM_VERSION}/"; !strings.Contains(string(dockerfile), engine) {
+		t.Fatalf("the provider Dockerfile no longer bundles the engine from %q, so TERRAFORM_VERSION may not be the bundled engine version", engine)
+	}
+	return string(assignments[0][1])
+}
+
+// The write-only descriptions say the bundled engine predates the first version
+// that accepts write-only attributes. Once the image bundles an engine that
+// accepts them, that sentence is false in every generated description.
+func TestBundledEnginePredatesWriteOnlySupport(t *testing.T) {
+	if claim := "the engine it bundles predates that version"; !strings.Contains(writeOnlyDescription("passphrase", "passphraseSecretRef"), claim) {
+		t.Fatalf("the write-only description no longer says %q; update this test to check what it now claims", claim)
+	}
+	bundled := "v" + bundledEngineVersion(t)
+	minimum := "v" + writeOnlyMinimumEngine
+	for _, version := range []string{bundled, minimum} {
+		if !semver.IsValid(version) {
+			t.Fatalf("%q is not a version this test can compare", version)
+		}
+	}
+	if semver.Compare(bundled, minimum) >= 0 {
+		t.Errorf("the image bundles engine %s, which accepts write-only attributes (%s or later), but the write-only descriptions say it predates that version; rewrite writeOnlyDescription and run make generate",
+			bundled, minimum)
 	}
 }
 
