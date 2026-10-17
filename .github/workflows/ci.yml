@@ -51,10 +51,29 @@ jobs:
         with:
           files: |
             package/crds/**
-      - name: Report breaking CRD OpenAPI v3 schema changes
-        if: steps.modified-crds.outputs.any_changed == 'true'
+
+      # The gate compares against the pull request's base commit, which the
+      # shallow checkout does not contain, and fails if it cannot resolve it.
+      - name: Fetch the pull request base
+        if: github.event_name == 'pull_request' && steps.modified-crds.outputs.any_modified == 'true'
         env:
-          MODIFIED_CRD_LIST: ${{ steps.modified-crds.outputs.all_changed_files }}
+          BASE_SHA: ${{ github.event.pull_request.base.sha }}
+        run: git fetch --no-tags --depth=1 origin "${BASE_SHA}"
+
+      - name: Setup Go
+        if: github.event_name == 'pull_request' && steps.modified-crds.outputs.any_modified == 'true'
+        uses: actions/setup-go@4a3601121dd01d1626a1e23e37211e3254c1c06c # v6.4.0
+        with:
+          go-version: ${{ env.GO_VERSION }}
+          cache: false
+
+      # Fails the job on a breaking CRD OpenAPI v3 schema change, including a
+      # removed CRD, and when the check cannot run.
+      - name: Check CRD OpenAPI v3 schemas for breaking changes
+        if: github.event_name == 'pull_request' && steps.modified-crds.outputs.any_modified == 'true'
+        env:
+          MODIFIED_CRD_LIST: ${{ steps.modified-crds.outputs.all_modified_files }}
+          CRDDIFF_BASE: ${{ github.event.pull_request.base.sha }}
         run: |
           make crddiff
       - name: Report native schema version changes
