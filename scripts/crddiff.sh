@@ -5,14 +5,19 @@
 #
 # Each CRD path is compared against its version at <base-revision> with
 # crddiff's revision check. The gate fails closed:
-#   - a breaking change, or a comparison the tool could not complete, fails it;
+#   - a breaking change fails it;
 #   - a CRD that exists at the base but is gone from the working tree fails it,
 #     because removing a CRD removes that API;
-#   - a base revision that cannot be resolved, or a tool that cannot be run,
-#     stops it before any comparison, instead of skipping every CRD.
+#   - a comparison the tool could not complete, a base revision that cannot be
+#     resolved, or a tool that cannot be run stops it, instead of passing.
 # A CRD the base does not have yet is new, so there is nothing for it to break.
 #
-# Exit codes: 0 no breaking change, 1 a breaking change or a failed comparison,
+# CRDDIFF_ACCEPT_BREAKING=true accepts the breaking changes found, after
+# printing them, for a change that intends them. It never accepts a check that
+# could not run: only a report crddiff recognisably produced counts as a
+# breaking change.
+#
+# Exit codes: 0 no breaking change (or accepted ones), 1 a breaking change,
 # 2 the check could not run.
 
 set -euo pipefail
@@ -69,12 +74,23 @@ for crd in "$@"; do
 	if output="$("${crddiff}" revision --enable-upjet-extensions "${work_dir}/base.yaml" "${crd}" 2>&1)"; then
 		continue
 	fi
+	# crddiff reports breaking changes per CRD version, each under a
+	# 'Version "<name>":' heading; any other failure is the tool not running.
+	if ! grep -q '^Version "' <<<"${output}"; then
+		echo "crddiff could not compare ${crd}:" >&2
+		printf '%s\n' "${output}" >&2
+		exit 2
+	fi
 	echo "Breaking change detected in ${crd}:"
 	printf '%s\n\n' "${output}"
 	failed=1
 done
 
 if [[ "${failed}" -ne 0 ]]; then
+	if [[ "${CRDDIFF_ACCEPT_BREAKING:-}" == "true" ]]; then
+		echo "Breaking CRD schema changes found and accepted (CRDDIFF_ACCEPT_BREAKING=true); see the report above."
+		exit 0
+	fi
 	echo "Breaking CRD schema changes found; see the report above." >&2
 	exit 1
 fi

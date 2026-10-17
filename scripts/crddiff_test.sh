@@ -54,6 +54,8 @@ printf '#!/bin/sh\necho "crddiff: failed to load CRDs" >&2\nexit 3\n' >"${broken
 chmod +x "${broken_tool}"
 
 failures=0
+# Passed to the gate as CRDDIFF_ACCEPT_BREAKING; the acceptance cases set it.
+accept_breaking=""
 
 # assert_gate <name> <want-exit> <want-output-substring> <tool> <base> [crd...]
 assert_gate() {
@@ -61,7 +63,7 @@ assert_gate() {
 	shift 5
 	local got_out got_exit=0
 
-	got_out="$(cd "${repo}" && "${gate}" "${base}" "${tool}" "$@" 2>&1)" || got_exit=$?
+	got_out="$(cd "${repo}" && CRDDIFF_ACCEPT_BREAKING="${accept_breaking}" "${gate}" "${base}" "${tool}" "$@" 2>&1)" || got_exit=$?
 
 	if [[ "${got_exit}" != "${want_exit}" ]]; then
 		echo "FAIL ${name}: exit ${got_exit}, want ${want_exit}"
@@ -109,8 +111,36 @@ rm "${repo}/crds/new.yaml"
 
 reset_tree
 cp "${additive}" "${repo}/crds/records.yaml"
-assert_gate "fails when the tool cannot complete a comparison" 1 "failed to load CRDs" \
+assert_gate "stops when the tool cannot complete a comparison" 2 "crddiff could not compare crds/records.yaml" \
 	"${broken_tool}" base crds/records.yaml
+
+# Accepting breaking changes passes them, still printing the report, and never
+# turns a check that could not run into a pass. Only the exact value "true" counts.
+accept_breaking="true"
+reset_tree
+cp "${breaking}" "${repo}/crds/records.yaml"
+assert_gate "accepts a removed field when told to, and still reports it" 0 "Deleted property: ttl" \
+	"${CRDDIFF}" base crds/records.yaml
+
+reset_tree
+rm "${repo}/crds/removed.yaml"
+assert_gate "accepts a removed CRD when told to" 0 "found and accepted" \
+	"${CRDDIFF}" base crds/removed.yaml
+
+reset_tree
+cp "${additive}" "${repo}/crds/records.yaml"
+assert_gate "does not accept a tool failure" 2 "crddiff could not compare crds/records.yaml" \
+	"${broken_tool}" base crds/records.yaml
+
+assert_gate "does not accept an unresolvable base" 2 "Cannot resolve the base revision 'no-such-base'" \
+	"${CRDDIFF}" no-such-base crds/records.yaml
+
+accept_breaking="1"
+reset_tree
+cp "${breaking}" "${repo}/crds/records.yaml"
+assert_gate "accepts only the exact value true" 1 "Breaking CRD schema changes found; see the report above." \
+	"${CRDDIFF}" base crds/records.yaml
+accept_breaking=""
 
 reset_tree
 assert_gate "stops when the base cannot be resolved" 2 "Cannot resolve the base revision 'no-such-base'" \

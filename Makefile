@@ -232,7 +232,8 @@ $(CRDDIFF):
 
 # Fails on a breaking change to any CRD in MODIFIED_CRD_LIST, compared against
 # CRDDIFF_BASE (a revision that must resolve locally; CI passes the pull
-# request's base commit).
+# request's base commit). CRDDIFF_ACCEPT_BREAKING=true accepts reported
+# breaking changes; CI sets it from the pull request's "breaking change" label.
 CRDDIFF_BASE ?= origin/main
 
 crddiff: $(CRDDIFF)
