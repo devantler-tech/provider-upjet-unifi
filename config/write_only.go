@@ -18,6 +18,10 @@ const writeOnlySuffix = "_wo"
 // attribute, which it reads from a Kubernetes Secret instead of the manifest.
 const secretRefSuffix = "SecretRef"
 
+// writeOnlyMinimumEngine is the first engine version that accepts write-only
+// attributes. Upstream names it as "Terraform 1.11+", a sentence upjet drops.
+const writeOnlyMinimumEngine = "1.11"
+
 // WriteOnlyDescriptions rewrites the description of every write-only attribute
 // and of the attribute it stands in for.
 //
@@ -78,7 +82,8 @@ func apiFieldName(attributeName string, attribute *schema.Schema) string {
 
 func writeOnlyDescription(base, field string) string {
 	return "Write-only equivalent of `" + base + "`. " +
-		"This provider cannot set write-only attributes: the engine it bundles predates them " +
+		"Write-only attributes need engine version " + writeOnlyMinimumEngine + " or later. " +
+		"This provider cannot set them: the engine it bundles predates that version " +
 		"and rejects any value, so setting this field fails validation. " +
 		"Set `" + field + "` instead."
 }

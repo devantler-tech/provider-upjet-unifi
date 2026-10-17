@@ -64,6 +64,9 @@ func TestWriteOnlyAttributesKeepTheirFirstSentence(t *testing.T) {
 		if !strings.HasPrefix(attribute.Description, want) {
 			t.Errorf("%s.%s: description does not start with %q: %q", path, name, want, attribute.Description)
 		}
+		if note := "need engine version " + writeOnlyMinimumEngine + " or later."; !strings.Contains(attribute.Description, note) {
+			t.Errorf("%s.%s: description lost the version note %q: %q", path, name, note, attribute.Description)
+		}
 		field := apiFieldName(base, siblings[base])
 		if !strings.HasSuffix(attribute.Description, "Set `"+field+"` instead.") {
 			t.Errorf("%s.%s: description does not name %q as the field to set: %q", path, name, field, attribute.Description)

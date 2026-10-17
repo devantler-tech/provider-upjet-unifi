@@ -129,10 +129,11 @@ spec:
                     - name
                     type: object
                   preSharedKeyWoSecretRef:
-                    description: 'Write-only equivalent of `pre_shared_key`. This
-                      provider cannot set write-only attributes: the engine it bundles
-                      predates them and rejects any value, so setting this field fails
-                      validation. Set `preSharedKeySecretRef` instead.'
+                    description: 'Write-only equivalent of `pre_shared_key`. Write-only
+                      attributes need engine version 1.11 or later. This provider
+                      cannot set them: the engine it bundles predates that version
+                      and rejects any value, so setting this field fails validation.
+                      Set `preSharedKeySecretRef` instead.'
                     properties:
                       key:
                         type: string
@@ -277,10 +278,11 @@ spec:
                     - name
                     type: object
                   preSharedKeyWoSecretRef:
-                    description: 'Write-only equivalent of `pre_shared_key`. This
-                      provider cannot set write-only attributes: the engine it bundles
-                      predates them and rejects any value, so setting this field fails
-                      validation. Set `preSharedKeySecretRef` instead.'
+                    description: 'Write-only equivalent of `pre_shared_key`. Write-only
+                      attributes need engine version 1.11 or later. This provider
+                      cannot set them: the engine it bundles predates that version
+                      and rejects any value, so setting this field fails validation.
+                      Set `preSharedKeySecretRef` instead.'
                     properties:
                       key:
                         type: string
