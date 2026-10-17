@@ -117,7 +117,7 @@ spec:
                     description: Whether Perfect Forward Secrecy is enabled.
                     type: boolean
                   preSharedKeySecretRef:
-                    description: The IPsec pre-shared key.
+                    description: The IPsec pre-shared key. Stored in state.
                     properties:
                       key:
                         type: string
@@ -266,7 +266,7 @@ spec:
                     description: Whether Perfect Forward Secrecy is enabled.
                     type: boolean
                   preSharedKeySecretRef:
-                    description: The IPsec pre-shared key.
+                    description: The IPsec pre-shared key. Stored in state.
                     properties:
                       key:
                         type: string

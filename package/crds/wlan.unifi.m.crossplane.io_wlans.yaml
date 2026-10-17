@@ -348,7 +348,7 @@ spec:
                     type: boolean
                   passphraseSecretRef:
                     description: The passphrase for the network, only required if
-                      `security` is not `open`.
+                      `security` is not `open`. Stored in state.
                     properties:
                       key:
                         type: string
@@ -902,7 +902,7 @@ spec:
                     type: boolean
                   passphraseSecretRef:
                     description: The passphrase for the network, only required if
-                      `security` is not `open`.
+                      `security` is not `open`. Stored in state.
                     properties:
                       key:
                         type: string

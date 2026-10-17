@@ -112,7 +112,7 @@ type ToSiteVPNInitParameters struct {
 	// Whether Perfect Forward Secrecy is enabled.
 	Pfs *bool `json:"pfs,omitempty" tf:"pfs,omitempty"`
 
-	// The IPsec pre-shared key.
+	// The IPsec pre-shared key. Stored in state.
 	PreSharedKeySecretRef *v1.SecretKeySelector `json:"preSharedKeySecretRef,omitempty" tf:"-"`
 
 	// Write-only equivalent of `pre_shared_key`. Write-only attributes need engine version 1.11 or later. This provider cannot set them: the engine it bundles predates that version and rejects any value, so setting this field fails validation. Set `preSharedKeySecretRef` instead.
@@ -266,7 +266,7 @@ type ToSiteVPNParameters struct {
 	// +kubebuilder:validation:Optional
 	Pfs *bool `json:"pfs,omitempty" tf:"pfs,omitempty"`
 
-	// The IPsec pre-shared key.
+	// The IPsec pre-shared key. Stored in state.
 	// +kubebuilder:validation:Optional
 	PreSharedKeySecretRef *v1.SecretKeySelector `json:"preSharedKeySecretRef,omitempty" tf:"-"`
 

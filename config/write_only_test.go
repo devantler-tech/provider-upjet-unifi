@@ -172,8 +172,8 @@ func TestAPIFieldName(t *testing.T) {
 
 func TestWithoutSentencesNaming(t *testing.T) {
 	cases := map[string]string{
-		"The passphrase for the network, only required if `security` is not `open`. Stored in state — use `passphrase_wo` to avoid persisting the secret.": "The passphrase for the network, only required if `security` is not `open`.",
-		"The IPsec pre-shared key. Stored in state — use `passphrase_wo` to avoid persisting the secret.":                                                  "The IPsec pre-shared key.",
+		"The passphrase for the network, only required if `security` is not `open`. Stored in state — use `passphrase_wo` to avoid persisting the secret.": "The passphrase for the network, only required if `security` is not `open`. Stored in state.",
+		"The IPsec pre-shared key. Stored in state — use `passphrase_wo` to avoid persisting the secret.":                                                  "The IPsec pre-shared key. Stored in state.",
 		"Use `passphrase_wo` instead.":                    "",
 		"No mention of the write-only attribute here.":    "No mention of the write-only attribute here.",
 		"Mentions passphrase_wo without backticks. Kept.": "Mentions passphrase_wo without backticks. Kept.",

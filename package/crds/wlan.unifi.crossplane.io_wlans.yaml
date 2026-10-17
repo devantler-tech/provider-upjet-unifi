@@ -350,7 +350,7 @@ spec:
                     type: boolean
                   passphraseSecretRef:
                     description: The passphrase for the network, only required if
-                      `security` is not `open`.
+                      `security` is not `open`. Stored in state.
                     properties:
                       key:
                         description: The key to select.
@@ -901,7 +901,7 @@ spec:
                     type: boolean
                   passphraseSecretRef:
                     description: The passphrase for the network, only required if
-                      `security` is not `open`.
+                      `security` is not `open`. Stored in state.
                     properties:
                       key:
                         description: The key to select.

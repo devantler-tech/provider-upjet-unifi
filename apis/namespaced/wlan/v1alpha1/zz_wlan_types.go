@@ -243,7 +243,7 @@ type WlanInitParameters struct {
 	// Connect high performance clients to 5 GHz only.
 	No2GhzOui *bool `json:"no2ghzOui,omitempty" tf:"no2ghz_oui,omitempty"`
 
-	// The passphrase for the network, only required if `security` is not `open`.
+	// The passphrase for the network, only required if `security` is not `open`. Stored in state.
 	PassphraseSecretRef *v1.LocalSecretKeySelector `json:"passphraseSecretRef,omitempty" tf:"-"`
 
 	// Write-only equivalent of `passphrase`. Write-only attributes need engine version 1.11 or later. This provider cannot set them: the engine it bundles predates that version and rejects any value, so setting this field fails validation. Set `passphraseSecretRef` instead.
@@ -605,7 +605,7 @@ type WlanParameters struct {
 	// +kubebuilder:validation:Optional
 	No2GhzOui *bool `json:"no2ghzOui,omitempty" tf:"no2ghz_oui,omitempty"`
 
-	// The passphrase for the network, only required if `security` is not `open`.
+	// The passphrase for the network, only required if `security` is not `open`. Stored in state.
 	// +kubebuilder:validation:Optional
 	PassphraseSecretRef *v1.LocalSecretKeySelector `json:"passphraseSecretRef,omitempty" tf:"-"`
 

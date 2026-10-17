@@ -89,7 +89,9 @@ func writeOnlyDescription(base, field string) string {
 }
 
 // withoutSentencesNaming drops every sentence of description that names
-// attributeName in backticks.
+// attributeName in backticks. A clause before an em dash that does not name
+// the attribute, such as a state-persistence warning, is kept as its own
+// sentence.
 func withoutSentencesNaming(description, attributeName string) string {
 	quoted := "`" + attributeName + "`"
 	if !strings.Contains(description, quoted) {
@@ -99,6 +101,10 @@ func withoutSentencesNaming(description, attributeName string) string {
 	for _, sentence := range strings.SplitAfter(description, ". ") {
 		if !strings.Contains(sentence, quoted) {
 			kept = append(kept, sentence)
+			continue
+		}
+		if clause, _, found := strings.Cut(sentence, " — "); found && !strings.Contains(clause, quoted) {
+			kept = append(kept, strings.TrimSpace(clause)+". ")
 		}
 	}
 	return strings.TrimSpace(strings.Join(kept, ""))
