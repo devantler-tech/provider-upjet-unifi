@@ -30,6 +30,24 @@ git -C "${repo}" -c user.name=test -c user.email=test@example.invalid -c commit.
 	commit --quiet -m base
 git -C "${repo}" tag base
 
+# The two revisions are derived from the one base fixture, so each differs from
+# it by exactly the change under test.
+# breaking: the base without its optional `ttl` field.
+breaking="${repo}/breaking.yaml"
+awk '/^ +ttl:$/ {skip=3} skip>0 {skip--; next} {print}' "${testdata}/base.yaml" >"${breaking}"
+# additive: the base with a new optional `weight` field after `ttl`.
+additive="${repo}/additive.yaml"
+awk '{print} /^ +type: number$/ && !done {
+	print "                    weight:"
+	print "                      description: An optional weight, added by this revision."
+	print "                      type: number"
+	done=1
+}' "${testdata}/base.yaml" >"${additive}"
+if grep -q 'ttl:' "${breaking}" || ! grep -q 'weight:' "${additive}"; then
+	echo "FAIL: could not derive the revision fixtures from ${testdata}/base.yaml"
+	exit 1
+fi
+
 # A stand-in for a crddiff that cannot run, such as a pin that no longer resolves.
 broken_tool="${repo}/broken-crddiff"
 printf '#!/bin/sh\necho "crddiff: failed to load CRDs" >&2\nexit 3\n' >"${broken_tool}"
@@ -69,12 +87,12 @@ assert_gate "passes when no CRD changed" 0 "No modified CRDs to check." \
 	"${CRDDIFF}" base
 
 reset_tree
-cp "${testdata}/additive.yaml" "${repo}/crds/records.yaml"
+cp "${additive}" "${repo}/crds/records.yaml"
 assert_gate "passes an added optional field" 0 "No breaking CRD schema changes." \
 	"${CRDDIFF}" base crds/records.yaml
 
 reset_tree
-cp "${testdata}/breaking.yaml" "${repo}/crds/records.yaml"
+cp "${breaking}" "${repo}/crds/records.yaml"
 assert_gate "fails a removed field and names it" 1 "ttl" \
 	"${CRDDIFF}" base crds/records.yaml
 
@@ -90,7 +108,7 @@ assert_gate "passes a CRD the base does not have" 0 "New CRD crds/new.yaml" \
 rm "${repo}/crds/new.yaml"
 
 reset_tree
-cp "${testdata}/additive.yaml" "${repo}/crds/records.yaml"
+cp "${additive}" "${repo}/crds/records.yaml"
 assert_gate "fails when the tool cannot complete a comparison" 1 "failed to load CRDs" \
 	"${broken_tool}" base crds/records.yaml
 
