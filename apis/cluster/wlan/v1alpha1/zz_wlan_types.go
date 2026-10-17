@@ -242,10 +242,10 @@ type WlanInitParameters struct {
 	// Connect high performance clients to 5 GHz only.
 	No2GhzOui *bool `json:"no2ghzOui,omitempty" tf:"no2ghz_oui,omitempty"`
 
-	// The passphrase for the network, only required if `security` is not `open`. Stored in state — use `passphrase_wo` to avoid persisting the secret.
+	// The passphrase for the network, only required if `security` is not `open`. Stored in state.
 	PassphraseSecretRef *v1.SecretKeySelector `json:"passphraseSecretRef,omitempty" tf:"-"`
 
-	// 11+). Used at apply time but never written to state, so it can be sourced from an ephemeral resource (e.g. a Vault secret). Mutually exclusive with `passphrase`.
+	// Write-only equivalent of `passphrase`. Write-only attributes need engine version 1.11 or later. This provider cannot set them: the engine it bundles predates that version and rejects any value, so setting this field fails validation. Set `passphraseSecretRef` instead.
 	PassphraseWoSecretRef *v1.SecretKeySelector `json:"passphraseWoSecretRef,omitempty" tf:"-"`
 
 	// Enable Protected Management Frames. This cannot be disabled if using WPA 3.
@@ -604,11 +604,11 @@ type WlanParameters struct {
 	// +kubebuilder:validation:Optional
 	No2GhzOui *bool `json:"no2ghzOui,omitempty" tf:"no2ghz_oui,omitempty"`
 
-	// The passphrase for the network, only required if `security` is not `open`. Stored in state — use `passphrase_wo` to avoid persisting the secret.
+	// The passphrase for the network, only required if `security` is not `open`. Stored in state.
 	// +kubebuilder:validation:Optional
 	PassphraseSecretRef *v1.SecretKeySelector `json:"passphraseSecretRef,omitempty" tf:"-"`
 
-	// 11+). Used at apply time but never written to state, so it can be sourced from an ephemeral resource (e.g. a Vault secret). Mutually exclusive with `passphrase`.
+	// Write-only equivalent of `passphrase`. Write-only attributes need engine version 1.11 or later. This provider cannot set them: the engine it bundles predates that version and rejects any value, so setting this field fails validation. Set `passphraseSecretRef` instead.
 	// +kubebuilder:validation:Optional
 	PassphraseWoSecretRef *v1.SecretKeySelector `json:"passphraseWoSecretRef,omitempty" tf:"-"`
 
