@@ -39,6 +39,10 @@ jobs:
     runs-on: ubuntu-24.04
     needs: detect-noop
     if: needs.detect-noop.outputs.noop != 'true'
+    # Reads the pull request's labels for the 'breaking change' acceptance.
+    permissions:
+      contents: read
+      pull-requests: read
     steps:
       - name: Checkout
         uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6.0.2
@@ -68,14 +72,25 @@ jobs:
           cache: false
 
       # Fails the job on a breaking CRD OpenAPI v3 schema change, including a
-      # removed CRD, and when the check cannot run.
+      # removed CRD, and when the check cannot run. A pull request that intends
+      # the reported changes carries the "breaking change" label; the label is
+      # read when the step runs, so re-running the job after adding it applies
+      # it. The label never accepts a check that could not run.
       - name: Check CRD OpenAPI v3 schemas for breaking changes
         if: github.event_name == 'pull_request' && steps.modified-crds.outputs.any_modified == 'true'
         env:
           MODIFIED_CRD_LIST: ${{ steps.modified-crds.outputs.all_modified_files }}
           CRDDIFF_BASE: ${{ github.event.pull_request.base.sha }}
+          GH_TOKEN: ${{ github.token }}
+          PR_NUMBER: ${{ github.event.pull_request.number }}
         run: |
-          make crddiff
+          labels="$(gh pr view "${PR_NUMBER}" --repo "${GITHUB_REPOSITORY}" --json labels --jq '.labels[].name')"
+          accept=false
+          if grep -qxF 'breaking change' <<<"${labels}"; then
+            accept=true
+            echo "::notice::The 'breaking change' label is set; reported breaking CRD changes are accepted."
+          fi
+          CRDDIFF_ACCEPT_BREAKING="${accept}" make crddiff
       - name: Report native schema version changes
         run: |
           make schema-version-diff
