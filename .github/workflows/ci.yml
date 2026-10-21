@@ -410,7 +410,7 @@ jobs:
       ]
     if: ${{ always() }}
     steps:
-      - uses: devantler-tech/actions/aggregate-job-checks@9d98cb8be059537ec1e82f71c90d75ecba321713 # v6.1.0
+      - uses: devantler-tech/.github/actions/aggregate-job-checks@0c7b6c3509b73adbc7537e030935bb01987e625b # v7.23.0
         with:
           job-results: >-
             ${{ needs.detect-noop.result }}
