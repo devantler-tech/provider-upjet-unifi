@@ -2443,11 +2443,7 @@ func (in *WireguardInitParameters) DeepCopyInto(out *WireguardInitParameters) {
 		*out = new(v1.LocalSecretKeySelector)
 		**out = **in
 	}
-	if in.PrivateKeySecretRef != nil {
-		in, out := &in.PrivateKeySecretRef, &out.PrivateKeySecretRef
-		*out = new(v1.LocalSecretKeySelector)
-		**out = **in
-	}
+	in.PrivateKeySecretRef.DeepCopyInto(&out.PrivateKeySecretRef)
 	if in.PrivateKeyWoSecretRef != nil {
 		in, out := &in.PrivateKeyWoSecretRef, &out.PrivateKeyWoSecretRef
 		*out = new(v1.LocalSecretKeySelector)
@@ -2560,11 +2556,7 @@ func (in *WireguardParameters) DeepCopyInto(out *WireguardParameters) {
 		*out = new(v1.LocalSecretKeySelector)
 		**out = **in
 	}
-	if in.PrivateKeySecretRef != nil {
-		in, out := &in.PrivateKeySecretRef, &out.PrivateKeySecretRef
-		*out = new(v1.LocalSecretKeySelector)
-		**out = **in
-	}
+	in.PrivateKeySecretRef.DeepCopyInto(&out.PrivateKeySecretRef)
 	if in.PrivateKeyWoSecretRef != nil {
 		in, out := &in.PrivateKeyWoSecretRef, &out.PrivateKeyWoSecretRef
 		*out = new(v1.LocalSecretKeySelector)

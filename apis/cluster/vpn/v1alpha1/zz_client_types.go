@@ -227,12 +227,12 @@ type WireguardInitParameters struct {
 	PresharedKeySecretRef *v1.SecretKeySelector `json:"presharedKeySecretRef,omitempty" tf:"-"`
 
 	// WireGuard private key for this client.
-	PrivateKeySecretRef *v1.SecretKeySelector `json:"privateKeySecretRef,omitempty" tf:"-"`
+	PrivateKeySecretRef v1.SecretKeySelector `json:"privateKeySecretRef" tf:"-"`
 
 	// Write-only equivalent of `private_key`. Write-only attributes need engine version 1.11 or later. This provider cannot set them: the engine it bundles predates that version and rejects any value, so setting this field fails validation. Set `privateKeySecretRef` instead.
 	PrivateKeyWoSecretRef *v1.SecretKeySelector `json:"privateKeyWoSecretRef,omitempty" tf:"-"`
 
-	// Version counter for `private_key_wo`. Increment this value to trigger a private key update.
+	// Version counter for `private_key_wo`, which this provider cannot set, so changing this field has no effect. Set `privateKeySecretRef` instead.
 	PrivateKeyWoVersion *float64 `json:"privateKeyWoVersion,omitempty" tf:"private_key_wo_version,omitempty"`
 }
 
@@ -250,7 +250,7 @@ type WireguardObservation struct {
 	// Specifies whether to use a preshared key for additional security.
 	PresharedKeyEnabled *bool `json:"presharedKeyEnabled,omitempty" tf:"preshared_key_enabled,omitempty"`
 
-	// Version counter for `private_key_wo`. Increment this value to trigger a private key update.
+	// Version counter for `private_key_wo`, which this provider cannot set, so changing this field has no effect. Set `privateKeySecretRef` instead.
 	PrivateKeyWoVersion *float64 `json:"privateKeyWoVersion,omitempty" tf:"private_key_wo_version,omitempty"`
 }
 
@@ -280,13 +280,13 @@ type WireguardParameters struct {
 
 	// WireGuard private key for this client.
 	// +kubebuilder:validation:Optional
-	PrivateKeySecretRef *v1.SecretKeySelector `json:"privateKeySecretRef,omitempty" tf:"-"`
+	PrivateKeySecretRef v1.SecretKeySelector `json:"privateKeySecretRef" tf:"-"`
 
 	// Write-only equivalent of `private_key`. Write-only attributes need engine version 1.11 or later. This provider cannot set them: the engine it bundles predates that version and rejects any value, so setting this field fails validation. Set `privateKeySecretRef` instead.
 	// +kubebuilder:validation:Optional
 	PrivateKeyWoSecretRef *v1.SecretKeySelector `json:"privateKeyWoSecretRef,omitempty" tf:"-"`
 
-	// Version counter for `private_key_wo`. Increment this value to trigger a private key update.
+	// Version counter for `private_key_wo`, which this provider cannot set, so changing this field has no effect. Set `privateKeySecretRef` instead.
 	// +kubebuilder:validation:Optional
 	PrivateKeyWoVersion *float64 `json:"privateKeyWoVersion,omitempty" tf:"private_key_wo_version,omitempty"`
 }

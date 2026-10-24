@@ -68,7 +68,9 @@ small change can rely on CI for the heavy steps.
 
 Example manifests are checked against the generated resource types by
 [`hack/validate-examples.sh`](hack/validate-examples.sh). It needs `kubectl` and a **disposable**
-cluster, never one you care about, and no UniFi controller.
+cluster, never one you care about, and no UniFi controller. It also applies each manifest in
+`hack/testdata/refused/`, which must be refused for the reason its first line names, so a field the
+provider needs is enforced when the manifest is applied.
 
 ## Keep development and operations separate
 

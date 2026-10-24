@@ -14,6 +14,10 @@ import (
 // write-only attribute: <name>_wo is the write-only form of <name>.
 const writeOnlySuffix = "_wo"
 
+// writeOnlyVersionSuffix names the version counter upstream pairs with some
+// write-only attributes: <name>_wo_version tells it when <name>_wo changed.
+const writeOnlyVersionSuffix = writeOnlySuffix + "_version"
+
 // secretRefSuffix is what upjet appends to the API field of a sensitive
 // attribute, which it reads from a Kubernetes Secret instead of the manifest.
 const secretRefSuffix = "SecretRef"
@@ -34,6 +38,9 @@ const writeOnlyMinimumEngine = "1.11"
 // set instead, in words that survive upjet's filter. Upstream also tells users
 // of <name> to use <name>_wo instead; that advice leads to the same validation
 // failure, so it is removed from the description of <name>.
+//
+// A <name>_wo_version counter only tells the engine that <name>_wo changed, so
+// its description says it has no effect here and names the same API field.
 func WriteOnlyDescriptions() config.ResourceOption {
 	return func(r *config.Resource) {
 		if r.TerraformResource != nil {
@@ -46,6 +53,10 @@ func describeWriteOnly(attributes map[string]*schema.Schema) {
 	for attributeName, attribute := range attributes {
 		if nested, ok := attribute.Elem.(*schema.Resource); ok {
 			describeWriteOnly(nested.Schema)
+		}
+		if base, ok := writeOnlyVersionBase(attributeName, attributes); ok {
+			attribute.Description = writeOnlyVersionDescription(base, apiFieldName(base, attributes[base]))
+			continue
 		}
 		base, ok := writeOnlyBase(attributeName, attributes)
 		if !ok {
@@ -61,6 +72,23 @@ func describeWriteOnly(attributes map[string]*schema.Schema) {
 func writeOnlyBase(attributeName string, siblings map[string]*schema.Schema) (string, bool) {
 	base, ok := strings.CutSuffix(attributeName, writeOnlySuffix)
 	if !ok || base == "" {
+		return "", false
+	}
+	if _, ok := siblings[base]; !ok {
+		return "", false
+	}
+	return base, true
+}
+
+// writeOnlyVersionBase returns the attribute whose write-only form a version
+// counter belongs to, when name follows the <name>_wo_version convention and
+// both its <name>_wo and <name> siblings exist.
+func writeOnlyVersionBase(attributeName string, siblings map[string]*schema.Schema) (string, bool) {
+	base, ok := strings.CutSuffix(attributeName, writeOnlyVersionSuffix)
+	if !ok || base == "" {
+		return "", false
+	}
+	if _, ok := siblings[base+writeOnlySuffix]; !ok {
 		return "", false
 	}
 	if _, ok := siblings[base]; !ok {
@@ -88,6 +116,15 @@ func writeOnlyDescription(base, field string) string {
 		"Set `" + field + "` instead."
 }
 
+// writeOnlyVersionDescription replaces upstream's "Increment this value to
+// trigger an update": the counter only tells the engine that the write-only
+// value changed, and this provider cannot set that value.
+func writeOnlyVersionDescription(base, field string) string {
+	return "Version counter for `" + base + writeOnlySuffix + "`, which this provider cannot set, " +
+		"so changing this field has no effect. " +
+		"Set `" + field + "` instead."
+}
+
 // withoutSentencesNaming drops every sentence of description that names
 // attributeName in backticks. A clause before an em dash that does not name
 // the attribute, such as a state-persistence warning, is kept as its own
@@ -108,4 +145,48 @@ func withoutSentencesNaming(description, attributeName string) string {
 		}
 	}
 	return strings.TrimSpace(strings.Join(kept, ""))
+}
+
+// requiredWithoutWriteOnly lists, per resource, the attributes upstream made
+// optional only because their <name>_wo form can stand in for them. This
+// provider cannot set the write-only form, so each stays required here, as it
+// was before upstream added that form; otherwise a manifest without it passes
+// the API server and fails only when the provider reconciles it. Nested paths
+// join block and attribute names with ".".
+var requiredWithoutWriteOnly = map[string][]string{
+	"unifi_vpn_client": {"wireguard.private_key"},
+}
+
+// RequireAttributesWithoutWriteOnly marks every attribute in
+// requiredWithoutWriteOnly as required again.
+func RequireAttributesWithoutWriteOnly() config.ResourceOption {
+	return func(r *config.Resource) {
+		if r.TerraformResource == nil {
+			return
+		}
+		for _, path := range requiredWithoutWriteOnly[r.Name] {
+			if attribute := attributeAt(r.TerraformResource.Schema, path); attribute != nil {
+				attribute.Optional = false
+				attribute.Required = true
+			}
+		}
+	}
+}
+
+// attributeAt returns the attribute at a "."-joined path, descending into
+// nested blocks, or nil when the path does not exist.
+func attributeAt(attributes map[string]*schema.Schema, path string) *schema.Schema {
+	head, rest, nested := strings.Cut(path, ".")
+	attribute, ok := attributes[head]
+	if !ok {
+		return nil
+	}
+	if !nested {
+		return attribute
+	}
+	block, ok := attribute.Elem.(*schema.Resource)
+	if !ok {
+		return nil
+	}
+	return attributeAt(block.Schema, rest)
 }

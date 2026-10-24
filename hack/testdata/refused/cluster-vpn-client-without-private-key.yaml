@@ -1,0 +1,25 @@
+# refused-because: privateKeySecretRef
+# The cluster-scoped VPN client example without its private key. The API server
+# must refuse it: this provider cannot set the write-only key that upstream
+# accepts in its place, so a client without the key could never reconcile.
+apiVersion: vpn.unifi.crossplane.io/v1alpha1
+kind: Client
+metadata:
+  name: example-wireguard-client
+spec:
+  forProvider:
+    name: example-wireguard-client
+    enabled: true
+    subnet: 10.0.0.2/24
+    wireguard:
+      dnsServers:
+        - 10.0.0.1
+      peer:
+        ip: 203.0.113.10
+        port: 51820
+        publicKeySecretRef:
+          name: example-wireguard-client-keys
+          namespace: crossplane-system
+          key: peer-public-key
+  providerConfigRef:
+    name: default

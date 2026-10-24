@@ -245,8 +245,9 @@ spec:
                         - namespace
                         type: object
                       privateKeyWoVersion:
-                        description: Version counter for `private_key_wo`. Increment
-                          this value to trigger a private key update.
+                        description: Version counter for `private_key_wo`, which this
+                          provider cannot set, so changing this field has no effect.
+                          Set `privateKeySecretRef` instead.
                         type: number
                     type: object
                 type: object
@@ -440,9 +441,12 @@ spec:
                         - namespace
                         type: object
                       privateKeyWoVersion:
-                        description: Version counter for `private_key_wo`. Increment
-                          this value to trigger a private key update.
+                        description: Version counter for `private_key_wo`, which this
+                          provider cannot set, so changing this field has no effect.
+                          Set `privateKeySecretRef` instead.
                         type: number
+                    required:
+                    - privateKeySecretRef
                     type: object
                 type: object
               managementPolicies:
@@ -633,8 +637,9 @@ spec:
                           additional security.
                         type: boolean
                       privateKeyWoVersion:
-                        description: Version counter for `private_key_wo`. Increment
-                          this value to trigger a private key update.
+                        description: Version counter for `private_key_wo`, which this
+                          provider cannot set, so changing this field has no effect.
+                          Set `privateKeySecretRef` instead.
                         type: number
                     type: object
                 type: object

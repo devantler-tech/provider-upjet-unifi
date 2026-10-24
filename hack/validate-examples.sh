@@ -7,6 +7,9 @@
 # gate catches that offline — it needs a throwaway API server, but no UniFi
 # controller and no credentials, so it can run on an ordinary pull request.
 #
+# It also applies each manifest under hack/testdata/refused, which the API server
+# must refuse for the reason the manifest names.
+#
 # Usage: hack/validate-examples.sh
 # Requires: kubectl, and a KUBECONFIG pointing at a disposable cluster.
 
@@ -101,13 +104,49 @@ done
 # as a failure, never as success.
 ((validated > 0)) || fail "no manifests were validated (${skipped} skipped) — the gate did no work"
 
+# Manifests the API server must refuse, so a field the provider needs is
+# enforced where an adopter applies the manifest, not only when the provider
+# reconciles it. Each starts with a `# refused-because: <text>` line, and the
+# refusal must contain that text: a fixture that is accepted, or refused for
+# another reason, fails the run.
+refusals=()
+while IFS= read -r file; do
+	refusals+=("${file}")
+done < <(cd "${REPO_ROOT}" && find hack/testdata/refused -type f -name '*.yaml' | sort)
+
+((${#refusals[@]} > 0)) || fail "no refusal fixtures found under hack/testdata/refused — enumeration failed"
+
+log "==> Checking ${#refusals[@]} manifests the API server must refuse"
+
+refused=0
+for manifest in "${refusals[@]}"; do
+	expected="$(sed -n 's/^# refused-because: //p' "${REPO_ROOT}/${manifest}" | head -n 1)"
+	if [[ -z "${expected}" ]]; then
+		log "  FAIL ${manifest} (no '# refused-because:' line names the expected refusal)"
+		failures+=("${manifest}")
+		continue
+	fi
+
+	if output="$(kubectl apply --dry-run=server --validate=strict -f "${REPO_ROOT}/${manifest}" 2>&1)"; then
+		log "  FAIL ${manifest} (accepted, but must be refused for ${expected})"
+		failures+=("${manifest}")
+	elif grep -qF -- "${expected}" <<<"${output}"; then
+		log "  REFUSED ${manifest} (${expected})"
+		refused=$((refused + 1))
+	else
+		log "  FAIL ${manifest} (refused, but not for ${expected})"
+		printf '%s\n' "${output}" | sed 's/^/         /'
+		failures+=("${manifest}")
+	fi
+done
+
 log ""
-log "==> ${validated} validated, ${skipped} skipped, ${#failures[@]} failed"
+log "==> ${validated} validated, ${skipped} skipped, ${refused} refused as expected, ${#failures[@]} failed"
 
 if ((${#failures[@]} > 0)); then
-	printf 'ERROR: %d example manifest(s) rejected by the API server:\n' "${#failures[@]}" >&2
+	printf 'ERROR: %d manifest(s) did not get the API server response they need:\n' "${#failures[@]}" >&2
 	printf '  - %s\n' "${failures[@]}" >&2
 	exit 1
 fi
 
-log "All example manifests are accepted by the API server."
+log "All example manifests are accepted, and every refusal fixture is refused, by the API server."
