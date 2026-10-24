@@ -14,14 +14,15 @@ testdata="${script_dir}/testdata"
 
 failures=0
 
-# assert_output <name> <expected-exit> <expected-stdout> <base-schema> [bumped-schema]
+# assert_output <name> <expected-exit> <expected-stdout> <base-schema> [bumped-schema] [resource-list]
 assert_output() {
 	local name="$1" want_exit="$2" want_out="$3" base="$4"
 	local bumped="${5:-${testdata}/schema.bumped.json}"
+	local resources="${6:-${testdata}/generated.lst}"
 	local got_out got_exit=0
 
 	got_out="$("${version_diff}" \
-		"${testdata}/generated.lst" \
+		"${resources}" \
 		"${base}" \
 		"${bumped}" 2>&1)" || got_exit=$?
 
@@ -70,6 +71,23 @@ assert_output "fails when the bumped schema lacks the base's provider" 255 \
 Cannot find resource_schemas for provider \"registry.terraform.io/ubiquiti-community/unifi\" in schema: ${testdata}/schema.no-provider.json" \
 	"${testdata}/schema.base.json" \
 	"${testdata}/schema.no-provider.json"
+
+# Resources present in both schemas at the same version: the report says so in one
+# line instead of printing nothing, which could not be told apart from a skipped run.
+assert_output "says when no generated resource changed version" 0 \
+	"Reporting schema changes between \"${testdata}/schema.bumped.json\" as base version and \"${testdata}/schema.bumped.json\" as bumped version
+No native state schema version changes in the 2 generated resources" \
+	"${testdata}/schema.bumped.json" \
+	"${testdata}/schema.bumped.json" \
+	"${testdata}/generated.unchanged.lst"
+
+# An empty resource list compares nothing, so it must fail rather than report no changes.
+assert_output "fails when the generated resource list is empty" 255 \
+	"Reporting schema changes between \"${testdata}/schema.base.json\" as base version and \"${testdata}/schema.bumped.json\" as bumped version
+The generated resource list is empty or not a JSON array of names: ${testdata}/generated.empty.lst" \
+	"${testdata}/schema.base.json" \
+	"${testdata}/schema.bumped.json" \
+	"${testdata}/generated.empty.lst"
 
 if [[ "${failures}" -ne 0 ]]; then
 	echo "${failures} test(s) failed"

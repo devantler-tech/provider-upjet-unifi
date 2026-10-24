@@ -48,8 +48,8 @@ Know which files you may edit:
   named), `internal/clients/unifi.go` (how credentials reach the provider), `examples/**`,
   `hack/**`, `scripts/**` and the documentation.
 - **Generated, never edited by hand:** `apis/**`, `internal/controller/**`, `package/crds/**`,
-  `config/schema.json` and `config/provider-metadata.yaml`. Change the hand-written inputs and
-  regenerate instead.
+  `config/schema.json`, `config/provider-metadata.yaml` and `config/generated.lst`. Change the
+  hand-written inputs and regenerate instead.
 
 The everyday targets are:
 
