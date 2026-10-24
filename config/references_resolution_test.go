@@ -21,7 +21,12 @@ import (
 	wlanv1alpha1 "github.com/devantler-tech/provider-upjet-unifi/apis/cluster/wlan/v1alpha1"
 	"github.com/devantler-tech/provider-upjet-unifi/apis/namespaced"
 	accountv1alpha1m "github.com/devantler-tech/provider-upjet-unifi/apis/namespaced/account/v1alpha1"
+	devicev1alpha1m "github.com/devantler-tech/provider-upjet-unifi/apis/namespaced/device/v1alpha1"
+	firewallv1alpha1m "github.com/devantler-tech/provider-upjet-unifi/apis/namespaced/firewall/v1alpha1"
 	networkv1alpha1m "github.com/devantler-tech/provider-upjet-unifi/apis/namespaced/network/v1alpha1"
+	portv1alpha1m "github.com/devantler-tech/provider-upjet-unifi/apis/namespaced/port/v1alpha1"
+	settingv1alpha1m "github.com/devantler-tech/provider-upjet-unifi/apis/namespaced/setting/v1alpha1"
+	wlanv1alpha1m "github.com/devantler-tech/provider-upjet-unifi/apis/namespaced/wlan/v1alpha1"
 )
 
 // The generated resolvers fill a raw id field from the external name of the
@@ -169,16 +174,92 @@ func TestWlanPrivateKeyNetworkReferenceResolves(t *testing.T) {
 	wantID(t, "wlan privatePresharedKeys[0].networkId", mg.Spec.ForProvider.PrivatePresharedKeys[0].NetworkID, "iot")
 }
 
-// A namespaced resource resolves a Network in its own namespace.
-func TestNamespacedAccountNetworkReferenceResolves(t *testing.T) {
-	n := &networkv1alpha1m.Network{}
-	n.SetName("lan")
-	n.SetNamespace("home")
-	meta.SetExternalName(n, networkIDs["lan"])
+// The namespaced API scope has its own generated resolvers, so each relationship is resolved
+// there too, against Networks in the resource's own namespace.
+const homeNamespace = "home"
 
+func namespacedNetworks() []client.Object {
+	objects := make([]client.Object, 0, len(networkIDs))
+	for name, id := range networkIDs {
+		n := &networkv1alpha1m.Network{}
+		n.SetName(name)
+		n.SetNamespace(homeNamespace)
+		meta.SetExternalName(n, id)
+		objects = append(objects, n)
+	}
+	return objects
+}
+
+func namespacedRef(name string) *xpv1.NamespacedReference {
+	return &xpv1.NamespacedReference{Name: name}
+}
+
+func namespacedRefs(names ...string) []xpv1.NamespacedReference {
+	out := make([]xpv1.NamespacedReference, 0, len(names))
+	for _, name := range names {
+		out = append(out, xpv1.NamespacedReference{Name: name})
+	}
+	return out
+}
+
+func TestNamespacedAccountNetworkReferenceResolves(t *testing.T) {
 	mg := &accountv1alpha1m.Account{}
-	mg.SetNamespace("home")
-	mg.Spec.ForProvider.NetworkIDRef = &xpv1.NamespacedReference{Name: "lan"}
-	resolve(t, namespaced.AddToScheme, []client.Object{n}, mg)
+	mg.SetNamespace(homeNamespace)
+	mg.Spec.ForProvider.NetworkIDRef = namespacedRef("lan")
+	resolve(t, namespaced.AddToScheme, namespacedNetworks(), mg)
 	wantID(t, "namespaced account networkId", mg.Spec.ForProvider.NetworkID, "lan")
+}
+
+func TestNamespacedClientAndDeviceNetworkReferencesResolve(t *testing.T) {
+	c := &devicev1alpha1m.Client{}
+	c.SetNamespace(homeNamespace)
+	c.Spec.ForProvider.NetworkIDRef = namespacedRef("iot")
+	resolve(t, namespaced.AddToScheme, namespacedNetworks(), c)
+	wantID(t, "namespaced client networkId", c.Spec.ForProvider.NetworkID, "iot")
+
+	d := &devicev1alpha1m.Device{}
+	d.SetNamespace(homeNamespace)
+	d.Spec.ForProvider.MgmtNetworkIDRef = namespacedRef("lan")
+	resolve(t, namespaced.AddToScheme, namespacedNetworks(), d)
+	wantID(t, "namespaced device mgmtNetworkId", d.Spec.ForProvider.MgmtNetworkID, "lan")
+}
+
+func TestNamespacedZoneAndPortProfileNetworkReferencesResolve(t *testing.T) {
+	z := &firewallv1alpha1m.Zone{}
+	z.SetNamespace(homeNamespace)
+	z.Spec.ForProvider.NetworkIdsRefs = namespacedRefs("lan", "iot")
+	resolve(t, namespaced.AddToScheme, namespacedNetworks(), z)
+	wantIDs(t, "namespaced zone networkIds", z.Spec.ForProvider.NetworkIds, "lan", "iot")
+
+	pr := &portv1alpha1m.Profile{}
+	pr.SetNamespace(homeNamespace)
+	p := &pr.Spec.ForProvider
+	p.NativeNetworkconfIDRef = namespacedRef("lan")
+	p.VoiceNetworkconfIDRef = namespacedRef("iot")
+	p.TaggedNetworkconfIdsRefs = namespacedRefs("iot", "guest")
+	p.ExcludedNetworkconfIdsRefs = namespacedRefs("guest")
+	p.MulticastRouterNetworkconfIdsRefs = namespacedRefs("lan")
+	resolve(t, namespaced.AddToScheme, namespacedNetworks(), pr)
+	wantID(t, "namespaced port profile nativeNetworkconfId", p.NativeNetworkconfID, "lan")
+	wantID(t, "namespaced port profile voiceNetworkconfId", p.VoiceNetworkconfID, "iot")
+	wantIDs(t, "namespaced port profile taggedNetworkconfIds", p.TaggedNetworkconfIds, "iot", "guest")
+	wantIDs(t, "namespaced port profile excludedNetworkconfIds", p.ExcludedNetworkconfIds, "guest")
+	wantIDs(t, "namespaced port profile multicastRouterNetworkconfIds", p.MulticastRouterNetworkconfIds, "lan")
+}
+
+func TestNamespacedSettingAndWlanNetworkReferencesResolve(t *testing.T) {
+	s := &settingv1alpha1m.Setting{}
+	s.SetNamespace(homeNamespace)
+	p := &s.Spec.ForProvider
+	p.IgmpSnooping = &settingv1alpha1m.IgmpSnoopingParameters{NetworkIdsRefs: namespacedRefs("lan", "iot")}
+	p.Ips = &settingv1alpha1m.IpsParameters{Honeypot: []settingv1alpha1m.HoneypotParameters{{NetworkIDRef: namespacedRef("guest")}}}
+	resolve(t, namespaced.AddToScheme, namespacedNetworks(), s)
+	wantIDs(t, "namespaced setting igmpSnooping.networkIds", p.IgmpSnooping.NetworkIds, "lan", "iot")
+	wantID(t, "namespaced setting ips.honeypot[0].networkId", p.Ips.Honeypot[0].NetworkID, "guest")
+
+	w := &wlanv1alpha1m.Wlan{}
+	w.SetNamespace(homeNamespace)
+	w.Spec.ForProvider.PrivatePresharedKeys = []wlanv1alpha1m.PrivatePresharedKeysParameters{{NetworkIDRef: namespacedRef("iot")}}
+	resolve(t, namespaced.AddToScheme, namespacedNetworks(), w)
+	wantID(t, "namespaced wlan privatePresharedKeys[0].networkId", w.Spec.ForProvider.PrivatePresharedKeys[0].NetworkID, "iot")
 }
