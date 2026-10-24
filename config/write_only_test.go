@@ -184,3 +184,74 @@ func TestWithoutSentencesNaming(t *testing.T) {
 		}
 	}
 }
+
+// Upstream tells users to increment a write-only attribute's version counter
+// to push a new value. This provider cannot set that value, so the counter's
+// description says it has no effect and names the field to set instead.
+func TestWriteOnlyVersionCountersSayTheyHaveNoEffect(t *testing.T) {
+	found := 0
+	walkAttributes(t, func(path, name string, attribute *schema.Schema, siblings map[string]*schema.Schema) {
+		base, ok := writeOnlyVersionBase(name, siblings)
+		if !ok {
+			return
+		}
+		found++
+		if !strings.Contains(attribute.Description, "has no effect") {
+			t.Errorf("%s.%s: description does not say the counter has no effect: %q", path, name, attribute.Description)
+		}
+		field := apiFieldName(base, siblings[base])
+		if !strings.HasSuffix(attribute.Description, "Set `"+field+"` instead.") {
+			t.Errorf("%s.%s: description does not name %q as the field to set: %q", path, name, field, attribute.Description)
+		}
+	})
+	if found == 0 {
+		t.Fatal("found no write-only version counters; the <name>_wo_version convention or the schema changed, so this test checks nothing")
+	}
+}
+
+// No description may send a user to a write-only attribute or its counter,
+// except the rewritten descriptions of those attributes themselves.
+func TestNoDescriptionInvitesSettingAWriteOnlyAttribute(t *testing.T) {
+	walkAttributes(t, func(path, name string, attribute *schema.Schema, siblings map[string]*schema.Schema) {
+		if _, ok := writeOnlyBase(name, siblings); ok {
+			return
+		}
+		if _, ok := writeOnlyVersionBase(name, siblings); ok {
+			return
+		}
+		if strings.Contains(attribute.Description, writeOnlySuffix+"`") || strings.Contains(attribute.Description, writeOnlyVersionSuffix+"`") {
+			t.Errorf("%s.%s: description points users at a write-only attribute, which this provider cannot set: %q", path, name, attribute.Description)
+		}
+		if strings.Contains(attribute.Description, "Increment this value") {
+			t.Errorf("%s.%s: description asks users to increment a counter that has no effect here: %q", path, name, attribute.Description)
+		}
+	})
+}
+
+func TestWriteOnlyVersionBase(t *testing.T) {
+	siblings := map[string]*schema.Schema{
+		"private_key":            {},
+		"private_key_wo":         {},
+		"private_key_wo_version": {},
+		"orphan_wo_version":      {},
+		"lonely_wo":              {},
+		"lonely_wo_version":      {},
+		"_wo_version":            {},
+	}
+	cases := map[string]struct {
+		base string
+		ok   bool
+	}{
+		"private_key_wo_version": {base: "private_key", ok: true},
+		"private_key_wo":         {},
+		"orphan_wo_version":      {},
+		"lonely_wo_version":      {},
+		"_wo_version":            {},
+	}
+	for name, want := range cases {
+		base, ok := writeOnlyVersionBase(name, siblings)
+		if base != want.base || ok != want.ok {
+			t.Errorf("writeOnlyVersionBase(%q) = (%q, %v), want (%q, %v)", name, base, ok, want.base, want.ok)
+		}
+	}
+}

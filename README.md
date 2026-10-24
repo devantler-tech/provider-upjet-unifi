@@ -63,6 +63,7 @@ can create as many resources of either flavour as you need.
 | `radius.Profile` | [profile](examples/cluster/radius/profile.yaml)  | [profile](examples/namespaced/radius/profile.yaml)  |
 | `radius.User`    | [user](examples/cluster/radius/user.yaml)        | [user](examples/namespaced/radius/user.yaml)        |
 | `vpn.Server`     | [server](examples/cluster/vpn/server.yaml)       | [server](examples/namespaced/vpn/server.yaml)       |
+| `vpn.Client`     | [client](examples/cluster/vpn/client.yaml)       | [client](examples/namespaced/vpn/client.yaml)       |
 
 The RADIUS and VPN examples are meant to be applied together: the VPN server points at the RADIUS
 profile through `radiusprofileIdRef`, and the RADIUS user at its network through `networkIdRef`, so
