@@ -39,12 +39,19 @@ for schema_path in "${base_path}" "${bumped_path}"; do
 	fi
 done
 
+# An empty or malformed resource list would compare nothing and still exit 0, which
+# reads as "no version changes" on a bump PR.
+if ! jq -e 'type == "array" and length > 0 and all(.[]; type == "string")' "${resources_path}" >/dev/null; then
+	echo "The generated resource list is empty or not a JSON array of names: ${resources_path}"
+	exit 255
+fi
+
 # One jq pass over the generated resource list. ' is a literal single quote —
 # written as an escape so it cannot terminate this single-quoted jq program. Python
 # printed a caught KeyError, which renders as 'the-missing-key', and the Makefile
 # output is expected to read the same. Each branch mirrors one lookup the Python did,
 # in the same order, so the same missing key is named.
-jq -r \
+report="$(jq -r \
 	--slurpfile base "${base_path}" \
 	--slurpfile bumped "${bumped_path}" \
 	--arg provider "${provider_name}" \
@@ -66,4 +73,10 @@ jq -r \
       else
         empty
       end
-  ' "${resources_path}"
+  ' "${resources_path}")"
+
+if [[ -z "${report}" ]]; then
+	echo "No native state schema version changes in the $(jq length "${resources_path}") generated resources"
+else
+	printf '%s\n' "${report}"
+fi

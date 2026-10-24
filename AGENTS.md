@@ -31,6 +31,7 @@ a pure Kubernetes API.
 | `apis/{cluster,namespaced}/**` | **generated** API types                                                                     |
 | `internal/controller/**`       | **generated** controllers                                                                   |
 | `package/crds/**`              | **generated** CRDs                                                                          |
+| `config/generated.lst`         | **generated** list of the Terraform resources `make generate` emitted                       |
 | `examples/**`                  | example `ProviderConfig` + managed-resource manifests                                       |
 | `Makefile`                     | `TERRAFORM_*`/`TERRAFORM_PROVIDER_*` pins (source/version + per-arch SHA256) + Upjet wiring |
 
@@ -57,7 +58,7 @@ publishes on release.
 
 ## Generated artifacts — never hand-edit
 
-`apis/**`, `internal/controller/**`, and `package/crds/**` are produced by `make generate`. Change behaviour
+`apis/**`, `internal/controller/**`, `package/crds/**` and `config/generated.lst` are produced by `make generate`. Change behaviour
 by editing `config/**` (external-name configs, groups, Kind overrides) or `internal/clients/unifi.go`, then
 **re-run the generator** — never edit the generated files directly.
 
