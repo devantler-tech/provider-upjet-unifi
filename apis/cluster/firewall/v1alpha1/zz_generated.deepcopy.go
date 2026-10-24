@@ -2792,6 +2792,18 @@ func (in *ZoneInitParameters) DeepCopyInto(out *ZoneInitParameters) {
 			}
 		}
 	}
+	if in.NetworkIdsRefs != nil {
+		in, out := &in.NetworkIdsRefs, &out.NetworkIdsRefs
+		*out = make([]v1.Reference, len(*in))
+		for i := range *in {
+			(*in)[i].DeepCopyInto(&(*out)[i])
+		}
+	}
+	if in.NetworkIdsSelector != nil {
+		in, out := &in.NetworkIdsSelector, &out.NetworkIdsSelector
+		*out = new(v1.Selector)
+		(*in).DeepCopyInto(*out)
+	}
 	if in.Site != nil {
 		in, out := &in.Site, &out.Site
 		*out = new(string)
@@ -2920,6 +2932,18 @@ func (in *ZoneParameters) DeepCopyInto(out *ZoneParameters) {
 				**out = **in
 			}
 		}
+	}
+	if in.NetworkIdsRefs != nil {
+		in, out := &in.NetworkIdsRefs, &out.NetworkIdsRefs
+		*out = make([]v1.Reference, len(*in))
+		for i := range *in {
+			(*in)[i].DeepCopyInto(&(*out)[i])
+		}
+	}
+	if in.NetworkIdsSelector != nil {
+		in, out := &in.NetworkIdsSelector, &out.NetworkIdsSelector
+		*out = new(v1.Selector)
+		(*in).DeepCopyInto(*out)
 	}
 	if in.Site != nil {
 		in, out := &in.Site, &out.Site

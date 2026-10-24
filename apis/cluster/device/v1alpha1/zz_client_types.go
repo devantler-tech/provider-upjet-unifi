@@ -43,7 +43,16 @@ type ClientInitParameters struct {
 	Name *string `json:"name,omitempty" tf:"name,omitempty"`
 
 	// The network ID for this client.
+	// +crossplane:generate:reference:type=github.com/devantler-tech/provider-upjet-unifi/apis/cluster/network/v1alpha1.Network
 	NetworkID *string `json:"networkId,omitempty" tf:"network_id,omitempty"`
+
+	// Reference to a Network in network to populate networkId.
+	// +kubebuilder:validation:Optional
+	NetworkIDRef *v1.Reference `json:"networkIdRef,omitempty" tf:"-"`
+
+	// Selector for a Network in network to populate networkId.
+	// +kubebuilder:validation:Optional
+	NetworkIDSelector *v1.Selector `json:"networkIdSelector,omitempty" tf:"-"`
 
 	// A note with additional information for the client.
 	Note *string `json:"note,omitempty" tf:"note,omitempty"`
@@ -152,8 +161,17 @@ type ClientParameters struct {
 	Name *string `json:"name,omitempty" tf:"name,omitempty"`
 
 	// The network ID for this client.
+	// +crossplane:generate:reference:type=github.com/devantler-tech/provider-upjet-unifi/apis/cluster/network/v1alpha1.Network
 	// +kubebuilder:validation:Optional
 	NetworkID *string `json:"networkId,omitempty" tf:"network_id,omitempty"`
+
+	// Reference to a Network in network to populate networkId.
+	// +kubebuilder:validation:Optional
+	NetworkIDRef *v1.Reference `json:"networkIdRef,omitempty" tf:"-"`
+
+	// Selector for a Network in network to populate networkId.
+	// +kubebuilder:validation:Optional
+	NetworkIDSelector *v1.Selector `json:"networkIdSelector,omitempty" tf:"-"`
 
 	// A note with additional information for the client.
 	// +kubebuilder:validation:Optional

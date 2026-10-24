@@ -57,6 +57,25 @@ func (mg *Wlan) ResolveReferences(ctx context.Context, c client.Reader) error {
 	mg.Spec.ForProvider.NetworkID = reference.ToPtrValue(rsp.ResolvedValue)
 	mg.Spec.ForProvider.NetworkIDRef = rsp.ResolvedReference
 
+	for i3 := 0; i3 < len(mg.Spec.ForProvider.PrivatePresharedKeys); i3++ {
+		rsp, err = r.Resolve(ctx, reference.ResolutionRequest{
+			CurrentValue: reference.FromPtrValue(mg.Spec.ForProvider.PrivatePresharedKeys[i3].NetworkID),
+			Extract:      reference.ExternalName(),
+			Namespace:    mg.GetNamespace(),
+			Reference:    mg.Spec.ForProvider.PrivatePresharedKeys[i3].NetworkIDRef,
+			Selector:     mg.Spec.ForProvider.PrivatePresharedKeys[i3].NetworkIDSelector,
+			To: reference.To{
+				List:    &v1alpha1.NetworkList{},
+				Managed: &v1alpha1.Network{},
+			},
+		})
+		if err != nil {
+			return errors.Wrap(err, "mg.Spec.ForProvider.PrivatePresharedKeys[i3].NetworkID")
+		}
+		mg.Spec.ForProvider.PrivatePresharedKeys[i3].NetworkID = reference.ToPtrValue(rsp.ResolvedValue)
+		mg.Spec.ForProvider.PrivatePresharedKeys[i3].NetworkIDRef = rsp.ResolvedReference
+
+	}
 	rsp, err = r.Resolve(ctx, reference.ResolutionRequest{
 		CurrentValue: reference.FromPtrValue(mg.Spec.ForProvider.RadiusProfileID),
 		Extract:      reference.ExternalName(),
@@ -108,6 +127,25 @@ func (mg *Wlan) ResolveReferences(ctx context.Context, c client.Reader) error {
 	mg.Spec.InitProvider.NetworkID = reference.ToPtrValue(rsp.ResolvedValue)
 	mg.Spec.InitProvider.NetworkIDRef = rsp.ResolvedReference
 
+	for i3 := 0; i3 < len(mg.Spec.InitProvider.PrivatePresharedKeys); i3++ {
+		rsp, err = r.Resolve(ctx, reference.ResolutionRequest{
+			CurrentValue: reference.FromPtrValue(mg.Spec.InitProvider.PrivatePresharedKeys[i3].NetworkID),
+			Extract:      reference.ExternalName(),
+			Namespace:    mg.GetNamespace(),
+			Reference:    mg.Spec.InitProvider.PrivatePresharedKeys[i3].NetworkIDRef,
+			Selector:     mg.Spec.InitProvider.PrivatePresharedKeys[i3].NetworkIDSelector,
+			To: reference.To{
+				List:    &v1alpha1.NetworkList{},
+				Managed: &v1alpha1.Network{},
+			},
+		})
+		if err != nil {
+			return errors.Wrap(err, "mg.Spec.InitProvider.PrivatePresharedKeys[i3].NetworkID")
+		}
+		mg.Spec.InitProvider.PrivatePresharedKeys[i3].NetworkID = reference.ToPtrValue(rsp.ResolvedValue)
+		mg.Spec.InitProvider.PrivatePresharedKeys[i3].NetworkIDRef = rsp.ResolvedReference
+
+	}
 	rsp, err = r.Resolve(ctx, reference.ResolutionRequest{
 		CurrentValue: reference.FromPtrValue(mg.Spec.InitProvider.RadiusProfileID),
 		Extract:      reference.ExternalName(),
