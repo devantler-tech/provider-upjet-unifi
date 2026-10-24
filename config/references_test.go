@@ -10,8 +10,9 @@ import (
 
 // Reference targets and the field name several resources share.
 const (
-	targetNetwork  = "unifi_network"
-	fieldNetworkID = "network_id"
+	targetNetwork       = "unifi_network"
+	targetFirewallGroup = "unifi_firewall_group"
+	fieldNetworkID      = "network_id"
 )
 
 // wantReferences lists every cross-resource reference the provider generates:
@@ -26,22 +27,35 @@ var wantReferences = map[string]map[string]string{
 		fieldNetworkID: targetNetwork,
 	},
 	"unifi_device": {
-		"mgmt_network_id": targetNetwork,
+		"mgmt_network_id":                                targetNetwork,
+		"port_override.port_profile_id":                  "unifi_port_profile",
+		"port_override.native_networkconf_id":            targetNetwork,
+		"port_override.voice_networkconf_id":             targetNetwork,
+		"port_override.tagged_networkconf_ids":           targetNetwork,
+		"port_override.excluded_networkconf_ids":         targetNetwork,
+		"port_override.multicast_router_networkconf_ids": targetNetwork,
 	},
 	"unifi_firewall_policy": {
-		"source.network_ids":      targetNetwork,
-		"source.zone_id":          "unifi_firewall_zone",
-		"destination.network_ids": targetNetwork,
-		"destination.zone_id":     "unifi_firewall_zone",
+		"source.network_ids":        targetNetwork,
+		"source.zone_id":            "unifi_firewall_zone",
+		"destination.network_ids":   targetNetwork,
+		"destination.zone_id":       "unifi_firewall_zone",
+		"source.ip_group_id":        targetFirewallGroup,
+		"source.port_group_id":      targetFirewallGroup,
+		"destination.ip_group_id":   targetFirewallGroup,
+		"destination.port_group_id": targetFirewallGroup,
 	},
 	"unifi_firewall_rule": {
-		"src_firewall_group_ids": "unifi_firewall_group",
-		"dst_firewall_group_ids": "unifi_firewall_group",
+		"src_firewall_group_ids": targetFirewallGroup,
+		"dst_firewall_group_ids": targetFirewallGroup,
 		"src_network_id":         targetNetwork,
 		"dst_network_id":         targetNetwork,
 	},
 	"unifi_firewall_zone": {
 		"network_ids": targetNetwork,
+	},
+	"unifi_port_forward": {
+		"source_limiting.firewall_group_id": targetFirewallGroup,
 	},
 	"unifi_port_profile": {
 		"native_networkconf_id":            targetNetwork,

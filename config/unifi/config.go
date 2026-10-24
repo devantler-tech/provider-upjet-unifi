@@ -201,6 +201,26 @@ var references = map[string]ujconfig.References{
 		"mgmt_network_id": {
 			TerraformName: resNetwork,
 		},
+		// Each port override applies a PortProfile and carries the same five
+		// network relationships a PortProfile has.
+		"port_override.port_profile_id": {
+			TerraformName: "unifi_port_profile",
+		},
+		"port_override.native_networkconf_id": {
+			TerraformName: resNetwork,
+		},
+		"port_override.voice_networkconf_id": {
+			TerraformName: resNetwork,
+		},
+		"port_override.tagged_networkconf_ids": {
+			TerraformName: resNetwork,
+		},
+		"port_override.excluded_networkconf_ids": {
+			TerraformName: resNetwork,
+		},
+		"port_override.multicast_router_networkconf_ids": {
+			TerraformName: resNetwork,
+		},
 	},
 
 	// A firewall zone is the set of networks assigned to it.
@@ -258,6 +278,27 @@ var references = map[string]ujconfig.References{
 		},
 		"destination.zone_id": {
 			TerraformName: resFirewallZone,
+		},
+		// Each side can also match an address group and a port group, both
+		// FirewallGroups.
+		"source.ip_group_id": {
+			TerraformName: resFirewallGroup,
+		},
+		"source.port_group_id": {
+			TerraformName: resFirewallGroup,
+		},
+		"destination.ip_group_id": {
+			TerraformName: resFirewallGroup,
+		},
+		"destination.port_group_id": {
+			TerraformName: resFirewallGroup,
+		},
+	},
+
+	// A port forward can limit its sources to a FirewallGroup.
+	"unifi_port_forward": {
+		"source_limiting.firewall_group_id": {
+			TerraformName: resFirewallGroup,
 		},
 	},
 }
