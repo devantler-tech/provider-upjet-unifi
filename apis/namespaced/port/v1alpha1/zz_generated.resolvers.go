@@ -9,10 +9,60 @@ package v1alpha1
 import (
 	"context"
 	reference "github.com/crossplane/crossplane-runtime/v2/pkg/reference"
-	v1alpha1 "github.com/devantler-tech/provider-upjet-unifi/apis/namespaced/network/v1alpha1"
+	v1alpha1 "github.com/devantler-tech/provider-upjet-unifi/apis/namespaced/firewall/v1alpha1"
+	v1alpha11 "github.com/devantler-tech/provider-upjet-unifi/apis/namespaced/network/v1alpha1"
 	errors "github.com/pkg/errors"
 	client "sigs.k8s.io/controller-runtime/pkg/client"
 )
+
+// ResolveReferences of this Forward.
+func (mg *Forward) ResolveReferences(ctx context.Context, c client.Reader) error {
+	r := reference.NewAPINamespacedResolver(c, mg)
+
+	var rsp reference.NamespacedResolutionResponse
+	var err error
+
+	if mg.Spec.ForProvider.SourceLimiting != nil {
+		rsp, err = r.Resolve(ctx, reference.NamespacedResolutionRequest{
+			CurrentValue: reference.FromPtrValue(mg.Spec.ForProvider.SourceLimiting.FirewallGroupID),
+			Extract:      reference.ExternalName(),
+			Namespace:    mg.GetNamespace(),
+			Reference:    mg.Spec.ForProvider.SourceLimiting.FirewallGroupIDRef,
+			Selector:     mg.Spec.ForProvider.SourceLimiting.FirewallGroupIDSelector,
+			To: reference.To{
+				List:    &v1alpha1.GroupList{},
+				Managed: &v1alpha1.Group{},
+			},
+		})
+		if err != nil {
+			return errors.Wrap(err, "mg.Spec.ForProvider.SourceLimiting.FirewallGroupID")
+		}
+		mg.Spec.ForProvider.SourceLimiting.FirewallGroupID = reference.ToPtrValue(rsp.ResolvedValue)
+		mg.Spec.ForProvider.SourceLimiting.FirewallGroupIDRef = rsp.ResolvedReference
+
+	}
+	if mg.Spec.InitProvider.SourceLimiting != nil {
+		rsp, err = r.Resolve(ctx, reference.NamespacedResolutionRequest{
+			CurrentValue: reference.FromPtrValue(mg.Spec.InitProvider.SourceLimiting.FirewallGroupID),
+			Extract:      reference.ExternalName(),
+			Namespace:    mg.GetNamespace(),
+			Reference:    mg.Spec.InitProvider.SourceLimiting.FirewallGroupIDRef,
+			Selector:     mg.Spec.InitProvider.SourceLimiting.FirewallGroupIDSelector,
+			To: reference.To{
+				List:    &v1alpha1.GroupList{},
+				Managed: &v1alpha1.Group{},
+			},
+		})
+		if err != nil {
+			return errors.Wrap(err, "mg.Spec.InitProvider.SourceLimiting.FirewallGroupID")
+		}
+		mg.Spec.InitProvider.SourceLimiting.FirewallGroupID = reference.ToPtrValue(rsp.ResolvedValue)
+		mg.Spec.InitProvider.SourceLimiting.FirewallGroupIDRef = rsp.ResolvedReference
+
+	}
+
+	return nil
+}
 
 // ResolveReferences of this Profile.
 func (mg *Profile) ResolveReferences(ctx context.Context, c client.Reader) error {
@@ -29,8 +79,8 @@ func (mg *Profile) ResolveReferences(ctx context.Context, c client.Reader) error
 		References:    mg.Spec.ForProvider.ExcludedNetworkconfIdsRefs,
 		Selector:      mg.Spec.ForProvider.ExcludedNetworkconfIdsSelector,
 		To: reference.To{
-			List:    &v1alpha1.NetworkList{},
-			Managed: &v1alpha1.Network{},
+			List:    &v1alpha11.NetworkList{},
+			Managed: &v1alpha11.Network{},
 		},
 	})
 	if err != nil {
@@ -46,8 +96,8 @@ func (mg *Profile) ResolveReferences(ctx context.Context, c client.Reader) error
 		References:    mg.Spec.ForProvider.MulticastRouterNetworkconfIdsRefs,
 		Selector:      mg.Spec.ForProvider.MulticastRouterNetworkconfIdsSelector,
 		To: reference.To{
-			List:    &v1alpha1.NetworkList{},
-			Managed: &v1alpha1.Network{},
+			List:    &v1alpha11.NetworkList{},
+			Managed: &v1alpha11.Network{},
 		},
 	})
 	if err != nil {
@@ -63,8 +113,8 @@ func (mg *Profile) ResolveReferences(ctx context.Context, c client.Reader) error
 		Reference:    mg.Spec.ForProvider.NativeNetworkconfIDRef,
 		Selector:     mg.Spec.ForProvider.NativeNetworkconfIDSelector,
 		To: reference.To{
-			List:    &v1alpha1.NetworkList{},
-			Managed: &v1alpha1.Network{},
+			List:    &v1alpha11.NetworkList{},
+			Managed: &v1alpha11.Network{},
 		},
 	})
 	if err != nil {
@@ -80,8 +130,8 @@ func (mg *Profile) ResolveReferences(ctx context.Context, c client.Reader) error
 		References:    mg.Spec.ForProvider.TaggedNetworkconfIdsRefs,
 		Selector:      mg.Spec.ForProvider.TaggedNetworkconfIdsSelector,
 		To: reference.To{
-			List:    &v1alpha1.NetworkList{},
-			Managed: &v1alpha1.Network{},
+			List:    &v1alpha11.NetworkList{},
+			Managed: &v1alpha11.Network{},
 		},
 	})
 	if err != nil {
@@ -97,8 +147,8 @@ func (mg *Profile) ResolveReferences(ctx context.Context, c client.Reader) error
 		Reference:    mg.Spec.ForProvider.VoiceNetworkconfIDRef,
 		Selector:     mg.Spec.ForProvider.VoiceNetworkconfIDSelector,
 		To: reference.To{
-			List:    &v1alpha1.NetworkList{},
-			Managed: &v1alpha1.Network{},
+			List:    &v1alpha11.NetworkList{},
+			Managed: &v1alpha11.Network{},
 		},
 	})
 	if err != nil {
@@ -114,8 +164,8 @@ func (mg *Profile) ResolveReferences(ctx context.Context, c client.Reader) error
 		References:    mg.Spec.InitProvider.ExcludedNetworkconfIdsRefs,
 		Selector:      mg.Spec.InitProvider.ExcludedNetworkconfIdsSelector,
 		To: reference.To{
-			List:    &v1alpha1.NetworkList{},
-			Managed: &v1alpha1.Network{},
+			List:    &v1alpha11.NetworkList{},
+			Managed: &v1alpha11.Network{},
 		},
 	})
 	if err != nil {
@@ -131,8 +181,8 @@ func (mg *Profile) ResolveReferences(ctx context.Context, c client.Reader) error
 		References:    mg.Spec.InitProvider.MulticastRouterNetworkconfIdsRefs,
 		Selector:      mg.Spec.InitProvider.MulticastRouterNetworkconfIdsSelector,
 		To: reference.To{
-			List:    &v1alpha1.NetworkList{},
-			Managed: &v1alpha1.Network{},
+			List:    &v1alpha11.NetworkList{},
+			Managed: &v1alpha11.Network{},
 		},
 	})
 	if err != nil {
@@ -148,8 +198,8 @@ func (mg *Profile) ResolveReferences(ctx context.Context, c client.Reader) error
 		Reference:    mg.Spec.InitProvider.NativeNetworkconfIDRef,
 		Selector:     mg.Spec.InitProvider.NativeNetworkconfIDSelector,
 		To: reference.To{
-			List:    &v1alpha1.NetworkList{},
-			Managed: &v1alpha1.Network{},
+			List:    &v1alpha11.NetworkList{},
+			Managed: &v1alpha11.Network{},
 		},
 	})
 	if err != nil {
@@ -165,8 +215,8 @@ func (mg *Profile) ResolveReferences(ctx context.Context, c client.Reader) error
 		References:    mg.Spec.InitProvider.TaggedNetworkconfIdsRefs,
 		Selector:      mg.Spec.InitProvider.TaggedNetworkconfIdsSelector,
 		To: reference.To{
-			List:    &v1alpha1.NetworkList{},
-			Managed: &v1alpha1.Network{},
+			List:    &v1alpha11.NetworkList{},
+			Managed: &v1alpha11.Network{},
 		},
 	})
 	if err != nil {
@@ -182,8 +232,8 @@ func (mg *Profile) ResolveReferences(ctx context.Context, c client.Reader) error
 		Reference:    mg.Spec.InitProvider.VoiceNetworkconfIDRef,
 		Selector:     mg.Spec.InitProvider.VoiceNetworkconfIDSelector,
 		To: reference.To{
-			List:    &v1alpha1.NetworkList{},
-			Managed: &v1alpha1.Network{},
+			List:    &v1alpha11.NetworkList{},
+			Managed: &v1alpha11.Network{},
 		},
 	})
 	if err != nil {

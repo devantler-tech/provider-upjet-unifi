@@ -1539,6 +1539,16 @@ func (in *SourceLimitingInitParameters) DeepCopyInto(out *SourceLimitingInitPara
 		*out = new(string)
 		**out = **in
 	}
+	if in.FirewallGroupIDRef != nil {
+		in, out := &in.FirewallGroupIDRef, &out.FirewallGroupIDRef
+		*out = new(v1.Reference)
+		(*in).DeepCopyInto(*out)
+	}
+	if in.FirewallGroupIDSelector != nil {
+		in, out := &in.FirewallGroupIDSelector, &out.FirewallGroupIDSelector
+		*out = new(v1.Selector)
+		(*in).DeepCopyInto(*out)
+	}
 	if in.IP != nil {
 		in, out := &in.IP, &out.IP
 		*out = new(string)
@@ -1608,6 +1618,16 @@ func (in *SourceLimitingParameters) DeepCopyInto(out *SourceLimitingParameters) 
 		in, out := &in.FirewallGroupID, &out.FirewallGroupID
 		*out = new(string)
 		**out = **in
+	}
+	if in.FirewallGroupIDRef != nil {
+		in, out := &in.FirewallGroupIDRef, &out.FirewallGroupIDRef
+		*out = new(v1.Reference)
+		(*in).DeepCopyInto(*out)
+	}
+	if in.FirewallGroupIDSelector != nil {
+		in, out := &in.FirewallGroupIDSelector, &out.FirewallGroupIDSelector
+		*out = new(v1.Selector)
+		(*in).DeepCopyInto(*out)
 	}
 	if in.IP != nil {
 		in, out := &in.IP, &out.IP

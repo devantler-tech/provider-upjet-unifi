@@ -172,7 +172,16 @@ type SourceLimitingInitParameters struct {
 	Enabled *bool `json:"enabled,omitempty" tf:"enabled,omitempty"`
 
 	// The ID of the firewall group to use for source limiting.
+	// +crossplane:generate:reference:type=github.com/devantler-tech/provider-upjet-unifi/apis/namespaced/firewall/v1alpha1.Group
 	FirewallGroupID *string `json:"firewallGroupId,omitempty" tf:"firewall_group_id,omitempty"`
+
+	// Reference to a Group in firewall to populate firewallGroupId.
+	// +kubebuilder:validation:Optional
+	FirewallGroupIDRef *v1.NamespacedReference `json:"firewallGroupIdRef,omitempty" tf:"-"`
+
+	// Selector for a Group in firewall to populate firewallGroupId.
+	// +kubebuilder:validation:Optional
+	FirewallGroupIDSelector *v1.NamespacedSelector `json:"firewallGroupIdSelector,omitempty" tf:"-"`
 
 	// The source IPv4 address (or CIDR) of the port forwarding rule. For all traffic, specify `any`.
 	IP *string `json:"ip,omitempty" tf:"ip,omitempty"`
@@ -203,8 +212,17 @@ type SourceLimitingParameters struct {
 	Enabled *bool `json:"enabled,omitempty" tf:"enabled,omitempty"`
 
 	// The ID of the firewall group to use for source limiting.
+	// +crossplane:generate:reference:type=github.com/devantler-tech/provider-upjet-unifi/apis/namespaced/firewall/v1alpha1.Group
 	// +kubebuilder:validation:Optional
 	FirewallGroupID *string `json:"firewallGroupId,omitempty" tf:"firewall_group_id,omitempty"`
+
+	// Reference to a Group in firewall to populate firewallGroupId.
+	// +kubebuilder:validation:Optional
+	FirewallGroupIDRef *v1.NamespacedReference `json:"firewallGroupIdRef,omitempty" tf:"-"`
+
+	// Selector for a Group in firewall to populate firewallGroupId.
+	// +kubebuilder:validation:Optional
+	FirewallGroupIDSelector *v1.NamespacedSelector `json:"firewallGroupIdSelector,omitempty" tf:"-"`
 
 	// The source IPv4 address (or CIDR) of the port forwarding rule. For all traffic, specify `any`.
 	// +kubebuilder:validation:Optional

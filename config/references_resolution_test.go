@@ -30,8 +30,8 @@ import (
 )
 
 // The generated resolvers fill a raw id field from the external name of the
-// Network a *Ref names. These tests run them against a fake API server that
-// holds Networks with known external names, which is what Crossplane does
+// resource a *Ref names. These tests run them against a fake API server that
+// holds Networks, FirewallGroups and a PortProfile with known external names, which is what Crossplane does
 // before each reconcile, so they show the references resolve to the right ids.
 
 // resolvable is a managed resource with generated reference resolvers.
@@ -262,4 +262,125 @@ func TestNamespacedSettingAndWlanNetworkReferencesResolve(t *testing.T) {
 	w.Spec.ForProvider.PrivatePresharedKeys = []wlanv1alpha1m.PrivatePresharedKeysParameters{{NetworkIDRef: namespacedRef("iot")}}
 	resolve(t, namespaced.AddToScheme, namespacedNetworks(), w)
 	wantID(t, "namespaced wlan privatePresharedKeys[0].networkId", w.Spec.ForProvider.PrivatePresharedKeys[0].NetworkID, "iot")
+}
+
+// FirewallGroups and a PortProfile with known controller ids, beside the Networks.
+const (
+	groupWeb      = "fg-web"
+	groupPorts    = "fg-ports"
+	profileUplink = "pp-uplink"
+)
+
+func clusterFixtures() []client.Object {
+	objects := clusterNetworks()
+	for name, id := range map[string]string{"web": groupWeb, "ports": groupPorts} {
+		g := &firewallv1alpha1.Group{}
+		g.SetName(name)
+		meta.SetExternalName(g, id)
+		objects = append(objects, g)
+	}
+	p := &portv1alpha1.Profile{}
+	p.SetName("uplink")
+	meta.SetExternalName(p, profileUplink)
+	return append(objects, p)
+}
+
+func wantExternalName(t *testing.T, field string, got *string, want string) {
+	t.Helper()
+	if got == nil || *got != want {
+		t.Errorf("%s = %v, want %q", field, deref(got), want)
+	}
+}
+
+func TestFirewallPolicyGroupReferencesResolve(t *testing.T) {
+	mg := &firewallv1alpha1.Policy{}
+	p := &mg.Spec.ForProvider
+	p.Source = &firewallv1alpha1.SourceParameters{IPGroupIDRef: ref("web"), PortGroupIDRef: ref("ports")}
+	p.Destination = &firewallv1alpha1.DestinationParameters{IPGroupIDRef: ref("web"), PortGroupIDRef: ref("ports")}
+	resolve(t, cluster.AddToScheme, clusterFixtures(), mg)
+	wantExternalName(t, "policy source.ipGroupId", p.Source.IPGroupID, groupWeb)
+	wantExternalName(t, "policy source.portGroupId", p.Source.PortGroupID, groupPorts)
+	wantExternalName(t, "policy destination.ipGroupId", p.Destination.IPGroupID, groupWeb)
+	wantExternalName(t, "policy destination.portGroupId", p.Destination.PortGroupID, groupPorts)
+}
+
+func TestPortForwardSourceLimitReferenceResolves(t *testing.T) {
+	mg := &portv1alpha1.Forward{}
+	mg.Spec.ForProvider.SourceLimiting = &portv1alpha1.SourceLimitingParameters{FirewallGroupIDRef: ref("web")}
+	resolve(t, cluster.AddToScheme, clusterFixtures(), mg)
+	wantExternalName(t, "port forward sourceLimiting.firewallGroupId", mg.Spec.ForProvider.SourceLimiting.FirewallGroupID, groupWeb)
+}
+
+func TestDevicePortOverrideReferencesResolve(t *testing.T) {
+	mg := &devicev1alpha1.Device{}
+	mg.Spec.ForProvider.PortOverride = []devicev1alpha1.PortOverrideParameters{{
+		PortProfileIDRef:                  ref("uplink"),
+		NativeNetworkconfIDRef:            ref("lan"),
+		VoiceNetworkconfIDRef:             ref("iot"),
+		TaggedNetworkconfIdsRefs:          refs("iot", "guest"),
+		ExcludedNetworkconfIdsRefs:        refs("guest"),
+		MulticastRouterNetworkconfIdsRefs: refs("lan"),
+	}}
+	resolve(t, cluster.AddToScheme, clusterFixtures(), mg)
+	o := mg.Spec.ForProvider.PortOverride[0]
+	wantExternalName(t, "device portOverride[0].portProfileId", o.PortProfileID, profileUplink)
+	wantID(t, "device portOverride[0].nativeNetworkconfId", o.NativeNetworkconfID, "lan")
+	wantID(t, "device portOverride[0].voiceNetworkconfId", o.VoiceNetworkconfID, "iot")
+	wantIDs(t, "device portOverride[0].taggedNetworkconfIds", o.TaggedNetworkconfIds, "iot", "guest")
+	wantIDs(t, "device portOverride[0].excludedNetworkconfIds", o.ExcludedNetworkconfIds, "guest")
+	wantIDs(t, "device portOverride[0].multicastRouterNetworkconfIds", o.MulticastRouterNetworkconfIds, "lan")
+}
+
+// The same FirewallGroups and PortProfile in the namespaced scope, beside the namespaced Networks.
+func namespacedFixtures() []client.Object {
+	objects := namespacedNetworks()
+	for name, id := range map[string]string{"web": groupWeb, "ports": groupPorts} {
+		g := &firewallv1alpha1m.Group{}
+		g.SetName(name)
+		g.SetNamespace(homeNamespace)
+		meta.SetExternalName(g, id)
+		objects = append(objects, g)
+	}
+	p := &portv1alpha1m.Profile{}
+	p.SetName("uplink")
+	p.SetNamespace(homeNamespace)
+	meta.SetExternalName(p, profileUplink)
+	return append(objects, p)
+}
+
+func TestNamespacedGroupAndPortReferencesResolve(t *testing.T) {
+	pol := &firewallv1alpha1m.Policy{}
+	pol.SetNamespace(homeNamespace)
+	pol.Spec.ForProvider.Source = &firewallv1alpha1m.SourceParameters{IPGroupIDRef: namespacedRef("web"), PortGroupIDRef: namespacedRef("ports")}
+	pol.Spec.ForProvider.Destination = &firewallv1alpha1m.DestinationParameters{IPGroupIDRef: namespacedRef("web"), PortGroupIDRef: namespacedRef("ports")}
+	resolve(t, namespaced.AddToScheme, namespacedFixtures(), pol)
+	wantExternalName(t, "namespaced policy source.ipGroupId", pol.Spec.ForProvider.Source.IPGroupID, groupWeb)
+	wantExternalName(t, "namespaced policy source.portGroupId", pol.Spec.ForProvider.Source.PortGroupID, groupPorts)
+	wantExternalName(t, "namespaced policy destination.ipGroupId", pol.Spec.ForProvider.Destination.IPGroupID, groupWeb)
+	wantExternalName(t, "namespaced policy destination.portGroupId", pol.Spec.ForProvider.Destination.PortGroupID, groupPorts)
+
+	fwd := &portv1alpha1m.Forward{}
+	fwd.SetNamespace(homeNamespace)
+	fwd.Spec.ForProvider.SourceLimiting = &portv1alpha1m.SourceLimitingParameters{FirewallGroupIDRef: namespacedRef("web")}
+	resolve(t, namespaced.AddToScheme, namespacedFixtures(), fwd)
+	wantExternalName(t, "namespaced port forward sourceLimiting.firewallGroupId", fwd.Spec.ForProvider.SourceLimiting.FirewallGroupID, groupWeb)
+
+	dev := &devicev1alpha1m.Device{}
+	dev.SetNamespace(homeNamespace)
+	dev.Spec.ForProvider.PortOverride = []devicev1alpha1m.PortOverrideParameters{{
+		PortProfileIDRef:                  namespacedRef("uplink"),
+		NativeNetworkconfIDRef:            namespacedRef("lan"),
+		VoiceNetworkconfIDRef:             namespacedRef("iot"),
+		TaggedNetworkconfIdsRefs:          namespacedRefs("iot", "guest"),
+		ExcludedNetworkconfIdsRefs:        namespacedRefs("guest"),
+		MulticastRouterNetworkconfIdsRefs: namespacedRefs("lan"),
+	}}
+	resolve(t, namespaced.AddToScheme, namespacedFixtures(), dev)
+	o := dev.Spec.ForProvider.PortOverride[0]
+	wantExternalName(t, "namespaced device portOverride[0].portProfileId", o.PortProfileID, profileUplink)
+	wantID(t, "namespaced device portOverride[0].nativeNetworkconfId", o.NativeNetworkconfID, "lan")
+	wantID(t, "namespaced device portOverride[0].voiceNetworkconfId", o.VoiceNetworkconfID, "iot")
+	wantIDs(t, "namespaced device portOverride[0].taggedNetworkconfIds", o.TaggedNetworkconfIds, "iot", "guest")
+	wantIDs(t, "namespaced device portOverride[0].excludedNetworkconfIds", o.ExcludedNetworkconfIds, "guest")
+	wantIDs(t, "namespaced device portOverride[0].multicastRouterNetworkconfIds", o.MulticastRouterNetworkconfIds, "lan")
 }

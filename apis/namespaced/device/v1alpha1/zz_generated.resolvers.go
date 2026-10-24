@@ -10,6 +10,7 @@ import (
 	"context"
 	reference "github.com/crossplane/crossplane-runtime/v2/pkg/reference"
 	v1alpha1 "github.com/devantler-tech/provider-upjet-unifi/apis/namespaced/network/v1alpha1"
+	v1alpha11 "github.com/devantler-tech/provider-upjet-unifi/apis/namespaced/port/v1alpha1"
 	errors "github.com/pkg/errors"
 	client "sigs.k8s.io/controller-runtime/pkg/client"
 )
@@ -63,6 +64,7 @@ func (mg *Device) ResolveReferences(ctx context.Context, c client.Reader) error 
 	r := reference.NewAPINamespacedResolver(c, mg)
 
 	var rsp reference.NamespacedResolutionResponse
+	var mrsp reference.MultiNamespacedResolutionResponse
 	var err error
 
 	rsp, err = r.Resolve(ctx, reference.NamespacedResolutionRequest{
@@ -82,6 +84,120 @@ func (mg *Device) ResolveReferences(ctx context.Context, c client.Reader) error 
 	mg.Spec.ForProvider.MgmtNetworkID = reference.ToPtrValue(rsp.ResolvedValue)
 	mg.Spec.ForProvider.MgmtNetworkIDRef = rsp.ResolvedReference
 
+	for i3 := 0; i3 < len(mg.Spec.ForProvider.PortOverride); i3++ {
+		mrsp, err = r.ResolveMultiple(ctx, reference.MultiNamespacedResolutionRequest{
+			CurrentValues: reference.FromPtrValues(mg.Spec.ForProvider.PortOverride[i3].ExcludedNetworkconfIds),
+			Extract:       reference.ExternalName(),
+			Namespace:     mg.GetNamespace(),
+			References:    mg.Spec.ForProvider.PortOverride[i3].ExcludedNetworkconfIdsRefs,
+			Selector:      mg.Spec.ForProvider.PortOverride[i3].ExcludedNetworkconfIdsSelector,
+			To: reference.To{
+				List:    &v1alpha1.NetworkList{},
+				Managed: &v1alpha1.Network{},
+			},
+		})
+		if err != nil {
+			return errors.Wrap(err, "mg.Spec.ForProvider.PortOverride[i3].ExcludedNetworkconfIds")
+		}
+		mg.Spec.ForProvider.PortOverride[i3].ExcludedNetworkconfIds = reference.ToPtrValues(mrsp.ResolvedValues)
+		mg.Spec.ForProvider.PortOverride[i3].ExcludedNetworkconfIdsRefs = mrsp.ResolvedReferences
+
+	}
+	for i3 := 0; i3 < len(mg.Spec.ForProvider.PortOverride); i3++ {
+		mrsp, err = r.ResolveMultiple(ctx, reference.MultiNamespacedResolutionRequest{
+			CurrentValues: reference.FromPtrValues(mg.Spec.ForProvider.PortOverride[i3].MulticastRouterNetworkconfIds),
+			Extract:       reference.ExternalName(),
+			Namespace:     mg.GetNamespace(),
+			References:    mg.Spec.ForProvider.PortOverride[i3].MulticastRouterNetworkconfIdsRefs,
+			Selector:      mg.Spec.ForProvider.PortOverride[i3].MulticastRouterNetworkconfIdsSelector,
+			To: reference.To{
+				List:    &v1alpha1.NetworkList{},
+				Managed: &v1alpha1.Network{},
+			},
+		})
+		if err != nil {
+			return errors.Wrap(err, "mg.Spec.ForProvider.PortOverride[i3].MulticastRouterNetworkconfIds")
+		}
+		mg.Spec.ForProvider.PortOverride[i3].MulticastRouterNetworkconfIds = reference.ToPtrValues(mrsp.ResolvedValues)
+		mg.Spec.ForProvider.PortOverride[i3].MulticastRouterNetworkconfIdsRefs = mrsp.ResolvedReferences
+
+	}
+	for i3 := 0; i3 < len(mg.Spec.ForProvider.PortOverride); i3++ {
+		rsp, err = r.Resolve(ctx, reference.NamespacedResolutionRequest{
+			CurrentValue: reference.FromPtrValue(mg.Spec.ForProvider.PortOverride[i3].NativeNetworkconfID),
+			Extract:      reference.ExternalName(),
+			Namespace:    mg.GetNamespace(),
+			Reference:    mg.Spec.ForProvider.PortOverride[i3].NativeNetworkconfIDRef,
+			Selector:     mg.Spec.ForProvider.PortOverride[i3].NativeNetworkconfIDSelector,
+			To: reference.To{
+				List:    &v1alpha1.NetworkList{},
+				Managed: &v1alpha1.Network{},
+			},
+		})
+		if err != nil {
+			return errors.Wrap(err, "mg.Spec.ForProvider.PortOverride[i3].NativeNetworkconfID")
+		}
+		mg.Spec.ForProvider.PortOverride[i3].NativeNetworkconfID = reference.ToPtrValue(rsp.ResolvedValue)
+		mg.Spec.ForProvider.PortOverride[i3].NativeNetworkconfIDRef = rsp.ResolvedReference
+
+	}
+	for i3 := 0; i3 < len(mg.Spec.ForProvider.PortOverride); i3++ {
+		rsp, err = r.Resolve(ctx, reference.NamespacedResolutionRequest{
+			CurrentValue: reference.FromPtrValue(mg.Spec.ForProvider.PortOverride[i3].PortProfileID),
+			Extract:      reference.ExternalName(),
+			Namespace:    mg.GetNamespace(),
+			Reference:    mg.Spec.ForProvider.PortOverride[i3].PortProfileIDRef,
+			Selector:     mg.Spec.ForProvider.PortOverride[i3].PortProfileIDSelector,
+			To: reference.To{
+				List:    &v1alpha11.ProfileList{},
+				Managed: &v1alpha11.Profile{},
+			},
+		})
+		if err != nil {
+			return errors.Wrap(err, "mg.Spec.ForProvider.PortOverride[i3].PortProfileID")
+		}
+		mg.Spec.ForProvider.PortOverride[i3].PortProfileID = reference.ToPtrValue(rsp.ResolvedValue)
+		mg.Spec.ForProvider.PortOverride[i3].PortProfileIDRef = rsp.ResolvedReference
+
+	}
+	for i3 := 0; i3 < len(mg.Spec.ForProvider.PortOverride); i3++ {
+		mrsp, err = r.ResolveMultiple(ctx, reference.MultiNamespacedResolutionRequest{
+			CurrentValues: reference.FromPtrValues(mg.Spec.ForProvider.PortOverride[i3].TaggedNetworkconfIds),
+			Extract:       reference.ExternalName(),
+			Namespace:     mg.GetNamespace(),
+			References:    mg.Spec.ForProvider.PortOverride[i3].TaggedNetworkconfIdsRefs,
+			Selector:      mg.Spec.ForProvider.PortOverride[i3].TaggedNetworkconfIdsSelector,
+			To: reference.To{
+				List:    &v1alpha1.NetworkList{},
+				Managed: &v1alpha1.Network{},
+			},
+		})
+		if err != nil {
+			return errors.Wrap(err, "mg.Spec.ForProvider.PortOverride[i3].TaggedNetworkconfIds")
+		}
+		mg.Spec.ForProvider.PortOverride[i3].TaggedNetworkconfIds = reference.ToPtrValues(mrsp.ResolvedValues)
+		mg.Spec.ForProvider.PortOverride[i3].TaggedNetworkconfIdsRefs = mrsp.ResolvedReferences
+
+	}
+	for i3 := 0; i3 < len(mg.Spec.ForProvider.PortOverride); i3++ {
+		rsp, err = r.Resolve(ctx, reference.NamespacedResolutionRequest{
+			CurrentValue: reference.FromPtrValue(mg.Spec.ForProvider.PortOverride[i3].VoiceNetworkconfID),
+			Extract:      reference.ExternalName(),
+			Namespace:    mg.GetNamespace(),
+			Reference:    mg.Spec.ForProvider.PortOverride[i3].VoiceNetworkconfIDRef,
+			Selector:     mg.Spec.ForProvider.PortOverride[i3].VoiceNetworkconfIDSelector,
+			To: reference.To{
+				List:    &v1alpha1.NetworkList{},
+				Managed: &v1alpha1.Network{},
+			},
+		})
+		if err != nil {
+			return errors.Wrap(err, "mg.Spec.ForProvider.PortOverride[i3].VoiceNetworkconfID")
+		}
+		mg.Spec.ForProvider.PortOverride[i3].VoiceNetworkconfID = reference.ToPtrValue(rsp.ResolvedValue)
+		mg.Spec.ForProvider.PortOverride[i3].VoiceNetworkconfIDRef = rsp.ResolvedReference
+
+	}
 	rsp, err = r.Resolve(ctx, reference.NamespacedResolutionRequest{
 		CurrentValue: reference.FromPtrValue(mg.Spec.InitProvider.MgmtNetworkID),
 		Extract:      reference.ExternalName(),
@@ -98,6 +214,121 @@ func (mg *Device) ResolveReferences(ctx context.Context, c client.Reader) error 
 	}
 	mg.Spec.InitProvider.MgmtNetworkID = reference.ToPtrValue(rsp.ResolvedValue)
 	mg.Spec.InitProvider.MgmtNetworkIDRef = rsp.ResolvedReference
+
+	for i3 := 0; i3 < len(mg.Spec.InitProvider.PortOverride); i3++ {
+		mrsp, err = r.ResolveMultiple(ctx, reference.MultiNamespacedResolutionRequest{
+			CurrentValues: reference.FromPtrValues(mg.Spec.InitProvider.PortOverride[i3].ExcludedNetworkconfIds),
+			Extract:       reference.ExternalName(),
+			Namespace:     mg.GetNamespace(),
+			References:    mg.Spec.InitProvider.PortOverride[i3].ExcludedNetworkconfIdsRefs,
+			Selector:      mg.Spec.InitProvider.PortOverride[i3].ExcludedNetworkconfIdsSelector,
+			To: reference.To{
+				List:    &v1alpha1.NetworkList{},
+				Managed: &v1alpha1.Network{},
+			},
+		})
+		if err != nil {
+			return errors.Wrap(err, "mg.Spec.InitProvider.PortOverride[i3].ExcludedNetworkconfIds")
+		}
+		mg.Spec.InitProvider.PortOverride[i3].ExcludedNetworkconfIds = reference.ToPtrValues(mrsp.ResolvedValues)
+		mg.Spec.InitProvider.PortOverride[i3].ExcludedNetworkconfIdsRefs = mrsp.ResolvedReferences
+
+	}
+	for i3 := 0; i3 < len(mg.Spec.InitProvider.PortOverride); i3++ {
+		mrsp, err = r.ResolveMultiple(ctx, reference.MultiNamespacedResolutionRequest{
+			CurrentValues: reference.FromPtrValues(mg.Spec.InitProvider.PortOverride[i3].MulticastRouterNetworkconfIds),
+			Extract:       reference.ExternalName(),
+			Namespace:     mg.GetNamespace(),
+			References:    mg.Spec.InitProvider.PortOverride[i3].MulticastRouterNetworkconfIdsRefs,
+			Selector:      mg.Spec.InitProvider.PortOverride[i3].MulticastRouterNetworkconfIdsSelector,
+			To: reference.To{
+				List:    &v1alpha1.NetworkList{},
+				Managed: &v1alpha1.Network{},
+			},
+		})
+		if err != nil {
+			return errors.Wrap(err, "mg.Spec.InitProvider.PortOverride[i3].MulticastRouterNetworkconfIds")
+		}
+		mg.Spec.InitProvider.PortOverride[i3].MulticastRouterNetworkconfIds = reference.ToPtrValues(mrsp.ResolvedValues)
+		mg.Spec.InitProvider.PortOverride[i3].MulticastRouterNetworkconfIdsRefs = mrsp.ResolvedReferences
+
+	}
+	for i3 := 0; i3 < len(mg.Spec.InitProvider.PortOverride); i3++ {
+		rsp, err = r.Resolve(ctx, reference.NamespacedResolutionRequest{
+			CurrentValue: reference.FromPtrValue(mg.Spec.InitProvider.PortOverride[i3].NativeNetworkconfID),
+			Extract:      reference.ExternalName(),
+			Namespace:    mg.GetNamespace(),
+			Reference:    mg.Spec.InitProvider.PortOverride[i3].NativeNetworkconfIDRef,
+			Selector:     mg.Spec.InitProvider.PortOverride[i3].NativeNetworkconfIDSelector,
+			To: reference.To{
+				List:    &v1alpha1.NetworkList{},
+				Managed: &v1alpha1.Network{},
+			},
+		})
+		if err != nil {
+			return errors.Wrap(err, "mg.Spec.InitProvider.PortOverride[i3].NativeNetworkconfID")
+		}
+		mg.Spec.InitProvider.PortOverride[i3].NativeNetworkconfID = reference.ToPtrValue(rsp.ResolvedValue)
+		mg.Spec.InitProvider.PortOverride[i3].NativeNetworkconfIDRef = rsp.ResolvedReference
+
+	}
+	for i3 := 0; i3 < len(mg.Spec.InitProvider.PortOverride); i3++ {
+		rsp, err = r.Resolve(ctx, reference.NamespacedResolutionRequest{
+			CurrentValue: reference.FromPtrValue(mg.Spec.InitProvider.PortOverride[i3].PortProfileID),
+			Extract:      reference.ExternalName(),
+			Namespace:    mg.GetNamespace(),
+			Reference:    mg.Spec.InitProvider.PortOverride[i3].PortProfileIDRef,
+			Selector:     mg.Spec.InitProvider.PortOverride[i3].PortProfileIDSelector,
+			To: reference.To{
+				List:    &v1alpha11.ProfileList{},
+				Managed: &v1alpha11.Profile{},
+			},
+		})
+		if err != nil {
+			return errors.Wrap(err, "mg.Spec.InitProvider.PortOverride[i3].PortProfileID")
+		}
+		mg.Spec.InitProvider.PortOverride[i3].PortProfileID = reference.ToPtrValue(rsp.ResolvedValue)
+		mg.Spec.InitProvider.PortOverride[i3].PortProfileIDRef = rsp.ResolvedReference
+
+	}
+	for i3 := 0; i3 < len(mg.Spec.InitProvider.PortOverride); i3++ {
+		mrsp, err = r.ResolveMultiple(ctx, reference.MultiNamespacedResolutionRequest{
+			CurrentValues: reference.FromPtrValues(mg.Spec.InitProvider.PortOverride[i3].TaggedNetworkconfIds),
+			Extract:       reference.ExternalName(),
+			Namespace:     mg.GetNamespace(),
+			References:    mg.Spec.InitProvider.PortOverride[i3].TaggedNetworkconfIdsRefs,
+			Selector:      mg.Spec.InitProvider.PortOverride[i3].TaggedNetworkconfIdsSelector,
+			To: reference.To{
+				List:    &v1alpha1.NetworkList{},
+				Managed: &v1alpha1.Network{},
+			},
+		})
+		if err != nil {
+			return errors.Wrap(err, "mg.Spec.InitProvider.PortOverride[i3].TaggedNetworkconfIds")
+		}
+		mg.Spec.InitProvider.PortOverride[i3].TaggedNetworkconfIds = reference.ToPtrValues(mrsp.ResolvedValues)
+		mg.Spec.InitProvider.PortOverride[i3].TaggedNetworkconfIdsRefs = mrsp.ResolvedReferences
+
+	}
+	for i3 := 0; i3 < len(mg.Spec.InitProvider.PortOverride); i3++ {
+		rsp, err = r.Resolve(ctx, reference.NamespacedResolutionRequest{
+			CurrentValue: reference.FromPtrValue(mg.Spec.InitProvider.PortOverride[i3].VoiceNetworkconfID),
+			Extract:      reference.ExternalName(),
+			Namespace:    mg.GetNamespace(),
+			Reference:    mg.Spec.InitProvider.PortOverride[i3].VoiceNetworkconfIDRef,
+			Selector:     mg.Spec.InitProvider.PortOverride[i3].VoiceNetworkconfIDSelector,
+			To: reference.To{
+				List:    &v1alpha1.NetworkList{},
+				Managed: &v1alpha1.Network{},
+			},
+		})
+		if err != nil {
+			return errors.Wrap(err, "mg.Spec.InitProvider.PortOverride[i3].VoiceNetworkconfID")
+		}
+		mg.Spec.InitProvider.PortOverride[i3].VoiceNetworkconfID = reference.ToPtrValue(rsp.ResolvedValue)
+		mg.Spec.InitProvider.PortOverride[i3].VoiceNetworkconfIDRef = rsp.ResolvedReference
+
+	}
 
 	return nil
 }
