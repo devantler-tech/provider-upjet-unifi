@@ -84,6 +84,10 @@ const (
 	resFirewallGroup = "unifi_firewall_group"
 	resFirewallZone  = "unifi_firewall_zone"
 	resNetwork       = "unifi_network"
+
+	// fieldNetworkID is the Terraform field several resources use for the
+	// Network they belong to.
+	fieldNetworkID = "network_id"
 )
 
 // references declares Upjet cross-resource references: for each Terraform
@@ -100,7 +104,7 @@ const (
 // supplied directly via the raw networkId field.
 var references = map[string]ujconfig.References{
 	"unifi_traffic_route": {
-		"network_id": {
+		fieldNetworkID: {
 			TerraformName: resVPNClient,
 		},
 	},
@@ -137,11 +141,15 @@ var references = map[string]ujconfig.References{
 		"ap_group_ids": {
 			TerraformName: "unifi_ap_group",
 		},
-		"network_id": {
+		fieldNetworkID: {
 			TerraformName: resNetwork,
 		},
 		"radius_profile_id": {
 			TerraformName: "unifi_radius_profile",
+		},
+		// Each private pre-shared key can bind its clients to a network.
+		"private_preshared_keys.network_id": {
+			TerraformName: resNetwork,
 		},
 	},
 
@@ -149,7 +157,7 @@ var references = map[string]ujconfig.References{
 	// known once that Network reconciles; referencing it mirrors the wlan wiring
 	// above and leaves the raw networkId settable.
 	"unifi_radius_user": {
-		"network_id": {
+		fieldNetworkID: {
 			TerraformName: resNetwork,
 		},
 	},
@@ -163,6 +171,73 @@ var references = map[string]ujconfig.References{
 	"unifi_vpn_server": {
 		"radiusprofile_id": {
 			TerraformName: "unifi_radius_profile",
+		},
+	},
+
+	// The resources below each hold the UniFi id of one or more Networks, which
+	// only exist once those Networks reconcile. Referencing unifi_network lets a
+	// consumer wire them to a Network by name through the generated
+	// *Ref/*Selector companions; every raw id field stays settable directly.
+	// Fields inside nested blocks are keyed by their nested path, and list
+	// fields resolve as slice references.
+
+	// An account inherits the VLAN of its network when no VLAN is set.
+	"unifi_account": {
+		fieldNetworkID: {
+			TerraformName: resNetwork,
+		},
+	},
+
+	// A client is pinned to the network it should join.
+	"unifi_client": {
+		fieldNetworkID: {
+			TerraformName: resNetwork,
+		},
+	},
+
+	// A device's management traffic can move to another network. The raw
+	// field's description keeps the upstream two-step rollout guidance.
+	"unifi_device": {
+		"mgmt_network_id": {
+			TerraformName: resNetwork,
+		},
+	},
+
+	// A firewall zone is the set of networks assigned to it.
+	resFirewallZone: {
+		"network_ids": {
+			TerraformName: resNetwork,
+		},
+	},
+
+	// A switch-port profile carries the native, voice, tagged, excluded and
+	// multicast-router networks of the ports it is applied to.
+	"unifi_port_profile": {
+		"native_networkconf_id": {
+			TerraformName: resNetwork,
+		},
+		"voice_networkconf_id": {
+			TerraformName: resNetwork,
+		},
+		"tagged_networkconf_ids": {
+			TerraformName: resNetwork,
+		},
+		"excluded_networkconf_ids": {
+			TerraformName: resNetwork,
+		},
+		"multicast_router_networkconf_ids": {
+			TerraformName: resNetwork,
+		},
+	},
+
+	// The site settings apply IGMP snooping to a list of networks, and place
+	// each IPS honeypot address in a network.
+	"unifi_setting": {
+		"igmp_snooping.network_ids": {
+			TerraformName: resNetwork,
+		},
+		"ips.honeypot.network_id": {
+			TerraformName: resNetwork,
 		},
 	},
 

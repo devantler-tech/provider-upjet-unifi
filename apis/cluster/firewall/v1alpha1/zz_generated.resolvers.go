@@ -324,3 +324,47 @@ func (mg *Rule) ResolveReferences(ctx context.Context, c client.Reader) error {
 
 	return nil
 }
+
+// ResolveReferences of this Zone.
+func (mg *Zone) ResolveReferences(ctx context.Context, c client.Reader) error {
+	r := reference.NewAPIResolver(c, mg)
+
+	var mrsp reference.MultiResolutionResponse
+	var err error
+
+	mrsp, err = r.ResolveMultiple(ctx, reference.MultiResolutionRequest{
+		CurrentValues: reference.FromPtrValues(mg.Spec.ForProvider.NetworkIds),
+		Extract:       reference.ExternalName(),
+		Namespace:     mg.GetNamespace(),
+		References:    mg.Spec.ForProvider.NetworkIdsRefs,
+		Selector:      mg.Spec.ForProvider.NetworkIdsSelector,
+		To: reference.To{
+			List:    &v1alpha1.NetworkList{},
+			Managed: &v1alpha1.Network{},
+		},
+	})
+	if err != nil {
+		return errors.Wrap(err, "mg.Spec.ForProvider.NetworkIds")
+	}
+	mg.Spec.ForProvider.NetworkIds = reference.ToPtrValues(mrsp.ResolvedValues)
+	mg.Spec.ForProvider.NetworkIdsRefs = mrsp.ResolvedReferences
+
+	mrsp, err = r.ResolveMultiple(ctx, reference.MultiResolutionRequest{
+		CurrentValues: reference.FromPtrValues(mg.Spec.InitProvider.NetworkIds),
+		Extract:       reference.ExternalName(),
+		Namespace:     mg.GetNamespace(),
+		References:    mg.Spec.InitProvider.NetworkIdsRefs,
+		Selector:      mg.Spec.InitProvider.NetworkIdsSelector,
+		To: reference.To{
+			List:    &v1alpha1.NetworkList{},
+			Managed: &v1alpha1.Network{},
+		},
+	})
+	if err != nil {
+		return errors.Wrap(err, "mg.Spec.InitProvider.NetworkIds")
+	}
+	mg.Spec.InitProvider.NetworkIds = reference.ToPtrValues(mrsp.ResolvedValues)
+	mg.Spec.InitProvider.NetworkIdsRefs = mrsp.ResolvedReferences
+
+	return nil
+}

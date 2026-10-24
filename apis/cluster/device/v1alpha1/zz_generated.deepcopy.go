@@ -99,6 +99,16 @@ func (in *ClientInitParameters) DeepCopyInto(out *ClientInitParameters) {
 		*out = new(string)
 		**out = **in
 	}
+	if in.NetworkIDRef != nil {
+		in, out := &in.NetworkIDRef, &out.NetworkIDRef
+		*out = new(v1.Reference)
+		(*in).DeepCopyInto(*out)
+	}
+	if in.NetworkIDSelector != nil {
+		in, out := &in.NetworkIDSelector, &out.NetworkIDSelector
+		*out = new(v1.Selector)
+		(*in).DeepCopyInto(*out)
+	}
 	if in.Note != nil {
 		in, out := &in.Note, &out.Note
 		*out = new(string)
@@ -337,6 +347,16 @@ func (in *ClientParameters) DeepCopyInto(out *ClientParameters) {
 		in, out := &in.NetworkID, &out.NetworkID
 		*out = new(string)
 		**out = **in
+	}
+	if in.NetworkIDRef != nil {
+		in, out := &in.NetworkIDRef, &out.NetworkIDRef
+		*out = new(v1.Reference)
+		(*in).DeepCopyInto(*out)
+	}
+	if in.NetworkIDSelector != nil {
+		in, out := &in.NetworkIDSelector, &out.NetworkIDSelector
+		*out = new(v1.Selector)
+		(*in).DeepCopyInto(*out)
 	}
 	if in.Note != nil {
 		in, out := &in.Note, &out.Note
@@ -704,6 +724,16 @@ func (in *DeviceInitParameters) DeepCopyInto(out *DeviceInitParameters) {
 		in, out := &in.MgmtNetworkID, &out.MgmtNetworkID
 		*out = new(string)
 		**out = **in
+	}
+	if in.MgmtNetworkIDRef != nil {
+		in, out := &in.MgmtNetworkIDRef, &out.MgmtNetworkIDRef
+		*out = new(v1.Reference)
+		(*in).DeepCopyInto(*out)
+	}
+	if in.MgmtNetworkIDSelector != nil {
+		in, out := &in.MgmtNetworkIDSelector, &out.MgmtNetworkIDSelector
+		*out = new(v1.Selector)
+		(*in).DeepCopyInto(*out)
 	}
 	if in.Name != nil {
 		in, out := &in.Name, &out.Name
@@ -1138,6 +1168,16 @@ func (in *DeviceParameters) DeepCopyInto(out *DeviceParameters) {
 		in, out := &in.MgmtNetworkID, &out.MgmtNetworkID
 		*out = new(string)
 		**out = **in
+	}
+	if in.MgmtNetworkIDRef != nil {
+		in, out := &in.MgmtNetworkIDRef, &out.MgmtNetworkIDRef
+		*out = new(v1.Reference)
+		(*in).DeepCopyInto(*out)
+	}
+	if in.MgmtNetworkIDSelector != nil {
+		in, out := &in.MgmtNetworkIDSelector, &out.MgmtNetworkIDSelector
+		*out = new(v1.Selector)
+		(*in).DeepCopyInto(*out)
 	}
 	if in.Name != nil {
 		in, out := &in.Name, &out.Name

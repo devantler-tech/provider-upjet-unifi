@@ -351,6 +351,16 @@ func (in *PrivatePresharedKeysInitParameters) DeepCopyInto(out *PrivatePreshared
 		*out = new(string)
 		**out = **in
 	}
+	if in.NetworkIDRef != nil {
+		in, out := &in.NetworkIDRef, &out.NetworkIDRef
+		*out = new(v1.Reference)
+		(*in).DeepCopyInto(*out)
+	}
+	if in.NetworkIDSelector != nil {
+		in, out := &in.NetworkIDSelector, &out.NetworkIDSelector
+		*out = new(v1.Selector)
+		(*in).DeepCopyInto(*out)
+	}
 	in.PasswordSecretRef.DeepCopyInto(&out.PasswordSecretRef)
 }
 
@@ -391,6 +401,16 @@ func (in *PrivatePresharedKeysParameters) DeepCopyInto(out *PrivatePresharedKeys
 		in, out := &in.NetworkID, &out.NetworkID
 		*out = new(string)
 		**out = **in
+	}
+	if in.NetworkIDRef != nil {
+		in, out := &in.NetworkIDRef, &out.NetworkIDRef
+		*out = new(v1.Reference)
+		(*in).DeepCopyInto(*out)
+	}
+	if in.NetworkIDSelector != nil {
+		in, out := &in.NetworkIDSelector, &out.NetworkIDSelector
+		*out = new(v1.Selector)
+		(*in).DeepCopyInto(*out)
 	}
 	in.PasswordSecretRef.DeepCopyInto(&out.PasswordSecretRef)
 }

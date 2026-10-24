@@ -162,7 +162,16 @@ type DeviceInitParameters struct {
 	MeshStaVapEnabled *bool `json:"meshStaVapEnabled,omitempty" tf:"mesh_sta_vap_enabled,omitempty"`
 
 	// Management network ID. The network this device uses for its own management traffic (the UI's Network Override). When set, the device tags its management onto this network's VLAN, so that VLAN must already be tagged on the device's upstream switch port(s) before this attribute is applied. Otherwise the device loses its management path, drops off, and the apply fails with an inconsistent-result error. Apply in two steps: tag the VLAN on the uplink (a port_override tagged_networkconf_ids entry) first, then set mgmt_network_id. Leave unset to manage on the uplink's native (untagged) network.
+	// +crossplane:generate:reference:type=github.com/devantler-tech/provider-upjet-unifi/apis/namespaced/network/v1alpha1.Network
 	MgmtNetworkID *string `json:"mgmtNetworkId,omitempty" tf:"mgmt_network_id,omitempty"`
+
+	// Reference to a Network in network to populate mgmtNetworkId.
+	// +kubebuilder:validation:Optional
+	MgmtNetworkIDRef *v1.NamespacedReference `json:"mgmtNetworkIdRef,omitempty" tf:"-"`
+
+	// Selector for a Network in network to populate mgmtNetworkId.
+	// +kubebuilder:validation:Optional
+	MgmtNetworkIDSelector *v1.NamespacedSelector `json:"mgmtNetworkIdSelector,omitempty" tf:"-"`
 
 	// The name of the device.
 	Name *string `json:"name,omitempty" tf:"name,omitempty"`
@@ -394,8 +403,17 @@ type DeviceParameters struct {
 	MeshStaVapEnabled *bool `json:"meshStaVapEnabled,omitempty" tf:"mesh_sta_vap_enabled,omitempty"`
 
 	// Management network ID. The network this device uses for its own management traffic (the UI's Network Override). When set, the device tags its management onto this network's VLAN, so that VLAN must already be tagged on the device's upstream switch port(s) before this attribute is applied. Otherwise the device loses its management path, drops off, and the apply fails with an inconsistent-result error. Apply in two steps: tag the VLAN on the uplink (a port_override tagged_networkconf_ids entry) first, then set mgmt_network_id. Leave unset to manage on the uplink's native (untagged) network.
+	// +crossplane:generate:reference:type=github.com/devantler-tech/provider-upjet-unifi/apis/namespaced/network/v1alpha1.Network
 	// +kubebuilder:validation:Optional
 	MgmtNetworkID *string `json:"mgmtNetworkId,omitempty" tf:"mgmt_network_id,omitempty"`
+
+	// Reference to a Network in network to populate mgmtNetworkId.
+	// +kubebuilder:validation:Optional
+	MgmtNetworkIDRef *v1.NamespacedReference `json:"mgmtNetworkIdRef,omitempty" tf:"-"`
+
+	// Selector for a Network in network to populate mgmtNetworkId.
+	// +kubebuilder:validation:Optional
+	MgmtNetworkIDSelector *v1.NamespacedSelector `json:"mgmtNetworkIdSelector,omitempty" tf:"-"`
 
 	// The name of the device.
 	// +kubebuilder:validation:Optional
