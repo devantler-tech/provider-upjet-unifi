@@ -11,8 +11,9 @@ spec:
     subnet: 10.0.0.2/24
     wireguard:
       # The client's WireGuard private key, read from a Secret in this
-      # namespace. This provider requires it: the write-only key fields cannot
-      # be set.
+      # namespace. Always set it: this provider cannot set the write-only key
+      # fields that could stand in for it, so a client without it fails to
+      # reconcile.
       privateKeySecretRef:
         name: example-wireguard-client-keys
         key: private-key

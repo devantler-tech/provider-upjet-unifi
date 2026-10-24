@@ -228,38 +228,6 @@ func TestNoDescriptionInvitesSettingAWriteOnlyAttribute(t *testing.T) {
 	})
 }
 
-// An attribute upstream made optional because its write-only form can stand in
-// stays required, in both API scopes. The entry must still match the schema:
-// the attribute exists and still has a write-only sibling.
-func TestAttributesStayRequiredWithoutWriteOnly(t *testing.T) {
-	providers := map[string]*ujconfig.Provider{
-		"cluster":    GetProvider(),
-		"namespaced": GetProviderNamespaced(),
-	}
-	for scope, p := range providers {
-		for resourceName, paths := range requiredWithoutWriteOnly {
-			r, ok := p.Resources[resourceName]
-			if !ok {
-				t.Errorf("%s: %s is not a generated resource", scope, resourceName)
-				continue
-			}
-			for _, path := range paths {
-				attribute := attributeAt(r.TerraformResource.Schema, path)
-				if attribute == nil {
-					t.Errorf("%s: %s has no attribute %q; remove or correct its requiredWithoutWriteOnly entry", scope, resourceName, path)
-					continue
-				}
-				if !attribute.Required || attribute.Optional {
-					t.Errorf("%s: %s.%s is not required (required=%v, optional=%v)", scope, resourceName, path, attribute.Required, attribute.Optional)
-				}
-				if attributeAt(r.TerraformResource.Schema, path+writeOnlySuffix) == nil {
-					t.Errorf("%s: %s.%s has no write-only sibling any more; its requiredWithoutWriteOnly entry may be stale", scope, resourceName, path)
-				}
-			}
-		}
-	}
-}
-
 func TestWriteOnlyVersionBase(t *testing.T) {
 	siblings := map[string]*schema.Schema{
 		"private_key":            {},

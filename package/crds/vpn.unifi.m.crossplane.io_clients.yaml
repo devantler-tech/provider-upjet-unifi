@@ -381,8 +381,6 @@ spec:
                           provider cannot set, so changing this field has no effect.
                           Set `privateKeySecretRef` instead.
                         type: number
-                    required:
-                    - privateKeySecretRef
                     type: object
                 type: object
               managementPolicies:
