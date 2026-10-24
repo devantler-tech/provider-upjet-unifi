@@ -56,10 +56,10 @@ jobs:
           files: |
             package/crds/**
 
-      # The gate compares against the pull request's base commit, which the
-      # shallow checkout does not contain, and fails if it cannot resolve it.
+      # Both checks below compare against the pull request's base commit, which
+      # the shallow checkout does not contain, and fail if it cannot resolve it.
       - name: Fetch the pull request base
-        if: github.event_name == 'pull_request' && steps.modified-crds.outputs.any_modified == 'true'
+        if: github.event_name == 'pull_request'
         env:
           BASE_SHA: ${{ github.event.pull_request.base.sha }}
         run: git fetch --no-tags --depth=1 origin "${BASE_SHA}"
@@ -91,9 +91,14 @@ jobs:
             echo "::notice::The 'breaking change' label is set; reported breaking CRD changes are accepted."
           fi
           CRDDIFF_ACCEPT_BREAKING="${accept}" make crddiff
+
+      # Reports each generated resource whose native state schema version differs
+      # from the base, or that none does. It fails when an input is missing.
       - name: Report native schema version changes
-        run: |
-          make schema-version-diff
+        if: github.event_name == 'pull_request'
+        env:
+          SCHEMA_DIFF_BASE: ${{ github.event.pull_request.base.sha }}
+        run: make schema-version-diff
 
   lint:
     runs-on: ubuntu-24.04
