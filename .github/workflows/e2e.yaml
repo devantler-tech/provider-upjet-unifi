@@ -141,20 +141,24 @@ jobs:
             echo "::error::Checked out $(git rev-parse HEAD), not the reviewed commit $REVIEWED_SHA."
             exit 1
           fi
-          LIST=""
+          FILES=""
           for P in $PATHS; do
             if [ ! -e "$P" ]; then
               echo "::error::$P does not exist at $REVIEWED_SHA."
               exit 1
             fi
-            while IFS= read -r F; do
-              if ! printf '%s\n' "$F" | grep -qE '^examples/[A-Za-z0-9_./-]+\.yaml$'; then
-                echo "::error::Refusing the example file name '$F'."
-                exit 1
-              fi
-              LIST="${LIST:+$LIST,}$F"
-            done < <(find "$P" -type f -name '*.yaml' | sort)
+            FILES="$FILES$(find "$P" -type f -name '*.yaml')"$'\n'
           done
+          # Overlapping paths, such as examples and examples/cluster, name a manifest once.
+          LIST=""
+          while IFS= read -r F; do
+            [ -n "$F" ] || continue
+            if ! printf '%s\n' "$F" | grep -qE '^examples/[A-Za-z0-9_./-]+\.yaml$'; then
+              echo "::error::Refusing the example file name '$F'."
+              exit 1
+            fi
+            LIST="${LIST:+$LIST,}$F"
+          done < <(printf '%s' "$FILES" | sed 's#//*#/#g' | sort -u)
           if [ -z "$LIST" ]; then
             echo "::error::$PATHS holds no example manifests at $REVIEWED_SHA."
             exit 1
