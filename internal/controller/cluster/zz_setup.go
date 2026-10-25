@@ -121,3 +121,43 @@ func SetupGated(mgr ctrl.Manager, o controller.Options) error {
 	}
 	return nil
 }
+
+// SetupWebhookWithManager registers conversion webhooks for all resource kinds in the group.
+func SetupWebhookWithManager(mgr ctrl.Manager) error {
+	for _, setup := range []func(ctrl.Manager) error{
+		account.SetupWebhookWithManager,
+		client.SetupWebhookWithManager,
+		device.SetupWebhookWithManager,
+		qosrate.SetupWebhookWithManager,
+		supervisor.SetupWebhookWithManager,
+		record.SetupWebhookWithManager,
+		group.SetupWebhookWithManager,
+		policy.SetupWebhookWithManager,
+		rule.SetupWebhookWithManager,
+		zone.SetupWebhookWithManager,
+		bgp.SetupWebhookWithManager,
+		network.SetupWebhookWithManager,
+		wan.SetupWebhookWithManager,
+		forward.SetupWebhookWithManager,
+		profile.SetupWebhookWithManager,
+		providerconfig.SetupWebhookWithManager,
+		profileradius.SetupWebhookWithManager,
+		user.SetupWebhookWithManager,
+		staticroute.SetupWebhookWithManager,
+		trafficroute.SetupWebhookWithManager,
+		dns.SetupWebhookWithManager,
+		setting.SetupWebhookWithManager,
+		site.SetupWebhookWithManager,
+		clientvpn.SetupWebhookWithManager,
+		peer.SetupWebhookWithManager,
+		server.SetupWebhookWithManager,
+		tositevpn.SetupWebhookWithManager,
+		apgroup.SetupWebhookWithManager,
+		wlan.SetupWebhookWithManager,
+	} {
+		if err := setup(mgr); err != nil {
+			return err
+		}
+	}
+	return nil
+}

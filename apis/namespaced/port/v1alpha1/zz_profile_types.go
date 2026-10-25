@@ -10,8 +10,7 @@ import (
 	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
 	"k8s.io/apimachinery/pkg/runtime/schema"
 
-	v1 "github.com/crossplane/crossplane-runtime/v2/apis/common/v1"
-	v2 "github.com/crossplane/crossplane-runtime/v2/apis/common/v2"
+	v2 "github.com/crossplane/crossplane/apis/v2/core/v2"
 )
 
 type ProfileInitParameters struct {
@@ -38,11 +37,11 @@ type ProfileInitParameters struct {
 
 	// References to Network in network to populate excludedNetworkconfIds.
 	// +kubebuilder:validation:Optional
-	ExcludedNetworkconfIdsRefs []v1.NamespacedReference `json:"excludedNetworkconfIdsRefs,omitempty" tf:"-"`
+	ExcludedNetworkconfIdsRefs []v2.NamespacedReference `json:"excludedNetworkconfIdsRefs,omitempty" tf:"-"`
 
 	// Selector for a list of Network in network to populate excludedNetworkconfIds.
 	// +kubebuilder:validation:Optional
-	ExcludedNetworkconfIdsSelector *v1.NamespacedSelector `json:"excludedNetworkconfIdsSelector,omitempty" tf:"-"`
+	ExcludedNetworkconfIdsSelector *v2.NamespacedSelector `json:"excludedNetworkconfIdsSelector,omitempty" tf:"-"`
 
 	// Forward Error Correction mode. Can be `rs-fec`, `fc-fec`, `default`, or `disabled`.
 	FecMode *string `json:"fecMode,omitempty" tf:"fec_mode,omitempty"`
@@ -69,11 +68,11 @@ type ProfileInitParameters struct {
 
 	// References to Network in network to populate multicastRouterNetworkconfIds.
 	// +kubebuilder:validation:Optional
-	MulticastRouterNetworkconfIdsRefs []v1.NamespacedReference `json:"multicastRouterNetworkconfIdsRefs,omitempty" tf:"-"`
+	MulticastRouterNetworkconfIdsRefs []v2.NamespacedReference `json:"multicastRouterNetworkconfIdsRefs,omitempty" tf:"-"`
 
 	// Selector for a list of Network in network to populate multicastRouterNetworkconfIds.
 	// +kubebuilder:validation:Optional
-	MulticastRouterNetworkconfIdsSelector *v1.NamespacedSelector `json:"multicastRouterNetworkconfIdsSelector,omitempty" tf:"-"`
+	MulticastRouterNetworkconfIdsSelector *v2.NamespacedSelector `json:"multicastRouterNetworkconfIdsSelector,omitempty" tf:"-"`
 
 	// The name of the port profile.
 	Name *string `json:"name,omitempty" tf:"name,omitempty"`
@@ -84,11 +83,11 @@ type ProfileInitParameters struct {
 
 	// Reference to a Network in network to populate nativeNetworkconfId.
 	// +kubebuilder:validation:Optional
-	NativeNetworkconfIDRef *v1.NamespacedReference `json:"nativeNetworkconfIdRef,omitempty" tf:"-"`
+	NativeNetworkconfIDRef *v2.NamespacedReference `json:"nativeNetworkconfIdRef,omitempty" tf:"-"`
 
 	// Selector for a Network in network to populate nativeNetworkconfId.
 	// +kubebuilder:validation:Optional
-	NativeNetworkconfIDSelector *v1.NamespacedSelector `json:"nativeNetworkconfIdSelector,omitempty" tf:"-"`
+	NativeNetworkconfIDSelector *v2.NamespacedSelector `json:"nativeNetworkconfIdSelector,omitempty" tf:"-"`
 
 	// The operation mode for the port profile. Can only be `switch`
 	OpMode *string `json:"opMode,omitempty" tf:"op_mode,omitempty"`
@@ -167,11 +166,11 @@ type ProfileInitParameters struct {
 
 	// References to Network in network to populate taggedNetworkconfIds.
 	// +kubebuilder:validation:Optional
-	TaggedNetworkconfIdsRefs []v1.NamespacedReference `json:"taggedNetworkconfIdsRefs,omitempty" tf:"-"`
+	TaggedNetworkconfIdsRefs []v2.NamespacedReference `json:"taggedNetworkconfIdsRefs,omitempty" tf:"-"`
 
 	// Selector for a list of Network in network to populate taggedNetworkconfIds.
 	// +kubebuilder:validation:Optional
-	TaggedNetworkconfIdsSelector *v1.NamespacedSelector `json:"taggedNetworkconfIdsSelector,omitempty" tf:"-"`
+	TaggedNetworkconfIdsSelector *v2.NamespacedSelector `json:"taggedNetworkconfIdsSelector,omitempty" tf:"-"`
 
 	// How tagged VLANs are managed on the port. Can be `auto`, `block_all`, or `custom`.
 	TaggedVlanMgmt *string `json:"taggedVlanMgmt,omitempty" tf:"tagged_vlan_mgmt,omitempty"`
@@ -184,11 +183,11 @@ type ProfileInitParameters struct {
 
 	// Reference to a Network in network to populate voiceNetworkconfId.
 	// +kubebuilder:validation:Optional
-	VoiceNetworkconfIDRef *v1.NamespacedReference `json:"voiceNetworkconfIdRef,omitempty" tf:"-"`
+	VoiceNetworkconfIDRef *v2.NamespacedReference `json:"voiceNetworkconfIdRef,omitempty" tf:"-"`
 
 	// Selector for a Network in network to populate voiceNetworkconfId.
 	// +kubebuilder:validation:Optional
-	VoiceNetworkconfIDSelector *v1.NamespacedSelector `json:"voiceNetworkconfIdSelector,omitempty" tf:"-"`
+	VoiceNetworkconfIDSelector *v2.NamespacedSelector `json:"voiceNetworkconfIdSelector,omitempty" tf:"-"`
 }
 
 type ProfileObservation struct {
@@ -355,11 +354,11 @@ type ProfileParameters struct {
 
 	// References to Network in network to populate excludedNetworkconfIds.
 	// +kubebuilder:validation:Optional
-	ExcludedNetworkconfIdsRefs []v1.NamespacedReference `json:"excludedNetworkconfIdsRefs,omitempty" tf:"-"`
+	ExcludedNetworkconfIdsRefs []v2.NamespacedReference `json:"excludedNetworkconfIdsRefs,omitempty" tf:"-"`
 
 	// Selector for a list of Network in network to populate excludedNetworkconfIds.
 	// +kubebuilder:validation:Optional
-	ExcludedNetworkconfIdsSelector *v1.NamespacedSelector `json:"excludedNetworkconfIdsSelector,omitempty" tf:"-"`
+	ExcludedNetworkconfIdsSelector *v2.NamespacedSelector `json:"excludedNetworkconfIdsSelector,omitempty" tf:"-"`
 
 	// Forward Error Correction mode. Can be `rs-fec`, `fc-fec`, `default`, or `disabled`.
 	// +kubebuilder:validation:Optional
@@ -393,11 +392,11 @@ type ProfileParameters struct {
 
 	// References to Network in network to populate multicastRouterNetworkconfIds.
 	// +kubebuilder:validation:Optional
-	MulticastRouterNetworkconfIdsRefs []v1.NamespacedReference `json:"multicastRouterNetworkconfIdsRefs,omitempty" tf:"-"`
+	MulticastRouterNetworkconfIdsRefs []v2.NamespacedReference `json:"multicastRouterNetworkconfIdsRefs,omitempty" tf:"-"`
 
 	// Selector for a list of Network in network to populate multicastRouterNetworkconfIds.
 	// +kubebuilder:validation:Optional
-	MulticastRouterNetworkconfIdsSelector *v1.NamespacedSelector `json:"multicastRouterNetworkconfIdsSelector,omitempty" tf:"-"`
+	MulticastRouterNetworkconfIdsSelector *v2.NamespacedSelector `json:"multicastRouterNetworkconfIdsSelector,omitempty" tf:"-"`
 
 	// The name of the port profile.
 	// +kubebuilder:validation:Optional
@@ -410,11 +409,11 @@ type ProfileParameters struct {
 
 	// Reference to a Network in network to populate nativeNetworkconfId.
 	// +kubebuilder:validation:Optional
-	NativeNetworkconfIDRef *v1.NamespacedReference `json:"nativeNetworkconfIdRef,omitempty" tf:"-"`
+	NativeNetworkconfIDRef *v2.NamespacedReference `json:"nativeNetworkconfIdRef,omitempty" tf:"-"`
 
 	// Selector for a Network in network to populate nativeNetworkconfId.
 	// +kubebuilder:validation:Optional
-	NativeNetworkconfIDSelector *v1.NamespacedSelector `json:"nativeNetworkconfIdSelector,omitempty" tf:"-"`
+	NativeNetworkconfIDSelector *v2.NamespacedSelector `json:"nativeNetworkconfIdSelector,omitempty" tf:"-"`
 
 	// The operation mode for the port profile. Can only be `switch`
 	// +kubebuilder:validation:Optional
@@ -517,11 +516,11 @@ type ProfileParameters struct {
 
 	// References to Network in network to populate taggedNetworkconfIds.
 	// +kubebuilder:validation:Optional
-	TaggedNetworkconfIdsRefs []v1.NamespacedReference `json:"taggedNetworkconfIdsRefs,omitempty" tf:"-"`
+	TaggedNetworkconfIdsRefs []v2.NamespacedReference `json:"taggedNetworkconfIdsRefs,omitempty" tf:"-"`
 
 	// Selector for a list of Network in network to populate taggedNetworkconfIds.
 	// +kubebuilder:validation:Optional
-	TaggedNetworkconfIdsSelector *v1.NamespacedSelector `json:"taggedNetworkconfIdsSelector,omitempty" tf:"-"`
+	TaggedNetworkconfIdsSelector *v2.NamespacedSelector `json:"taggedNetworkconfIdsSelector,omitempty" tf:"-"`
 
 	// How tagged VLANs are managed on the port. Can be `auto`, `block_all`, or `custom`.
 	// +kubebuilder:validation:Optional
@@ -537,11 +536,11 @@ type ProfileParameters struct {
 
 	// Reference to a Network in network to populate voiceNetworkconfId.
 	// +kubebuilder:validation:Optional
-	VoiceNetworkconfIDRef *v1.NamespacedReference `json:"voiceNetworkconfIdRef,omitempty" tf:"-"`
+	VoiceNetworkconfIDRef *v2.NamespacedReference `json:"voiceNetworkconfIdRef,omitempty" tf:"-"`
 
 	// Selector for a Network in network to populate voiceNetworkconfId.
 	// +kubebuilder:validation:Optional
-	VoiceNetworkconfIDSelector *v1.NamespacedSelector `json:"voiceNetworkconfIdSelector,omitempty" tf:"-"`
+	VoiceNetworkconfIDSelector *v2.NamespacedSelector `json:"voiceNetworkconfIdSelector,omitempty" tf:"-"`
 }
 
 type ProfileTimeoutsInitParameters struct {
@@ -612,8 +611,8 @@ type ProfileSpec struct {
 
 // ProfileStatus defines the observed state of Profile.
 type ProfileStatus struct {
-	v1.ResourceStatus `json:",inline"`
-	AtProvider        ProfileObservation `json:"atProvider,omitempty"`
+	v2.ManagedResourceStatus `json:",inline"`
+	AtProvider               ProfileObservation `json:"atProvider,omitempty"`
 }
 
 // +kubebuilder:object:root=true

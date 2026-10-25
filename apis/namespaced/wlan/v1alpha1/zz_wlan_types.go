@@ -10,8 +10,7 @@ import (
 	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
 	"k8s.io/apimachinery/pkg/runtime/schema"
 
-	v1 "github.com/crossplane/crossplane-runtime/v2/apis/common/v1"
-	v2 "github.com/crossplane/crossplane-runtime/v2/apis/common/v2"
+	v2 "github.com/crossplane/crossplane/apis/v2/core/v2"
 )
 
 type MacFilterInitParameters struct {
@@ -64,14 +63,14 @@ type PrivatePresharedKeysInitParameters struct {
 
 	// Reference to a Network in network to populate networkId.
 	// +kubebuilder:validation:Optional
-	NetworkIDRef *v1.NamespacedReference `json:"networkIdRef,omitempty" tf:"-"`
+	NetworkIDRef *v2.NamespacedReference `json:"networkIdRef,omitempty" tf:"-"`
 
 	// Selector for a Network in network to populate networkId.
 	// +kubebuilder:validation:Optional
-	NetworkIDSelector *v1.NamespacedSelector `json:"networkIdSelector,omitempty" tf:"-"`
+	NetworkIDSelector *v2.NamespacedSelector `json:"networkIdSelector,omitempty" tf:"-"`
 
 	// The passphrase for this key (8-255 characters).
-	PasswordSecretRef v1.LocalSecretKeySelector `json:"passwordSecretRef" tf:"-"`
+	PasswordSecretRef v2.LocalSecretKeySelector `json:"passwordSecretRef" tf:"-"`
 }
 
 type PrivatePresharedKeysObservation struct {
@@ -89,15 +88,15 @@ type PrivatePresharedKeysParameters struct {
 
 	// Reference to a Network in network to populate networkId.
 	// +kubebuilder:validation:Optional
-	NetworkIDRef *v1.NamespacedReference `json:"networkIdRef,omitempty" tf:"-"`
+	NetworkIDRef *v2.NamespacedReference `json:"networkIdRef,omitempty" tf:"-"`
 
 	// Selector for a Network in network to populate networkId.
 	// +kubebuilder:validation:Optional
-	NetworkIDSelector *v1.NamespacedSelector `json:"networkIdSelector,omitempty" tf:"-"`
+	NetworkIDSelector *v2.NamespacedSelector `json:"networkIdSelector,omitempty" tf:"-"`
 
 	// The passphrase for this key (8-255 characters).
 	// +kubebuilder:validation:Optional
-	PasswordSecretRef v1.LocalSecretKeySelector `json:"passwordSecretRef" tf:"-"`
+	PasswordSecretRef v2.LocalSecretKeySelector `json:"passwordSecretRef" tf:"-"`
 }
 
 type ScheduleInitParameters struct {
@@ -168,11 +167,11 @@ type WlanInitParameters struct {
 
 	// References to ApGroup in wlan to populate apGroupIds.
 	// +kubebuilder:validation:Optional
-	ApGroupIdsRefs []v1.NamespacedReference `json:"apGroupIdsRefs,omitempty" tf:"-"`
+	ApGroupIdsRefs []v2.NamespacedReference `json:"apGroupIdsRefs,omitempty" tf:"-"`
 
 	// Selector for a list of ApGroup in wlan to populate apGroupIds.
 	// +kubebuilder:validation:Optional
-	ApGroupIdsSelector *v1.NamespacedSelector `json:"apGroupIdsSelector,omitempty" tf:"-"`
+	ApGroupIdsSelector *v2.NamespacedSelector `json:"apGroupIdsSelector,omitempty" tf:"-"`
 
 	// Access point group mode.
 	ApGroupMode *string `json:"apGroupMode,omitempty" tf:"ap_group_mode,omitempty"`
@@ -255,20 +254,20 @@ type WlanInitParameters struct {
 
 	// Reference to a Network in network to populate networkId.
 	// +kubebuilder:validation:Optional
-	NetworkIDRef *v1.NamespacedReference `json:"networkIdRef,omitempty" tf:"-"`
+	NetworkIDRef *v2.NamespacedReference `json:"networkIdRef,omitempty" tf:"-"`
 
 	// Selector for a Network in network to populate networkId.
 	// +kubebuilder:validation:Optional
-	NetworkIDSelector *v1.NamespacedSelector `json:"networkIdSelector,omitempty" tf:"-"`
+	NetworkIDSelector *v2.NamespacedSelector `json:"networkIdSelector,omitempty" tf:"-"`
 
 	// Connect high performance clients to 5 GHz only.
 	No2GhzOui *bool `json:"no2ghzOui,omitempty" tf:"no2ghz_oui,omitempty"`
 
 	// The passphrase for the network, only required if `security` is not `open`. Stored in state.
-	PassphraseSecretRef *v1.LocalSecretKeySelector `json:"passphraseSecretRef,omitempty" tf:"-"`
+	PassphraseSecretRef *v2.LocalSecretKeySelector `json:"passphraseSecretRef,omitempty" tf:"-"`
 
 	// Write-only equivalent of `passphrase`. Write-only attributes need engine version 1.11 or later. This provider cannot set them: the engine it bundles predates that version and rejects any value, so setting this field fails validation. Set `passphraseSecretRef` instead.
-	PassphraseWoSecretRef *v1.LocalSecretKeySelector `json:"passphraseWoSecretRef,omitempty" tf:"-"`
+	PassphraseWoSecretRef *v2.LocalSecretKeySelector `json:"passphraseWoSecretRef,omitempty" tf:"-"`
 
 	// Enable Protected Management Frames. This cannot be disabled if using WPA 3.
 	PmfMode *string `json:"pmfMode,omitempty" tf:"pmf_mode,omitempty"`
@@ -290,11 +289,11 @@ type WlanInitParameters struct {
 
 	// Reference to a Profile in radius to populate radiusProfileId.
 	// +kubebuilder:validation:Optional
-	RadiusProfileIDRef *v1.NamespacedReference `json:"radiusProfileIdRef,omitempty" tf:"-"`
+	RadiusProfileIDRef *v2.NamespacedReference `json:"radiusProfileIdRef,omitempty" tf:"-"`
 
 	// Selector for a Profile in radius to populate radiusProfileId.
 	// +kubebuilder:validation:Optional
-	RadiusProfileIDSelector *v1.NamespacedSelector `json:"radiusProfileIdSelector,omitempty" tf:"-"`
+	RadiusProfileIDSelector *v2.NamespacedSelector `json:"radiusProfileIdSelector,omitempty" tf:"-"`
 
 	// Start and stop schedules for the WLAN
 	Schedule []ScheduleInitParameters `json:"schedule,omitempty" tf:"schedule,omitempty"`
@@ -510,11 +509,11 @@ type WlanParameters struct {
 
 	// References to ApGroup in wlan to populate apGroupIds.
 	// +kubebuilder:validation:Optional
-	ApGroupIdsRefs []v1.NamespacedReference `json:"apGroupIdsRefs,omitempty" tf:"-"`
+	ApGroupIdsRefs []v2.NamespacedReference `json:"apGroupIdsRefs,omitempty" tf:"-"`
 
 	// Selector for a list of ApGroup in wlan to populate apGroupIds.
 	// +kubebuilder:validation:Optional
-	ApGroupIdsSelector *v1.NamespacedSelector `json:"apGroupIdsSelector,omitempty" tf:"-"`
+	ApGroupIdsSelector *v2.NamespacedSelector `json:"apGroupIdsSelector,omitempty" tf:"-"`
 
 	// Access point group mode.
 	// +kubebuilder:validation:Optional
@@ -623,11 +622,11 @@ type WlanParameters struct {
 
 	// Reference to a Network in network to populate networkId.
 	// +kubebuilder:validation:Optional
-	NetworkIDRef *v1.NamespacedReference `json:"networkIdRef,omitempty" tf:"-"`
+	NetworkIDRef *v2.NamespacedReference `json:"networkIdRef,omitempty" tf:"-"`
 
 	// Selector for a Network in network to populate networkId.
 	// +kubebuilder:validation:Optional
-	NetworkIDSelector *v1.NamespacedSelector `json:"networkIdSelector,omitempty" tf:"-"`
+	NetworkIDSelector *v2.NamespacedSelector `json:"networkIdSelector,omitempty" tf:"-"`
 
 	// Connect high performance clients to 5 GHz only.
 	// +kubebuilder:validation:Optional
@@ -635,11 +634,11 @@ type WlanParameters struct {
 
 	// The passphrase for the network, only required if `security` is not `open`. Stored in state.
 	// +kubebuilder:validation:Optional
-	PassphraseSecretRef *v1.LocalSecretKeySelector `json:"passphraseSecretRef,omitempty" tf:"-"`
+	PassphraseSecretRef *v2.LocalSecretKeySelector `json:"passphraseSecretRef,omitempty" tf:"-"`
 
 	// Write-only equivalent of `passphrase`. Write-only attributes need engine version 1.11 or later. This provider cannot set them: the engine it bundles predates that version and rejects any value, so setting this field fails validation. Set `passphraseSecretRef` instead.
 	// +kubebuilder:validation:Optional
-	PassphraseWoSecretRef *v1.LocalSecretKeySelector `json:"passphraseWoSecretRef,omitempty" tf:"-"`
+	PassphraseWoSecretRef *v2.LocalSecretKeySelector `json:"passphraseWoSecretRef,omitempty" tf:"-"`
 
 	// Enable Protected Management Frames. This cannot be disabled if using WPA 3.
 	// +kubebuilder:validation:Optional
@@ -667,11 +666,11 @@ type WlanParameters struct {
 
 	// Reference to a Profile in radius to populate radiusProfileId.
 	// +kubebuilder:validation:Optional
-	RadiusProfileIDRef *v1.NamespacedReference `json:"radiusProfileIdRef,omitempty" tf:"-"`
+	RadiusProfileIDRef *v2.NamespacedReference `json:"radiusProfileIdRef,omitempty" tf:"-"`
 
 	// Selector for a Profile in radius to populate radiusProfileId.
 	// +kubebuilder:validation:Optional
-	RadiusProfileIDSelector *v1.NamespacedSelector `json:"radiusProfileIdSelector,omitempty" tf:"-"`
+	RadiusProfileIDSelector *v2.NamespacedSelector `json:"radiusProfileIdSelector,omitempty" tf:"-"`
 
 	// Start and stop schedules for the WLAN
 	// +kubebuilder:validation:Optional
@@ -806,8 +805,8 @@ type WlanSpec struct {
 
 // WlanStatus defines the observed state of Wlan.
 type WlanStatus struct {
-	v1.ResourceStatus `json:",inline"`
-	AtProvider        WlanObservation `json:"atProvider,omitempty"`
+	v2.ManagedResourceStatus `json:",inline"`
+	AtProvider               WlanObservation `json:"atProvider,omitempty"`
 }
 
 // +kubebuilder:object:root=true

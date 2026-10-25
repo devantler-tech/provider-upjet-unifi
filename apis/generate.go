@@ -23,13 +23,13 @@
 // Generate deepcopy methodsets and CRD manifests
 //go:generate go run -tags generate sigs.k8s.io/controller-tools/cmd/controller-gen object:headerFile=../hack/boilerplate.go.txt paths=./... crd:allowDangerousTypes=true,crdVersions=v1 output:artifacts:config=../package/crds
 
-// Generate crossplane-runtime methodsets (resource.Claim, etc)
-//go:generate go run -tags generate github.com/crossplane/crossplane-tools/cmd/angryjet generate-methodsets --header-file=../hack/boilerplate.go.txt ./...
+// Generate crossplane-runtime methodsets (resource.Claim, etc). angryjet runs at a pinned revision
+// in its own module graph: the revision that writes the Crossplane core API imports needs newer
+// Kubernetes libraries than the ones Upjet and the provider build with.
+//go:generate go run github.com/crossplane/crossplane-tools/cmd/angryjet@v0.0.0-20260719180100-659f1dc036c5 generate-methodsets --header-file=../hack/boilerplate.go.txt ./...
 
 package apis
 
 import (
 	_ "sigs.k8s.io/controller-tools/cmd/controller-gen" //nolint:typecheck
-
-	_ "github.com/crossplane/crossplane-tools/cmd/angryjet" //nolint:typecheck
 )

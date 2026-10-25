@@ -10,8 +10,7 @@ import (
 	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
 	"k8s.io/apimachinery/pkg/runtime/schema"
 
-	v1 "github.com/crossplane/crossplane-runtime/v2/apis/common/v1"
-	v2 "github.com/crossplane/crossplane-runtime/v2/apis/common/v2"
+	v2 "github.com/crossplane/crossplane/apis/v2/core/v2"
 )
 
 type DNSInitParameters struct {
@@ -49,7 +48,7 @@ type L2TpInitParameters struct {
 	AllowWeakCiphers *bool `json:"allowWeakCiphers,omitempty" tf:"allow_weak_ciphers,omitempty"`
 
 	// IPsec pre-shared key for L2TP. Required by the UniFi controller.
-	PreSharedKeySecretRef v1.LocalSecretKeySelector `json:"preSharedKeySecretRef" tf:"-"`
+	PreSharedKeySecretRef v2.LocalSecretKeySelector `json:"preSharedKeySecretRef" tf:"-"`
 }
 
 type L2TpObservation struct {
@@ -66,7 +65,7 @@ type L2TpParameters struct {
 
 	// IPsec pre-shared key for L2TP. Required by the UniFi controller.
 	// +kubebuilder:validation:Optional
-	PreSharedKeySecretRef v1.LocalSecretKeySelector `json:"preSharedKeySecretRef" tf:"-"`
+	PreSharedKeySecretRef v2.LocalSecretKeySelector `json:"preSharedKeySecretRef" tf:"-"`
 }
 
 type OpenvpnInitParameters struct {
@@ -127,11 +126,11 @@ type ServerInitParameters struct {
 
 	// Reference to a Profile in radius to populate radiusprofileId.
 	// +kubebuilder:validation:Optional
-	RadiusprofileIDRef *v1.NamespacedReference `json:"radiusprofileIdRef,omitempty" tf:"-"`
+	RadiusprofileIDRef *v2.NamespacedReference `json:"radiusprofileIdRef,omitempty" tf:"-"`
 
 	// Selector for a Profile in radius to populate radiusprofileId.
 	// +kubebuilder:validation:Optional
-	RadiusprofileIDSelector *v1.NamespacedSelector `json:"radiusprofileIdSelector,omitempty" tf:"-"`
+	RadiusprofileIDSelector *v2.NamespacedSelector `json:"radiusprofileIdSelector,omitempty" tf:"-"`
 
 	// The name of the site to associate the VPN server with.
 	Site *string `json:"site,omitempty" tf:"site,omitempty"`
@@ -203,11 +202,11 @@ type ServerParameters struct {
 
 	// Reference to a Profile in radius to populate radiusprofileId.
 	// +kubebuilder:validation:Optional
-	RadiusprofileIDRef *v1.NamespacedReference `json:"radiusprofileIdRef,omitempty" tf:"-"`
+	RadiusprofileIDRef *v2.NamespacedReference `json:"radiusprofileIdRef,omitempty" tf:"-"`
 
 	// Selector for a Profile in radius to populate radiusprofileId.
 	// +kubebuilder:validation:Optional
-	RadiusprofileIDSelector *v1.NamespacedSelector `json:"radiusprofileIdSelector,omitempty" tf:"-"`
+	RadiusprofileIDSelector *v2.NamespacedSelector `json:"radiusprofileIdSelector,omitempty" tf:"-"`
 
 	// The name of the site to associate the VPN server with.
 	// +kubebuilder:validation:Optional
@@ -282,7 +281,7 @@ type ServerWireguardInitParameters struct {
 	Port *float64 `json:"port,omitempty" tf:"port,omitempty"`
 
 	// WireGuard private key for this server (base64). If not specified, the provider generates one at create time (the controller does not generate it and rejects a server without a key).
-	PrivateKeySecretRef *v1.LocalSecretKeySelector `json:"privateKeySecretRef,omitempty" tf:"-"`
+	PrivateKeySecretRef *v2.LocalSecretKeySelector `json:"privateKeySecretRef,omitempty" tf:"-"`
 }
 
 type ServerWireguardObservation struct {
@@ -302,7 +301,7 @@ type ServerWireguardParameters struct {
 
 	// WireGuard private key for this server (base64). If not specified, the provider generates one at create time (the controller does not generate it and rejects a server without a key).
 	// +kubebuilder:validation:Optional
-	PrivateKeySecretRef *v1.LocalSecretKeySelector `json:"privateKeySecretRef,omitempty" tf:"-"`
+	PrivateKeySecretRef *v2.LocalSecretKeySelector `json:"privateKeySecretRef,omitempty" tf:"-"`
 }
 
 type WanInitParameters struct {
@@ -353,8 +352,8 @@ type ServerSpec struct {
 
 // ServerStatus defines the observed state of Server.
 type ServerStatus struct {
-	v1.ResourceStatus `json:",inline"`
-	AtProvider        ServerObservation `json:"atProvider,omitempty"`
+	v2.ManagedResourceStatus `json:",inline"`
+	AtProvider               ServerObservation `json:"atProvider,omitempty"`
 }
 
 // +kubebuilder:object:root=true

@@ -216,6 +216,11 @@ func main() {
 		namespacedOpts.ChangeLogOptions = &clo
 	}
 
+	if *certsDir != "" {
+		kingpin.FatalIfError(controllerCluster.SetupWebhookWithManager(mgr), "Cannot setup cluster-scoped UniFi conversion webhooks")
+		kingpin.FatalIfError(controllerNamespaced.SetupWebhookWithManager(mgr), "Cannot setup namespaced UniFi conversion webhooks")
+	}
+
 	canSafeStart, err := canWatchCRD(context.TODO(), mgr)
 	kingpin.FatalIfError(err, "SafeStart precheck failed")
 	if canSafeStart {

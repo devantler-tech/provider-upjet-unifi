@@ -41,3 +41,10 @@ func SetupGated(mgr ctrl.Manager, o controller.Options) error {
 	}, v1beta1.ProviderConfigGroupVersionKind, v1beta1.ProviderConfigUsageGroupVersionKind)
 	return nil
 }
+
+// SetupWebhookWithManager is part of the setup contract the generated aggregator calls for every
+// controller package. ProviderConfigs have a single API version, so there is no conversion
+// webhook to register.
+func SetupWebhookWithManager(_ ctrl.Manager) error {
+	return nil
+}

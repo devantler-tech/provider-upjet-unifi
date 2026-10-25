@@ -10,7 +10,7 @@ import (
 	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
 	"k8s.io/apimachinery/pkg/runtime/schema"
 
-	v1 "github.com/crossplane/crossplane-runtime/v2/apis/common/v1"
+	v2 "github.com/crossplane/crossplane/apis/v2/core/v2"
 )
 
 type DHCPInitParameters struct {
@@ -497,10 +497,10 @@ type WanInitParameters struct {
 	Networkgroup *string `json:"networkgroup,omitempty" tf:"networkgroup,omitempty"`
 
 	// PPPoE password supplied by the ISP. Only meaningful when `type` is `pppoe`.
-	PasswordSecretRef *v1.SecretKeySelector `json:"passwordSecretRef,omitempty" tf:"-"`
+	PasswordSecretRef *v2.SecretKeySelector `json:"passwordSecretRef,omitempty" tf:"-"`
 
 	// Write-only equivalent of `password`. Write-only attributes need engine version 1.11 or later. This provider cannot set them: the engine it bundles predates that version and rejects any value, so setting this field fails validation. Set `passwordSecretRef` instead.
-	PasswordWoSecretRef *v1.SecretKeySelector `json:"passwordWoSecretRef,omitempty" tf:"-"`
+	PasswordWoSecretRef *v2.SecretKeySelector `json:"passwordWoSecretRef,omitempty" tf:"-"`
 
 	ProviderCapabilities *ProviderCapabilitiesInitParameters `json:"providerCapabilities,omitempty" tf:"provider_capabilities,omitempty"`
 
@@ -657,11 +657,11 @@ type WanParameters struct {
 
 	// PPPoE password supplied by the ISP. Only meaningful when `type` is `pppoe`.
 	// +kubebuilder:validation:Optional
-	PasswordSecretRef *v1.SecretKeySelector `json:"passwordSecretRef,omitempty" tf:"-"`
+	PasswordSecretRef *v2.SecretKeySelector `json:"passwordSecretRef,omitempty" tf:"-"`
 
 	// Write-only equivalent of `password`. Write-only attributes need engine version 1.11 or later. This provider cannot set them: the engine it bundles predates that version and rejects any value, so setting this field fails validation. Set `passwordSecretRef` instead.
 	// +kubebuilder:validation:Optional
-	PasswordWoSecretRef *v1.SecretKeySelector `json:"passwordWoSecretRef,omitempty" tf:"-"`
+	PasswordWoSecretRef *v2.SecretKeySelector `json:"passwordWoSecretRef,omitempty" tf:"-"`
 
 	// +kubebuilder:validation:Optional
 	ProviderCapabilities *ProviderCapabilitiesParameters `json:"providerCapabilities,omitempty" tf:"provider_capabilities,omitempty"`
@@ -766,8 +766,8 @@ type WanTimeoutsParameters struct {
 
 // WanSpec defines the desired state of Wan
 type WanSpec struct {
-	v1.ResourceSpec `json:",inline"`
-	ForProvider     WanParameters `json:"forProvider"`
+	v2.ClusterManagedResourceSpec `json:",inline"`
+	ForProvider                   WanParameters `json:"forProvider"`
 	// THIS IS A BETA FIELD. It will be honored
 	// unless the Management Policies feature flag is disabled.
 	// InitProvider holds the same fields as ForProvider, with the exception
@@ -783,8 +783,8 @@ type WanSpec struct {
 
 // WanStatus defines the observed state of Wan.
 type WanStatus struct {
-	v1.ResourceStatus `json:",inline"`
-	AtProvider        WanObservation `json:"atProvider,omitempty"`
+	v2.ManagedResourceStatus `json:",inline"`
+	AtProvider               WanObservation `json:"atProvider,omitempty"`
 }
 
 // +kubebuilder:object:root=true

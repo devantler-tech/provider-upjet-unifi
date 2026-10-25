@@ -10,7 +10,7 @@ import (
 	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
 	"k8s.io/apimachinery/pkg/runtime/schema"
 
-	v1 "github.com/crossplane/crossplane-runtime/v2/apis/common/v1"
+	v2 "github.com/crossplane/crossplane/apis/v2/core/v2"
 )
 
 type ClientInitParameters struct {
@@ -48,11 +48,11 @@ type ClientInitParameters struct {
 
 	// Reference to a Network in network to populate networkId.
 	// +kubebuilder:validation:Optional
-	NetworkIDRef *v1.Reference `json:"networkIdRef,omitempty" tf:"-"`
+	NetworkIDRef *v2.Reference `json:"networkIdRef,omitempty" tf:"-"`
 
 	// Selector for a Network in network to populate networkId.
 	// +kubebuilder:validation:Optional
-	NetworkIDSelector *v1.Selector `json:"networkIdSelector,omitempty" tf:"-"`
+	NetworkIDSelector *v2.Selector `json:"networkIdSelector,omitempty" tf:"-"`
 
 	// A note with additional information for the client.
 	Note *string `json:"note,omitempty" tf:"note,omitempty"`
@@ -167,11 +167,11 @@ type ClientParameters struct {
 
 	// Reference to a Network in network to populate networkId.
 	// +kubebuilder:validation:Optional
-	NetworkIDRef *v1.Reference `json:"networkIdRef,omitempty" tf:"-"`
+	NetworkIDRef *v2.Reference `json:"networkIdRef,omitempty" tf:"-"`
 
 	// Selector for a Network in network to populate networkId.
 	// +kubebuilder:validation:Optional
-	NetworkIDSelector *v1.Selector `json:"networkIdSelector,omitempty" tf:"-"`
+	NetworkIDSelector *v2.Selector `json:"networkIdSelector,omitempty" tf:"-"`
 
 	// A note with additional information for the client.
 	// +kubebuilder:validation:Optional
@@ -292,8 +292,8 @@ type TimeoutsParameters struct {
 
 // ClientSpec defines the desired state of Client
 type ClientSpec struct {
-	v1.ResourceSpec `json:",inline"`
-	ForProvider     ClientParameters `json:"forProvider"`
+	v2.ClusterManagedResourceSpec `json:",inline"`
+	ForProvider                   ClientParameters `json:"forProvider"`
 	// THIS IS A BETA FIELD. It will be honored
 	// unless the Management Policies feature flag is disabled.
 	// InitProvider holds the same fields as ForProvider, with the exception
@@ -309,8 +309,8 @@ type ClientSpec struct {
 
 // ClientStatus defines the observed state of Client.
 type ClientStatus struct {
-	v1.ResourceStatus `json:",inline"`
-	AtProvider        ClientObservation `json:"atProvider,omitempty"`
+	v2.ManagedResourceStatus `json:",inline"`
+	AtProvider               ClientObservation `json:"atProvider,omitempty"`
 }
 
 // +kubebuilder:object:root=true

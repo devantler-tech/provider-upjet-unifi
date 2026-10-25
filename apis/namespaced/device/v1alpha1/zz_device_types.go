@@ -10,8 +10,7 @@ import (
 	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
 	"k8s.io/apimachinery/pkg/runtime/schema"
 
-	v1 "github.com/crossplane/crossplane-runtime/v2/apis/common/v1"
-	v2 "github.com/crossplane/crossplane-runtime/v2/apis/common/v2"
+	v2 "github.com/crossplane/crossplane/apis/v2/core/v2"
 )
 
 type ConfigNetworkInitParameters struct {
@@ -167,11 +166,11 @@ type DeviceInitParameters struct {
 
 	// Reference to a Network in network to populate mgmtNetworkId.
 	// +kubebuilder:validation:Optional
-	MgmtNetworkIDRef *v1.NamespacedReference `json:"mgmtNetworkIdRef,omitempty" tf:"-"`
+	MgmtNetworkIDRef *v2.NamespacedReference `json:"mgmtNetworkIdRef,omitempty" tf:"-"`
 
 	// Selector for a Network in network to populate mgmtNetworkId.
 	// +kubebuilder:validation:Optional
-	MgmtNetworkIDSelector *v1.NamespacedSelector `json:"mgmtNetworkIdSelector,omitempty" tf:"-"`
+	MgmtNetworkIDSelector *v2.NamespacedSelector `json:"mgmtNetworkIdSelector,omitempty" tf:"-"`
 
 	// The name of the device.
 	Name *string `json:"name,omitempty" tf:"name,omitempty"`
@@ -210,7 +209,7 @@ type DeviceInitParameters struct {
 	Volume *float64 `json:"volume,omitempty" tf:"volume,omitempty"`
 
 	// Baresip password.
-	XBaresipPasswordSecretRef *v1.LocalSecretKeySelector `json:"xBaresipPasswordSecretRef,omitempty" tf:"-"`
+	XBaresipPasswordSecretRef *v2.LocalSecretKeySelector `json:"xBaresipPasswordSecretRef,omitempty" tf:"-"`
 }
 
 type DeviceObservation struct {
@@ -409,11 +408,11 @@ type DeviceParameters struct {
 
 	// Reference to a Network in network to populate mgmtNetworkId.
 	// +kubebuilder:validation:Optional
-	MgmtNetworkIDRef *v1.NamespacedReference `json:"mgmtNetworkIdRef,omitempty" tf:"-"`
+	MgmtNetworkIDRef *v2.NamespacedReference `json:"mgmtNetworkIdRef,omitempty" tf:"-"`
 
 	// Selector for a Network in network to populate mgmtNetworkId.
 	// +kubebuilder:validation:Optional
-	MgmtNetworkIDSelector *v1.NamespacedSelector `json:"mgmtNetworkIdSelector,omitempty" tf:"-"`
+	MgmtNetworkIDSelector *v2.NamespacedSelector `json:"mgmtNetworkIdSelector,omitempty" tf:"-"`
 
 	// The name of the device.
 	// +kubebuilder:validation:Optional
@@ -466,7 +465,7 @@ type DeviceParameters struct {
 
 	// Baresip password.
 	// +kubebuilder:validation:Optional
-	XBaresipPasswordSecretRef *v1.LocalSecretKeySelector `json:"xBaresipPasswordSecretRef,omitempty" tf:"-"`
+	XBaresipPasswordSecretRef *v2.LocalSecretKeySelector `json:"xBaresipPasswordSecretRef,omitempty" tf:"-"`
 }
 
 type DeviceTimeoutsInitParameters struct {
@@ -594,11 +593,11 @@ type PortOverrideInitParameters struct {
 
 	// References to Network in network to populate excludedNetworkconfIds.
 	// +kubebuilder:validation:Optional
-	ExcludedNetworkconfIdsRefs []v1.NamespacedReference `json:"excludedNetworkconfIdsRefs,omitempty" tf:"-"`
+	ExcludedNetworkconfIdsRefs []v2.NamespacedReference `json:"excludedNetworkconfIdsRefs,omitempty" tf:"-"`
 
 	// Selector for a list of Network in network to populate excludedNetworkconfIds.
 	// +kubebuilder:validation:Optional
-	ExcludedNetworkconfIdsSelector *v1.NamespacedSelector `json:"excludedNetworkconfIdsSelector,omitempty" tf:"-"`
+	ExcludedNetworkconfIdsSelector *v2.NamespacedSelector `json:"excludedNetworkconfIdsSelector,omitempty" tf:"-"`
 
 	// Forward Error Correction mode.
 	FecMode *string `json:"fecMode,omitempty" tf:"fec_mode,omitempty"`
@@ -634,11 +633,11 @@ type PortOverrideInitParameters struct {
 
 	// References to Network in network to populate multicastRouterNetworkconfIds.
 	// +kubebuilder:validation:Optional
-	MulticastRouterNetworkconfIdsRefs []v1.NamespacedReference `json:"multicastRouterNetworkconfIdsRefs,omitempty" tf:"-"`
+	MulticastRouterNetworkconfIdsRefs []v2.NamespacedReference `json:"multicastRouterNetworkconfIdsRefs,omitempty" tf:"-"`
 
 	// Selector for a list of Network in network to populate multicastRouterNetworkconfIds.
 	// +kubebuilder:validation:Optional
-	MulticastRouterNetworkconfIdsSelector *v1.NamespacedSelector `json:"multicastRouterNetworkconfIdsSelector,omitempty" tf:"-"`
+	MulticastRouterNetworkconfIdsSelector *v2.NamespacedSelector `json:"multicastRouterNetworkconfIdsSelector,omitempty" tf:"-"`
 
 	// Human-readable name of the port.
 	Name *string `json:"name,omitempty" tf:"name,omitempty"`
@@ -649,11 +648,11 @@ type PortOverrideInitParameters struct {
 
 	// Reference to a Network in network to populate nativeNetworkconfId.
 	// +kubebuilder:validation:Optional
-	NativeNetworkconfIDRef *v1.NamespacedReference `json:"nativeNetworkconfIdRef,omitempty" tf:"-"`
+	NativeNetworkconfIDRef *v2.NamespacedReference `json:"nativeNetworkconfIdRef,omitempty" tf:"-"`
 
 	// Selector for a Network in network to populate nativeNetworkconfId.
 	// +kubebuilder:validation:Optional
-	NativeNetworkconfIDSelector *v1.NamespacedSelector `json:"nativeNetworkconfIdSelector,omitempty" tf:"-"`
+	NativeNetworkconfIDSelector *v2.NamespacedSelector `json:"nativeNetworkconfIdSelector,omitempty" tf:"-"`
 
 	// Operating mode of the port: `switch` (default), `mirror`, or `aggregate`. Set `aggregate` on the lead port of an SFP+/link-aggregation (LAG) group and list the member ports in `aggregate_members`. Only written when not `switch`, as gateway devices (UDM) reject op_mode on update.
 	OpMode *string `json:"opMode,omitempty" tf:"op_mode,omitempty"`
@@ -670,11 +669,11 @@ type PortOverrideInitParameters struct {
 
 	// Reference to a Profile in port to populate portProfileId.
 	// +kubebuilder:validation:Optional
-	PortProfileIDRef *v1.NamespacedReference `json:"portProfileIdRef,omitempty" tf:"-"`
+	PortProfileIDRef *v2.NamespacedReference `json:"portProfileIdRef,omitempty" tf:"-"`
 
 	// Selector for a Profile in port to populate portProfileId.
 	// +kubebuilder:validation:Optional
-	PortProfileIDSelector *v1.NamespacedSelector `json:"portProfileIdSelector,omitempty" tf:"-"`
+	PortProfileIDSelector *v2.NamespacedSelector `json:"portProfileIdSelector,omitempty" tf:"-"`
 
 	// Enable port security.
 	PortSecurityEnabled *bool `json:"portSecurityEnabled,omitempty" tf:"port_security_enabled,omitempty"`
@@ -740,11 +739,11 @@ type PortOverrideInitParameters struct {
 
 	// References to Network in network to populate taggedNetworkconfIds.
 	// +kubebuilder:validation:Optional
-	TaggedNetworkconfIdsRefs []v1.NamespacedReference `json:"taggedNetworkconfIdsRefs,omitempty" tf:"-"`
+	TaggedNetworkconfIdsRefs []v2.NamespacedReference `json:"taggedNetworkconfIdsRefs,omitempty" tf:"-"`
 
 	// Selector for a list of Network in network to populate taggedNetworkconfIds.
 	// +kubebuilder:validation:Optional
-	TaggedNetworkconfIdsSelector *v1.NamespacedSelector `json:"taggedNetworkconfIdsSelector,omitempty" tf:"-"`
+	TaggedNetworkconfIdsSelector *v2.NamespacedSelector `json:"taggedNetworkconfIdsSelector,omitempty" tf:"-"`
 
 	// Tagged VLAN management.
 	TaggedVlanMgmt *string `json:"taggedVlanMgmt,omitempty" tf:"tagged_vlan_mgmt,omitempty"`
@@ -755,11 +754,11 @@ type PortOverrideInitParameters struct {
 
 	// Reference to a Network in network to populate voiceNetworkconfId.
 	// +kubebuilder:validation:Optional
-	VoiceNetworkconfIDRef *v1.NamespacedReference `json:"voiceNetworkconfIdRef,omitempty" tf:"-"`
+	VoiceNetworkconfIDRef *v2.NamespacedReference `json:"voiceNetworkconfIdRef,omitempty" tf:"-"`
 
 	// Selector for a Network in network to populate voiceNetworkconfId.
 	// +kubebuilder:validation:Optional
-	VoiceNetworkconfIDSelector *v1.NamespacedSelector `json:"voiceNetworkconfIdSelector,omitempty" tf:"-"`
+	VoiceNetworkconfIDSelector *v2.NamespacedSelector `json:"voiceNetworkconfIdSelector,omitempty" tf:"-"`
 }
 
 type PortOverrideObservation struct {
@@ -937,11 +936,11 @@ type PortOverrideParameters struct {
 
 	// References to Network in network to populate excludedNetworkconfIds.
 	// +kubebuilder:validation:Optional
-	ExcludedNetworkconfIdsRefs []v1.NamespacedReference `json:"excludedNetworkconfIdsRefs,omitempty" tf:"-"`
+	ExcludedNetworkconfIdsRefs []v2.NamespacedReference `json:"excludedNetworkconfIdsRefs,omitempty" tf:"-"`
 
 	// Selector for a list of Network in network to populate excludedNetworkconfIds.
 	// +kubebuilder:validation:Optional
-	ExcludedNetworkconfIdsSelector *v1.NamespacedSelector `json:"excludedNetworkconfIdsSelector,omitempty" tf:"-"`
+	ExcludedNetworkconfIdsSelector *v2.NamespacedSelector `json:"excludedNetworkconfIdsSelector,omitempty" tf:"-"`
 
 	// Forward Error Correction mode.
 	// +kubebuilder:validation:Optional
@@ -987,11 +986,11 @@ type PortOverrideParameters struct {
 
 	// References to Network in network to populate multicastRouterNetworkconfIds.
 	// +kubebuilder:validation:Optional
-	MulticastRouterNetworkconfIdsRefs []v1.NamespacedReference `json:"multicastRouterNetworkconfIdsRefs,omitempty" tf:"-"`
+	MulticastRouterNetworkconfIdsRefs []v2.NamespacedReference `json:"multicastRouterNetworkconfIdsRefs,omitempty" tf:"-"`
 
 	// Selector for a list of Network in network to populate multicastRouterNetworkconfIds.
 	// +kubebuilder:validation:Optional
-	MulticastRouterNetworkconfIdsSelector *v1.NamespacedSelector `json:"multicastRouterNetworkconfIdsSelector,omitempty" tf:"-"`
+	MulticastRouterNetworkconfIdsSelector *v2.NamespacedSelector `json:"multicastRouterNetworkconfIdsSelector,omitempty" tf:"-"`
 
 	// Human-readable name of the port.
 	// +kubebuilder:validation:Optional
@@ -1004,11 +1003,11 @@ type PortOverrideParameters struct {
 
 	// Reference to a Network in network to populate nativeNetworkconfId.
 	// +kubebuilder:validation:Optional
-	NativeNetworkconfIDRef *v1.NamespacedReference `json:"nativeNetworkconfIdRef,omitempty" tf:"-"`
+	NativeNetworkconfIDRef *v2.NamespacedReference `json:"nativeNetworkconfIdRef,omitempty" tf:"-"`
 
 	// Selector for a Network in network to populate nativeNetworkconfId.
 	// +kubebuilder:validation:Optional
-	NativeNetworkconfIDSelector *v1.NamespacedSelector `json:"nativeNetworkconfIdSelector,omitempty" tf:"-"`
+	NativeNetworkconfIDSelector *v2.NamespacedSelector `json:"nativeNetworkconfIdSelector,omitempty" tf:"-"`
 
 	// Operating mode of the port: `switch` (default), `mirror`, or `aggregate`. Set `aggregate` on the lead port of an SFP+/link-aggregation (LAG) group and list the member ports in `aggregate_members`. Only written when not `switch`, as gateway devices (UDM) reject op_mode on update.
 	// +kubebuilder:validation:Optional
@@ -1029,11 +1028,11 @@ type PortOverrideParameters struct {
 
 	// Reference to a Profile in port to populate portProfileId.
 	// +kubebuilder:validation:Optional
-	PortProfileIDRef *v1.NamespacedReference `json:"portProfileIdRef,omitempty" tf:"-"`
+	PortProfileIDRef *v2.NamespacedReference `json:"portProfileIdRef,omitempty" tf:"-"`
 
 	// Selector for a Profile in port to populate portProfileId.
 	// +kubebuilder:validation:Optional
-	PortProfileIDSelector *v1.NamespacedSelector `json:"portProfileIdSelector,omitempty" tf:"-"`
+	PortProfileIDSelector *v2.NamespacedSelector `json:"portProfileIdSelector,omitempty" tf:"-"`
 
 	// Enable port security.
 	// +kubebuilder:validation:Optional
@@ -1119,11 +1118,11 @@ type PortOverrideParameters struct {
 
 	// References to Network in network to populate taggedNetworkconfIds.
 	// +kubebuilder:validation:Optional
-	TaggedNetworkconfIdsRefs []v1.NamespacedReference `json:"taggedNetworkconfIdsRefs,omitempty" tf:"-"`
+	TaggedNetworkconfIdsRefs []v2.NamespacedReference `json:"taggedNetworkconfIdsRefs,omitempty" tf:"-"`
 
 	// Selector for a list of Network in network to populate taggedNetworkconfIds.
 	// +kubebuilder:validation:Optional
-	TaggedNetworkconfIdsSelector *v1.NamespacedSelector `json:"taggedNetworkconfIdsSelector,omitempty" tf:"-"`
+	TaggedNetworkconfIdsSelector *v2.NamespacedSelector `json:"taggedNetworkconfIdsSelector,omitempty" tf:"-"`
 
 	// Tagged VLAN management.
 	// +kubebuilder:validation:Optional
@@ -1136,11 +1135,11 @@ type PortOverrideParameters struct {
 
 	// Reference to a Network in network to populate voiceNetworkconfId.
 	// +kubebuilder:validation:Optional
-	VoiceNetworkconfIDRef *v1.NamespacedReference `json:"voiceNetworkconfIdRef,omitempty" tf:"-"`
+	VoiceNetworkconfIDRef *v2.NamespacedReference `json:"voiceNetworkconfIdRef,omitempty" tf:"-"`
 
 	// Selector for a Network in network to populate voiceNetworkconfId.
 	// +kubebuilder:validation:Optional
-	VoiceNetworkconfIDSelector *v1.NamespacedSelector `json:"voiceNetworkconfIdSelector,omitempty" tf:"-"`
+	VoiceNetworkconfIDSelector *v2.NamespacedSelector `json:"voiceNetworkconfIdSelector,omitempty" tf:"-"`
 }
 
 type RadioTableInitParameters struct {
@@ -1361,8 +1360,8 @@ type DeviceSpec struct {
 
 // DeviceStatus defines the observed state of Device.
 type DeviceStatus struct {
-	v1.ResourceStatus `json:",inline"`
-	AtProvider        DeviceObservation `json:"atProvider,omitempty"`
+	v2.ManagedResourceStatus `json:",inline"`
+	AtProvider               DeviceObservation `json:"atProvider,omitempty"`
 }
 
 // +kubebuilder:object:root=true

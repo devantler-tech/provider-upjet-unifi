@@ -10,7 +10,7 @@ import (
 	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
 	"k8s.io/apimachinery/pkg/runtime/schema"
 
-	v1 "github.com/crossplane/crossplane-runtime/v2/apis/common/v1"
+	v2 "github.com/crossplane/crossplane/apis/v2/core/v2"
 )
 
 type DNSInitParameters struct {
@@ -25,7 +25,7 @@ type DNSInitParameters struct {
 	Login *string `json:"login,omitempty" tf:"login,omitempty"`
 
 	// The password for the dynamic DNS service.
-	PasswordSecretRef *v1.SecretKeySelector `json:"passwordSecretRef,omitempty" tf:"-"`
+	PasswordSecretRef *v2.SecretKeySelector `json:"passwordSecretRef,omitempty" tf:"-"`
 
 	// The server for the dynamic DNS service.
 	Server *string `json:"server,omitempty" tf:"server,omitempty"`
@@ -80,7 +80,7 @@ type DNSParameters struct {
 
 	// The password for the dynamic DNS service.
 	// +kubebuilder:validation:Optional
-	PasswordSecretRef *v1.SecretKeySelector `json:"passwordSecretRef,omitempty" tf:"-"`
+	PasswordSecretRef *v2.SecretKeySelector `json:"passwordSecretRef,omitempty" tf:"-"`
 
 	// The server for the dynamic DNS service.
 	// +kubebuilder:validation:Optional
@@ -149,8 +149,8 @@ type TimeoutsParameters struct {
 
 // DNSSpec defines the desired state of DNS
 type DNSSpec struct {
-	v1.ResourceSpec `json:",inline"`
-	ForProvider     DNSParameters `json:"forProvider"`
+	v2.ClusterManagedResourceSpec `json:",inline"`
+	ForProvider                   DNSParameters `json:"forProvider"`
 	// THIS IS A BETA FIELD. It will be honored
 	// unless the Management Policies feature flag is disabled.
 	// InitProvider holds the same fields as ForProvider, with the exception
@@ -166,8 +166,8 @@ type DNSSpec struct {
 
 // DNSStatus defines the observed state of DNS.
 type DNSStatus struct {
-	v1.ResourceStatus `json:",inline"`
-	AtProvider        DNSObservation `json:"atProvider,omitempty"`
+	v2.ManagedResourceStatus `json:",inline"`
+	AtProvider               DNSObservation `json:"atProvider,omitempty"`
 }
 
 // +kubebuilder:object:root=true

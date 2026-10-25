@@ -10,7 +10,7 @@ import (
 	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
 	"k8s.io/apimachinery/pkg/runtime/schema"
 
-	v1 "github.com/crossplane/crossplane-runtime/v2/apis/common/v1"
+	v2 "github.com/crossplane/crossplane/apis/v2/core/v2"
 )
 
 type PeerInitParameters_2 struct {
@@ -28,10 +28,10 @@ type PeerInitParameters_2 struct {
 	NetworkID *string `json:"networkId,omitempty" tf:"network_id,omitempty"`
 
 	// Optional WireGuard pre-shared key for this peer (the UI's Pre-Shared Key toggle), adding a layer of symmetric encryption on top of the key pair. Left unset, the attribute is not written and a key configured out of band is preserved.
-	PresharedKeySecretRef *v1.SecretKeySelector `json:"presharedKeySecretRef,omitempty" tf:"-"`
+	PresharedKeySecretRef *v2.SecretKeySelector `json:"presharedKeySecretRef,omitempty" tf:"-"`
 
 	// Write-only equivalent of `preshared_key`. Write-only attributes need engine version 1.11 or later. This provider cannot set them: the engine it bundles predates that version and rejects any value, so setting this field fails validation. Set `presharedKeySecretRef` instead.
-	PresharedKeyWoSecretRef *v1.SecretKeySelector `json:"presharedKeyWoSecretRef,omitempty" tf:"-"`
+	PresharedKeyWoSecretRef *v2.SecretKeySelector `json:"presharedKeyWoSecretRef,omitempty" tf:"-"`
 
 	// The WireGuard public key of the peer.
 	PublicKey *string `json:"publicKey,omitempty" tf:"public_key,omitempty"`
@@ -87,11 +87,11 @@ type PeerParameters_2 struct {
 
 	// Optional WireGuard pre-shared key for this peer (the UI's Pre-Shared Key toggle), adding a layer of symmetric encryption on top of the key pair. Left unset, the attribute is not written and a key configured out of band is preserved.
 	// +kubebuilder:validation:Optional
-	PresharedKeySecretRef *v1.SecretKeySelector `json:"presharedKeySecretRef,omitempty" tf:"-"`
+	PresharedKeySecretRef *v2.SecretKeySelector `json:"presharedKeySecretRef,omitempty" tf:"-"`
 
 	// Write-only equivalent of `preshared_key`. Write-only attributes need engine version 1.11 or later. This provider cannot set them: the engine it bundles predates that version and rejects any value, so setting this field fails validation. Set `presharedKeySecretRef` instead.
 	// +kubebuilder:validation:Optional
-	PresharedKeyWoSecretRef *v1.SecretKeySelector `json:"presharedKeyWoSecretRef,omitempty" tf:"-"`
+	PresharedKeyWoSecretRef *v2.SecretKeySelector `json:"presharedKeyWoSecretRef,omitempty" tf:"-"`
 
 	// The WireGuard public key of the peer.
 	// +kubebuilder:validation:Optional
@@ -156,8 +156,8 @@ type PeerTimeoutsParameters struct {
 
 // PeerSpec defines the desired state of Peer
 type PeerSpec struct {
-	v1.ResourceSpec `json:",inline"`
-	ForProvider     PeerParameters_2 `json:"forProvider"`
+	v2.ClusterManagedResourceSpec `json:",inline"`
+	ForProvider                   PeerParameters_2 `json:"forProvider"`
 	// THIS IS A BETA FIELD. It will be honored
 	// unless the Management Policies feature flag is disabled.
 	// InitProvider holds the same fields as ForProvider, with the exception
@@ -173,8 +173,8 @@ type PeerSpec struct {
 
 // PeerStatus defines the observed state of Peer.
 type PeerStatus struct {
-	v1.ResourceStatus `json:",inline"`
-	AtProvider        PeerObservation_2 `json:"atProvider,omitempty"`
+	v2.ManagedResourceStatus `json:",inline"`
+	AtProvider               PeerObservation_2 `json:"atProvider,omitempty"`
 }
 
 // +kubebuilder:object:root=true
