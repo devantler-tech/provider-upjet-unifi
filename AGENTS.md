@@ -64,8 +64,8 @@ by editing `config/**` (external-name configs, groups, Kind overrides) or `inter
 
 ## Maintenance
 
-The **roadmap of record** is this repo's GitHub Issues (`roadmap`-labelled epics + milestones). Triage
-incoming issues into that structure; implementing PRs use `Fixes #N`. Shared cross-repo rules and the
+The **roadmap of record** is this repo's GitHub Issues (native `Epic` issue types, sub-issue links and milestones). Triage
+incoming issues into that structure; use native issue types rather than duplicate classification labels. Implementing PRs use `Fixes #N`. Shared cross-repo rules and the
 draft-PR discipline live in the monorepo root `AGENTS.md`.
 
 Repo-specific watch-list for the daily engineer:
