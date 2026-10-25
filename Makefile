@@ -70,7 +70,7 @@ UPTEST_VERSION = v2.2.0
 CRDDIFF_VERSION = v0.12.1
 CROSSPLANE_CLI_VERSION = v2.2.1
 # for e2e testing
-CROSSPLANE_VERSION = 2.2.1
+CROSSPLANE_VERSION = 2.4.2
 -include build/makelib/k8s_tools.mk
 
 # ====================================================================================

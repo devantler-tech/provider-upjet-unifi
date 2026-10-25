@@ -10,8 +10,7 @@ import (
 	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
 	"k8s.io/apimachinery/pkg/runtime/schema"
 
-	v1 "github.com/crossplane/crossplane-runtime/v2/apis/common/v1"
-	v2 "github.com/crossplane/crossplane-runtime/v2/apis/common/v2"
+	v2 "github.com/crossplane/crossplane/apis/v2/core/v2"
 )
 
 type TimeoutsInitParameters struct {
@@ -120,10 +119,10 @@ type ToSiteVPNInitParameters struct {
 	Pfs *bool `json:"pfs,omitempty" tf:"pfs,omitempty"`
 
 	// The IPsec pre-shared key. Stored in state.
-	PreSharedKeySecretRef *v1.LocalSecretKeySelector `json:"preSharedKeySecretRef,omitempty" tf:"-"`
+	PreSharedKeySecretRef *v2.LocalSecretKeySelector `json:"preSharedKeySecretRef,omitempty" tf:"-"`
 
 	// Write-only equivalent of `pre_shared_key`. Write-only attributes need engine version 1.11 or later. This provider cannot set them: the engine it bundles predates that version and rejects any value, so setting this field fails validation. Set `preSharedKeySecretRef` instead.
-	PreSharedKeyWoSecretRef *v1.LocalSecretKeySelector `json:"preSharedKeyWoSecretRef,omitempty" tf:"-"`
+	PreSharedKeyWoSecretRef *v2.LocalSecretKeySelector `json:"preSharedKeyWoSecretRef,omitempty" tf:"-"`
 
 	// IPsec profile. One of `customized`, `azure_dynamic`, or `azure_static`. Set to `customized` to tune the IKE/ESP attributes below; the controller may derive the ESP values from the IKE ones.
 	Profile *string `json:"profile,omitempty" tf:"profile,omitempty"`
@@ -301,11 +300,11 @@ type ToSiteVPNParameters struct {
 
 	// The IPsec pre-shared key. Stored in state.
 	// +kubebuilder:validation:Optional
-	PreSharedKeySecretRef *v1.LocalSecretKeySelector `json:"preSharedKeySecretRef,omitempty" tf:"-"`
+	PreSharedKeySecretRef *v2.LocalSecretKeySelector `json:"preSharedKeySecretRef,omitempty" tf:"-"`
 
 	// Write-only equivalent of `pre_shared_key`. Write-only attributes need engine version 1.11 or later. This provider cannot set them: the engine it bundles predates that version and rejects any value, so setting this field fails validation. Set `preSharedKeySecretRef` instead.
 	// +kubebuilder:validation:Optional
-	PreSharedKeyWoSecretRef *v1.LocalSecretKeySelector `json:"preSharedKeyWoSecretRef,omitempty" tf:"-"`
+	PreSharedKeyWoSecretRef *v2.LocalSecretKeySelector `json:"preSharedKeyWoSecretRef,omitempty" tf:"-"`
 
 	// IPsec profile. One of `customized`, `azure_dynamic`, or `azure_static`. Set to `customized` to tune the IKE/ESP attributes below; the controller may derive the ESP values from the IKE ones.
 	// +kubebuilder:validation:Optional
@@ -354,8 +353,8 @@ type ToSiteVPNSpec struct {
 
 // ToSiteVPNStatus defines the observed state of ToSiteVPN.
 type ToSiteVPNStatus struct {
-	v1.ResourceStatus `json:",inline"`
-	AtProvider        ToSiteVPNObservation `json:"atProvider,omitempty"`
+	v2.ManagedResourceStatus `json:",inline"`
+	AtProvider               ToSiteVPNObservation `json:"atProvider,omitempty"`
 }
 
 // +kubebuilder:object:root=true

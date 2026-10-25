@@ -10,7 +10,7 @@ import (
 	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
 	"k8s.io/apimachinery/pkg/runtime/schema"
 
-	v1 "github.com/crossplane/crossplane-runtime/v2/apis/common/v1"
+	v2 "github.com/crossplane/crossplane/apis/v2/core/v2"
 )
 
 type AcctServerInitParameters struct {
@@ -22,7 +22,7 @@ type AcctServerInitParameters struct {
 	Port *float64 `json:"port,omitempty" tf:"port,omitempty"`
 
 	// Shared secret for accounting server.
-	SecretSecretRef v1.SecretKeySelector `json:"secretSecretRef" tf:"-"`
+	SecretSecretRef v2.SecretKeySelector `json:"secretSecretRef" tf:"-"`
 }
 
 type AcctServerObservation struct {
@@ -46,7 +46,7 @@ type AcctServerParameters struct {
 
 	// Shared secret for accounting server.
 	// +kubebuilder:validation:Optional
-	SecretSecretRef v1.SecretKeySelector `json:"secretSecretRef" tf:"-"`
+	SecretSecretRef v2.SecretKeySelector `json:"secretSecretRef" tf:"-"`
 }
 
 type AuthServerInitParameters struct {
@@ -58,7 +58,7 @@ type AuthServerInitParameters struct {
 	Port *float64 `json:"port,omitempty" tf:"port,omitempty"`
 
 	// Shared secret for authentication server.
-	SecretSecretRef v1.SecretKeySelector `json:"secretSecretRef" tf:"-"`
+	SecretSecretRef v2.SecretKeySelector `json:"secretSecretRef" tf:"-"`
 }
 
 type AuthServerObservation struct {
@@ -82,7 +82,7 @@ type AuthServerParameters struct {
 
 	// Shared secret for authentication server.
 	// +kubebuilder:validation:Optional
-	SecretSecretRef v1.SecretKeySelector `json:"secretSecretRef" tf:"-"`
+	SecretSecretRef v2.SecretKeySelector `json:"secretSecretRef" tf:"-"`
 }
 
 type ProfileInitParameters struct {
@@ -264,8 +264,8 @@ type TimeoutsParameters struct {
 
 // ProfileSpec defines the desired state of Profile
 type ProfileSpec struct {
-	v1.ResourceSpec `json:",inline"`
-	ForProvider     ProfileParameters `json:"forProvider"`
+	v2.ClusterManagedResourceSpec `json:",inline"`
+	ForProvider                   ProfileParameters `json:"forProvider"`
 	// THIS IS A BETA FIELD. It will be honored
 	// unless the Management Policies feature flag is disabled.
 	// InitProvider holds the same fields as ForProvider, with the exception
@@ -281,8 +281,8 @@ type ProfileSpec struct {
 
 // ProfileStatus defines the observed state of Profile.
 type ProfileStatus struct {
-	v1.ResourceStatus `json:",inline"`
-	AtProvider        ProfileObservation `json:"atProvider,omitempty"`
+	v2.ManagedResourceStatus `json:",inline"`
+	AtProvider               ProfileObservation `json:"atProvider,omitempty"`
 }
 
 // +kubebuilder:object:root=true

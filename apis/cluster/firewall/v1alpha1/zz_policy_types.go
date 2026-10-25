@@ -10,7 +10,7 @@ import (
 	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
 	"k8s.io/apimachinery/pkg/runtime/schema"
 
-	v1 "github.com/crossplane/crossplane-runtime/v2/apis/common/v1"
+	v2 "github.com/crossplane/crossplane/apis/v2/core/v2"
 )
 
 type DestinationInitParameters struct {
@@ -24,11 +24,11 @@ type DestinationInitParameters struct {
 
 	// Reference to a Group in firewall to populate ipGroupId.
 	// +kubebuilder:validation:Optional
-	IPGroupIDRef *v1.Reference `json:"ipGroupIdRef,omitempty" tf:"-"`
+	IPGroupIDRef *v2.Reference `json:"ipGroupIdRef,omitempty" tf:"-"`
 
 	// Selector for a Group in firewall to populate ipGroupId.
 	// +kubebuilder:validation:Optional
-	IPGroupIDSelector *v1.Selector `json:"ipGroupIdSelector,omitempty" tf:"-"`
+	IPGroupIDSelector *v2.Selector `json:"ipGroupIdSelector,omitempty" tf:"-"`
 
 	// List of IP addresses or CIDR ranges to match. Used when `matching_target` is `IP`.
 	Ips []*string `json:"ips,omitempty" tf:"ips,omitempty"`
@@ -54,11 +54,11 @@ type DestinationInitParameters struct {
 
 	// References to Network in network to populate networkIds.
 	// +kubebuilder:validation:Optional
-	NetworkIdsRefs []v1.Reference `json:"networkIdsRefs,omitempty" tf:"-"`
+	NetworkIdsRefs []v2.Reference `json:"networkIdsRefs,omitempty" tf:"-"`
 
 	// Selector for a list of Network in network to populate networkIds.
 	// +kubebuilder:validation:Optional
-	NetworkIdsSelector *v1.Selector `json:"networkIdsSelector,omitempty" tf:"-"`
+	NetworkIdsSelector *v2.Selector `json:"networkIdsSelector,omitempty" tf:"-"`
 
 	// Port(s) to match when `port_matching_type` is `SPECIFIC`. A single port (`161`) or a comma-separated list of ports/ranges (`80,443`, `8000-8100`). Leave unset for no port match.
 	Port *string `json:"port,omitempty" tf:"port,omitempty"`
@@ -69,11 +69,11 @@ type DestinationInitParameters struct {
 
 	// Reference to a Group in firewall to populate portGroupId.
 	// +kubebuilder:validation:Optional
-	PortGroupIDRef *v1.Reference `json:"portGroupIdRef,omitempty" tf:"-"`
+	PortGroupIDRef *v2.Reference `json:"portGroupIdRef,omitempty" tf:"-"`
 
 	// Selector for a Group in firewall to populate portGroupId.
 	// +kubebuilder:validation:Optional
-	PortGroupIDSelector *v1.Selector `json:"portGroupIdSelector,omitempty" tf:"-"`
+	PortGroupIDSelector *v2.Selector `json:"portGroupIdSelector,omitempty" tf:"-"`
 
 	// How to match ports: `ANY`, `SPECIFIC`, or `OBJECT` (port group).
 	PortMatchingType *string `json:"portMatchingType,omitempty" tf:"port_matching_type,omitempty"`
@@ -90,11 +90,11 @@ type DestinationInitParameters struct {
 
 	// Reference to a Zone in firewall to populate zoneId.
 	// +kubebuilder:validation:Optional
-	ZoneIDRef *v1.Reference `json:"zoneIdRef,omitempty" tf:"-"`
+	ZoneIDRef *v2.Reference `json:"zoneIdRef,omitempty" tf:"-"`
 
 	// Selector for a Zone in firewall to populate zoneId.
 	// +kubebuilder:validation:Optional
-	ZoneIDSelector *v1.Selector `json:"zoneIdSelector,omitempty" tf:"-"`
+	ZoneIDSelector *v2.Selector `json:"zoneIdSelector,omitempty" tf:"-"`
 }
 
 type DestinationObservation struct {
@@ -161,11 +161,11 @@ type DestinationParameters struct {
 
 	// Reference to a Group in firewall to populate ipGroupId.
 	// +kubebuilder:validation:Optional
-	IPGroupIDRef *v1.Reference `json:"ipGroupIdRef,omitempty" tf:"-"`
+	IPGroupIDRef *v2.Reference `json:"ipGroupIdRef,omitempty" tf:"-"`
 
 	// Selector for a Group in firewall to populate ipGroupId.
 	// +kubebuilder:validation:Optional
-	IPGroupIDSelector *v1.Selector `json:"ipGroupIdSelector,omitempty" tf:"-"`
+	IPGroupIDSelector *v2.Selector `json:"ipGroupIdSelector,omitempty" tf:"-"`
 
 	// List of IP addresses or CIDR ranges to match. Used when `matching_target` is `IP`.
 	// +kubebuilder:validation:Optional
@@ -198,11 +198,11 @@ type DestinationParameters struct {
 
 	// References to Network in network to populate networkIds.
 	// +kubebuilder:validation:Optional
-	NetworkIdsRefs []v1.Reference `json:"networkIdsRefs,omitempty" tf:"-"`
+	NetworkIdsRefs []v2.Reference `json:"networkIdsRefs,omitempty" tf:"-"`
 
 	// Selector for a list of Network in network to populate networkIds.
 	// +kubebuilder:validation:Optional
-	NetworkIdsSelector *v1.Selector `json:"networkIdsSelector,omitempty" tf:"-"`
+	NetworkIdsSelector *v2.Selector `json:"networkIdsSelector,omitempty" tf:"-"`
 
 	// Port(s) to match when `port_matching_type` is `SPECIFIC`. A single port (`161`) or a comma-separated list of ports/ranges (`80,443`, `8000-8100`). Leave unset for no port match.
 	// +kubebuilder:validation:Optional
@@ -215,11 +215,11 @@ type DestinationParameters struct {
 
 	// Reference to a Group in firewall to populate portGroupId.
 	// +kubebuilder:validation:Optional
-	PortGroupIDRef *v1.Reference `json:"portGroupIdRef,omitempty" tf:"-"`
+	PortGroupIDRef *v2.Reference `json:"portGroupIdRef,omitempty" tf:"-"`
 
 	// Selector for a Group in firewall to populate portGroupId.
 	// +kubebuilder:validation:Optional
-	PortGroupIDSelector *v1.Selector `json:"portGroupIdSelector,omitempty" tf:"-"`
+	PortGroupIDSelector *v2.Selector `json:"portGroupIdSelector,omitempty" tf:"-"`
 
 	// How to match ports: `ANY`, `SPECIFIC`, or `OBJECT` (port group).
 	// +kubebuilder:validation:Optional
@@ -240,11 +240,11 @@ type DestinationParameters struct {
 
 	// Reference to a Zone in firewall to populate zoneId.
 	// +kubebuilder:validation:Optional
-	ZoneIDRef *v1.Reference `json:"zoneIdRef,omitempty" tf:"-"`
+	ZoneIDRef *v2.Reference `json:"zoneIdRef,omitempty" tf:"-"`
 
 	// Selector for a Zone in firewall to populate zoneId.
 	// +kubebuilder:validation:Optional
-	ZoneIDSelector *v1.Selector `json:"zoneIdSelector,omitempty" tf:"-"`
+	ZoneIDSelector *v2.Selector `json:"zoneIdSelector,omitempty" tf:"-"`
 }
 
 type PolicyInitParameters struct {
@@ -577,11 +577,11 @@ type SourceInitParameters struct {
 
 	// Reference to a Group in firewall to populate ipGroupId.
 	// +kubebuilder:validation:Optional
-	IPGroupIDRef *v1.Reference `json:"ipGroupIdRef,omitempty" tf:"-"`
+	IPGroupIDRef *v2.Reference `json:"ipGroupIdRef,omitempty" tf:"-"`
 
 	// Selector for a Group in firewall to populate ipGroupId.
 	// +kubebuilder:validation:Optional
-	IPGroupIDSelector *v1.Selector `json:"ipGroupIdSelector,omitempty" tf:"-"`
+	IPGroupIDSelector *v2.Selector `json:"ipGroupIdSelector,omitempty" tf:"-"`
 
 	// List of IP addresses or CIDR ranges to match. Used when `matching_target` is `IP`.
 	Ips []*string `json:"ips,omitempty" tf:"ips,omitempty"`
@@ -607,11 +607,11 @@ type SourceInitParameters struct {
 
 	// References to Network in network to populate networkIds.
 	// +kubebuilder:validation:Optional
-	NetworkIdsRefs []v1.Reference `json:"networkIdsRefs,omitempty" tf:"-"`
+	NetworkIdsRefs []v2.Reference `json:"networkIdsRefs,omitempty" tf:"-"`
 
 	// Selector for a list of Network in network to populate networkIds.
 	// +kubebuilder:validation:Optional
-	NetworkIdsSelector *v1.Selector `json:"networkIdsSelector,omitempty" tf:"-"`
+	NetworkIdsSelector *v2.Selector `json:"networkIdsSelector,omitempty" tf:"-"`
 
 	// Port(s) to match when `port_matching_type` is `SPECIFIC`. A single port (`161`) or a comma-separated list of ports/ranges (`80,443`, `8000-8100`). Leave unset for no port match.
 	Port *string `json:"port,omitempty" tf:"port,omitempty"`
@@ -622,11 +622,11 @@ type SourceInitParameters struct {
 
 	// Reference to a Group in firewall to populate portGroupId.
 	// +kubebuilder:validation:Optional
-	PortGroupIDRef *v1.Reference `json:"portGroupIdRef,omitempty" tf:"-"`
+	PortGroupIDRef *v2.Reference `json:"portGroupIdRef,omitempty" tf:"-"`
 
 	// Selector for a Group in firewall to populate portGroupId.
 	// +kubebuilder:validation:Optional
-	PortGroupIDSelector *v1.Selector `json:"portGroupIdSelector,omitempty" tf:"-"`
+	PortGroupIDSelector *v2.Selector `json:"portGroupIdSelector,omitempty" tf:"-"`
 
 	// How to match ports: `ANY`, `SPECIFIC`, or `OBJECT` (port group).
 	PortMatchingType *string `json:"portMatchingType,omitempty" tf:"port_matching_type,omitempty"`
@@ -643,11 +643,11 @@ type SourceInitParameters struct {
 
 	// Reference to a Zone in firewall to populate zoneId.
 	// +kubebuilder:validation:Optional
-	ZoneIDRef *v1.Reference `json:"zoneIdRef,omitempty" tf:"-"`
+	ZoneIDRef *v2.Reference `json:"zoneIdRef,omitempty" tf:"-"`
 
 	// Selector for a Zone in firewall to populate zoneId.
 	// +kubebuilder:validation:Optional
-	ZoneIDSelector *v1.Selector `json:"zoneIdSelector,omitempty" tf:"-"`
+	ZoneIDSelector *v2.Selector `json:"zoneIdSelector,omitempty" tf:"-"`
 }
 
 type SourceObservation struct {
@@ -714,11 +714,11 @@ type SourceParameters struct {
 
 	// Reference to a Group in firewall to populate ipGroupId.
 	// +kubebuilder:validation:Optional
-	IPGroupIDRef *v1.Reference `json:"ipGroupIdRef,omitempty" tf:"-"`
+	IPGroupIDRef *v2.Reference `json:"ipGroupIdRef,omitempty" tf:"-"`
 
 	// Selector for a Group in firewall to populate ipGroupId.
 	// +kubebuilder:validation:Optional
-	IPGroupIDSelector *v1.Selector `json:"ipGroupIdSelector,omitempty" tf:"-"`
+	IPGroupIDSelector *v2.Selector `json:"ipGroupIdSelector,omitempty" tf:"-"`
 
 	// List of IP addresses or CIDR ranges to match. Used when `matching_target` is `IP`.
 	// +kubebuilder:validation:Optional
@@ -751,11 +751,11 @@ type SourceParameters struct {
 
 	// References to Network in network to populate networkIds.
 	// +kubebuilder:validation:Optional
-	NetworkIdsRefs []v1.Reference `json:"networkIdsRefs,omitempty" tf:"-"`
+	NetworkIdsRefs []v2.Reference `json:"networkIdsRefs,omitempty" tf:"-"`
 
 	// Selector for a list of Network in network to populate networkIds.
 	// +kubebuilder:validation:Optional
-	NetworkIdsSelector *v1.Selector `json:"networkIdsSelector,omitempty" tf:"-"`
+	NetworkIdsSelector *v2.Selector `json:"networkIdsSelector,omitempty" tf:"-"`
 
 	// Port(s) to match when `port_matching_type` is `SPECIFIC`. A single port (`161`) or a comma-separated list of ports/ranges (`80,443`, `8000-8100`). Leave unset for no port match.
 	// +kubebuilder:validation:Optional
@@ -768,11 +768,11 @@ type SourceParameters struct {
 
 	// Reference to a Group in firewall to populate portGroupId.
 	// +kubebuilder:validation:Optional
-	PortGroupIDRef *v1.Reference `json:"portGroupIdRef,omitempty" tf:"-"`
+	PortGroupIDRef *v2.Reference `json:"portGroupIdRef,omitempty" tf:"-"`
 
 	// Selector for a Group in firewall to populate portGroupId.
 	// +kubebuilder:validation:Optional
-	PortGroupIDSelector *v1.Selector `json:"portGroupIdSelector,omitempty" tf:"-"`
+	PortGroupIDSelector *v2.Selector `json:"portGroupIdSelector,omitempty" tf:"-"`
 
 	// How to match ports: `ANY`, `SPECIFIC`, or `OBJECT` (port group).
 	// +kubebuilder:validation:Optional
@@ -793,17 +793,17 @@ type SourceParameters struct {
 
 	// Reference to a Zone in firewall to populate zoneId.
 	// +kubebuilder:validation:Optional
-	ZoneIDRef *v1.Reference `json:"zoneIdRef,omitempty" tf:"-"`
+	ZoneIDRef *v2.Reference `json:"zoneIdRef,omitempty" tf:"-"`
 
 	// Selector for a Zone in firewall to populate zoneId.
 	// +kubebuilder:validation:Optional
-	ZoneIDSelector *v1.Selector `json:"zoneIdSelector,omitempty" tf:"-"`
+	ZoneIDSelector *v2.Selector `json:"zoneIdSelector,omitempty" tf:"-"`
 }
 
 // PolicySpec defines the desired state of Policy
 type PolicySpec struct {
-	v1.ResourceSpec `json:",inline"`
-	ForProvider     PolicyParameters `json:"forProvider"`
+	v2.ClusterManagedResourceSpec `json:",inline"`
+	ForProvider                   PolicyParameters `json:"forProvider"`
 	// THIS IS A BETA FIELD. It will be honored
 	// unless the Management Policies feature flag is disabled.
 	// InitProvider holds the same fields as ForProvider, with the exception
@@ -819,8 +819,8 @@ type PolicySpec struct {
 
 // PolicyStatus defines the observed state of Policy.
 type PolicyStatus struct {
-	v1.ResourceStatus `json:",inline"`
-	AtProvider        PolicyObservation `json:"atProvider,omitempty"`
+	v2.ManagedResourceStatus `json:",inline"`
+	AtProvider               PolicyObservation `json:"atProvider,omitempty"`
 }
 
 // +kubebuilder:object:root=true

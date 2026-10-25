@@ -6,84 +6,84 @@
 
 package v1alpha1
 
-import xpv1 "github.com/crossplane/crossplane-runtime/v2/apis/common/v1"
+import xpv2 "github.com/crossplane/crossplane/apis/v2/core/v2"
 
 // GetCondition of this StaticRoute.
-func (mg *StaticRoute) GetCondition(ct xpv1.ConditionType) xpv1.Condition {
+func (mg *StaticRoute) GetCondition(ct xpv2.ConditionType) xpv2.Condition {
 	return mg.Status.GetCondition(ct)
 }
 
 // GetManagementPolicies of this StaticRoute.
-func (mg *StaticRoute) GetManagementPolicies() xpv1.ManagementPolicies {
+func (mg *StaticRoute) GetManagementPolicies() xpv2.ManagementPolicies {
 	return mg.Spec.ManagementPolicies
 }
 
 // GetProviderConfigReference of this StaticRoute.
-func (mg *StaticRoute) GetProviderConfigReference() *xpv1.ProviderConfigReference {
+func (mg *StaticRoute) GetProviderConfigReference() *xpv2.ProviderConfigReference {
 	return mg.Spec.ProviderConfigReference
 }
 
 // GetWriteConnectionSecretToReference of this StaticRoute.
-func (mg *StaticRoute) GetWriteConnectionSecretToReference() *xpv1.LocalSecretReference {
+func (mg *StaticRoute) GetWriteConnectionSecretToReference() *xpv2.LocalSecretReference {
 	return mg.Spec.WriteConnectionSecretToReference
 }
 
 // SetConditions of this StaticRoute.
-func (mg *StaticRoute) SetConditions(c ...xpv1.Condition) {
+func (mg *StaticRoute) SetConditions(c ...xpv2.Condition) {
 	mg.Status.SetConditions(c...)
 }
 
 // SetManagementPolicies of this StaticRoute.
-func (mg *StaticRoute) SetManagementPolicies(r xpv1.ManagementPolicies) {
+func (mg *StaticRoute) SetManagementPolicies(r xpv2.ManagementPolicies) {
 	mg.Spec.ManagementPolicies = r
 }
 
 // SetProviderConfigReference of this StaticRoute.
-func (mg *StaticRoute) SetProviderConfigReference(r *xpv1.ProviderConfigReference) {
+func (mg *StaticRoute) SetProviderConfigReference(r *xpv2.ProviderConfigReference) {
 	mg.Spec.ProviderConfigReference = r
 }
 
 // SetWriteConnectionSecretToReference of this StaticRoute.
-func (mg *StaticRoute) SetWriteConnectionSecretToReference(r *xpv1.LocalSecretReference) {
+func (mg *StaticRoute) SetWriteConnectionSecretToReference(r *xpv2.LocalSecretReference) {
 	mg.Spec.WriteConnectionSecretToReference = r
 }
 
 // GetCondition of this TrafficRoute.
-func (mg *TrafficRoute) GetCondition(ct xpv1.ConditionType) xpv1.Condition {
+func (mg *TrafficRoute) GetCondition(ct xpv2.ConditionType) xpv2.Condition {
 	return mg.Status.GetCondition(ct)
 }
 
 // GetManagementPolicies of this TrafficRoute.
-func (mg *TrafficRoute) GetManagementPolicies() xpv1.ManagementPolicies {
+func (mg *TrafficRoute) GetManagementPolicies() xpv2.ManagementPolicies {
 	return mg.Spec.ManagementPolicies
 }
 
 // GetProviderConfigReference of this TrafficRoute.
-func (mg *TrafficRoute) GetProviderConfigReference() *xpv1.ProviderConfigReference {
+func (mg *TrafficRoute) GetProviderConfigReference() *xpv2.ProviderConfigReference {
 	return mg.Spec.ProviderConfigReference
 }
 
 // GetWriteConnectionSecretToReference of this TrafficRoute.
-func (mg *TrafficRoute) GetWriteConnectionSecretToReference() *xpv1.LocalSecretReference {
+func (mg *TrafficRoute) GetWriteConnectionSecretToReference() *xpv2.LocalSecretReference {
 	return mg.Spec.WriteConnectionSecretToReference
 }
 
 // SetConditions of this TrafficRoute.
-func (mg *TrafficRoute) SetConditions(c ...xpv1.Condition) {
+func (mg *TrafficRoute) SetConditions(c ...xpv2.Condition) {
 	mg.Status.SetConditions(c...)
 }
 
 // SetManagementPolicies of this TrafficRoute.
-func (mg *TrafficRoute) SetManagementPolicies(r xpv1.ManagementPolicies) {
+func (mg *TrafficRoute) SetManagementPolicies(r xpv2.ManagementPolicies) {
 	mg.Spec.ManagementPolicies = r
 }
 
 // SetProviderConfigReference of this TrafficRoute.
-func (mg *TrafficRoute) SetProviderConfigReference(r *xpv1.ProviderConfigReference) {
+func (mg *TrafficRoute) SetProviderConfigReference(r *xpv2.ProviderConfigReference) {
 	mg.Spec.ProviderConfigReference = r
 }
 
 // SetWriteConnectionSecretToReference of this TrafficRoute.
-func (mg *TrafficRoute) SetWriteConnectionSecretToReference(r *xpv1.LocalSecretReference) {
+func (mg *TrafficRoute) SetWriteConnectionSecretToReference(r *xpv2.LocalSecretReference) {
 	mg.Spec.WriteConnectionSecretToReference = r
 }

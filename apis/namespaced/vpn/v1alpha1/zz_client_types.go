@@ -10,8 +10,7 @@ import (
 	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
 	"k8s.io/apimachinery/pkg/runtime/schema"
 
-	v1 "github.com/crossplane/crossplane-runtime/v2/apis/common/v1"
-	v2 "github.com/crossplane/crossplane-runtime/v2/apis/common/v2"
+	v2 "github.com/crossplane/crossplane/apis/v2/core/v2"
 )
 
 type ClientInitParameters struct {
@@ -151,7 +150,7 @@ type ClientTimeoutsParameters struct {
 type ConfigurationInitParameters struct {
 
 	// Base64-encoded WireGuard configuration file content.
-	ContentSecretRef v1.LocalSecretKeySelector `json:"contentSecretRef" tf:"-"`
+	ContentSecretRef v2.LocalSecretKeySelector `json:"contentSecretRef" tf:"-"`
 
 	// Filename of the WireGuard configuration file.
 	Filename *string `json:"filename,omitempty" tf:"filename,omitempty"`
@@ -167,7 +166,7 @@ type ConfigurationParameters struct {
 
 	// Base64-encoded WireGuard configuration file content.
 	// +kubebuilder:validation:Optional
-	ContentSecretRef v1.LocalSecretKeySelector `json:"contentSecretRef" tf:"-"`
+	ContentSecretRef v2.LocalSecretKeySelector `json:"contentSecretRef" tf:"-"`
 
 	// Filename of the WireGuard configuration file.
 	// +kubebuilder:validation:Optional
@@ -183,7 +182,7 @@ type PeerInitParameters struct {
 	Port *float64 `json:"port,omitempty" tf:"port,omitempty"`
 
 	// WireGuard peer public key.
-	PublicKeySecretRef v1.LocalSecretKeySelector `json:"publicKeySecretRef" tf:"-"`
+	PublicKeySecretRef v2.LocalSecretKeySelector `json:"publicKeySecretRef" tf:"-"`
 }
 
 type PeerObservation struct {
@@ -207,7 +206,7 @@ type PeerParameters struct {
 
 	// WireGuard peer public key.
 	// +kubebuilder:validation:Optional
-	PublicKeySecretRef v1.LocalSecretKeySelector `json:"publicKeySecretRef" tf:"-"`
+	PublicKeySecretRef v2.LocalSecretKeySelector `json:"publicKeySecretRef" tf:"-"`
 }
 
 type WireguardInitParameters struct {
@@ -225,13 +224,13 @@ type WireguardInitParameters struct {
 	PresharedKeyEnabled *bool `json:"presharedKeyEnabled,omitempty" tf:"preshared_key_enabled,omitempty"`
 
 	// WireGuard preshared key. Required when preshared_key_enabled is true.
-	PresharedKeySecretRef *v1.LocalSecretKeySelector `json:"presharedKeySecretRef,omitempty" tf:"-"`
+	PresharedKeySecretRef *v2.LocalSecretKeySelector `json:"presharedKeySecretRef,omitempty" tf:"-"`
 
 	// WireGuard private key for this client.
-	PrivateKeySecretRef *v1.LocalSecretKeySelector `json:"privateKeySecretRef,omitempty" tf:"-"`
+	PrivateKeySecretRef *v2.LocalSecretKeySelector `json:"privateKeySecretRef,omitempty" tf:"-"`
 
 	// Write-only equivalent of `private_key`. Write-only attributes need engine version 1.11 or later. This provider cannot set them: the engine it bundles predates that version and rejects any value, so setting this field fails validation. Set `privateKeySecretRef` instead.
-	PrivateKeyWoSecretRef *v1.LocalSecretKeySelector `json:"privateKeyWoSecretRef,omitempty" tf:"-"`
+	PrivateKeyWoSecretRef *v2.LocalSecretKeySelector `json:"privateKeyWoSecretRef,omitempty" tf:"-"`
 
 	// Version counter for `private_key_wo`, which this provider cannot set, so changing this field has no effect. Set `privateKeySecretRef` instead.
 	PrivateKeyWoVersion *float64 `json:"privateKeyWoVersion,omitempty" tf:"private_key_wo_version,omitempty"`
@@ -277,15 +276,15 @@ type WireguardParameters struct {
 
 	// WireGuard preshared key. Required when preshared_key_enabled is true.
 	// +kubebuilder:validation:Optional
-	PresharedKeySecretRef *v1.LocalSecretKeySelector `json:"presharedKeySecretRef,omitempty" tf:"-"`
+	PresharedKeySecretRef *v2.LocalSecretKeySelector `json:"presharedKeySecretRef,omitempty" tf:"-"`
 
 	// WireGuard private key for this client.
 	// +kubebuilder:validation:Optional
-	PrivateKeySecretRef *v1.LocalSecretKeySelector `json:"privateKeySecretRef,omitempty" tf:"-"`
+	PrivateKeySecretRef *v2.LocalSecretKeySelector `json:"privateKeySecretRef,omitempty" tf:"-"`
 
 	// Write-only equivalent of `private_key`. Write-only attributes need engine version 1.11 or later. This provider cannot set them: the engine it bundles predates that version and rejects any value, so setting this field fails validation. Set `privateKeySecretRef` instead.
 	// +kubebuilder:validation:Optional
-	PrivateKeyWoSecretRef *v1.LocalSecretKeySelector `json:"privateKeyWoSecretRef,omitempty" tf:"-"`
+	PrivateKeyWoSecretRef *v2.LocalSecretKeySelector `json:"privateKeyWoSecretRef,omitempty" tf:"-"`
 
 	// Version counter for `private_key_wo`, which this provider cannot set, so changing this field has no effect. Set `privateKeySecretRef` instead.
 	// +kubebuilder:validation:Optional
@@ -311,8 +310,8 @@ type ClientSpec struct {
 
 // ClientStatus defines the observed state of Client.
 type ClientStatus struct {
-	v1.ResourceStatus `json:",inline"`
-	AtProvider        ClientObservation `json:"atProvider,omitempty"`
+	v2.ManagedResourceStatus `json:",inline"`
+	AtProvider               ClientObservation `json:"atProvider,omitempty"`
 }
 
 // +kubebuilder:object:root=true

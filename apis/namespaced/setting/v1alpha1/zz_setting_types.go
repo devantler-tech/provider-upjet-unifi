@@ -10,8 +10,7 @@ import (
 	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
 	"k8s.io/apimachinery/pkg/runtime/schema"
 
-	v1 "github.com/crossplane/crossplane-runtime/v2/apis/common/v1"
-	v2 "github.com/crossplane/crossplane-runtime/v2/apis/common/v2"
+	v2 "github.com/crossplane/crossplane/apis/v2/core/v2"
 )
 
 type AutoSpeedtestInitParameters struct {
@@ -332,11 +331,11 @@ type HoneypotInitParameters struct {
 
 	// Reference to a Network in network to populate networkId.
 	// +kubebuilder:validation:Optional
-	NetworkIDRef *v1.NamespacedReference `json:"networkIdRef,omitempty" tf:"-"`
+	NetworkIDRef *v2.NamespacedReference `json:"networkIdRef,omitempty" tf:"-"`
 
 	// Selector for a Network in network to populate networkId.
 	// +kubebuilder:validation:Optional
-	NetworkIDSelector *v1.NamespacedSelector `json:"networkIdSelector,omitempty" tf:"-"`
+	NetworkIDSelector *v2.NamespacedSelector `json:"networkIdSelector,omitempty" tf:"-"`
 
 	// IP version: v4 or v6.
 	Version *string `json:"version,omitempty" tf:"version,omitempty"`
@@ -367,11 +366,11 @@ type HoneypotParameters struct {
 
 	// Reference to a Network in network to populate networkId.
 	// +kubebuilder:validation:Optional
-	NetworkIDRef *v1.NamespacedReference `json:"networkIdRef,omitempty" tf:"-"`
+	NetworkIDRef *v2.NamespacedReference `json:"networkIdRef,omitempty" tf:"-"`
 
 	// Selector for a Network in network to populate networkId.
 	// +kubebuilder:validation:Optional
-	NetworkIDSelector *v1.NamespacedSelector `json:"networkIdSelector,omitempty" tf:"-"`
+	NetworkIDSelector *v2.NamespacedSelector `json:"networkIdSelector,omitempty" tf:"-"`
 
 	// IP version: v4 or v6.
 	// +kubebuilder:validation:Optional
@@ -389,11 +388,11 @@ type IgmpSnoopingInitParameters struct {
 
 	// References to Network in network to populate networkIds.
 	// +kubebuilder:validation:Optional
-	NetworkIdsRefs []v1.NamespacedReference `json:"networkIdsRefs,omitempty" tf:"-"`
+	NetworkIdsRefs []v2.NamespacedReference `json:"networkIdsRefs,omitempty" tf:"-"`
 
 	// Selector for a list of Network in network to populate networkIds.
 	// +kubebuilder:validation:Optional
-	NetworkIdsSelector *v1.NamespacedSelector `json:"networkIdsSelector,omitempty" tf:"-"`
+	NetworkIdsSelector *v2.NamespacedSelector `json:"networkIdsSelector,omitempty" tf:"-"`
 }
 
 type IgmpSnoopingObservation struct {
@@ -418,11 +417,11 @@ type IgmpSnoopingParameters struct {
 
 	// References to Network in network to populate networkIds.
 	// +kubebuilder:validation:Optional
-	NetworkIdsRefs []v1.NamespacedReference `json:"networkIdsRefs,omitempty" tf:"-"`
+	NetworkIdsRefs []v2.NamespacedReference `json:"networkIdsRefs,omitempty" tf:"-"`
 
 	// Selector for a list of Network in network to populate networkIds.
 	// +kubebuilder:validation:Optional
-	NetworkIdsSelector *v1.NamespacedSelector `json:"networkIdsSelector,omitempty" tf:"-"`
+	NetworkIdsSelector *v2.NamespacedSelector `json:"networkIdsSelector,omitempty" tf:"-"`
 }
 
 type IpsInitParameters struct {
@@ -620,7 +619,7 @@ type MgmtInitParameters struct {
 	SSHKeys []SSHKeysInitParameters `json:"sshKeys,omitempty" tf:"ssh_keys,omitempty"`
 
 	// SSH password for device access. Sensitive — the controller stores only a hash, so this value is kept from configuration and not read back.
-	SSHPasswordSecretRef *v1.LocalSecretKeySelector `json:"sshPasswordSecretRef,omitempty" tf:"-"`
+	SSHPasswordSecretRef *v2.LocalSecretKeySelector `json:"sshPasswordSecretRef,omitempty" tf:"-"`
 
 	// SSH username for device access.
 	SSHUsername *string `json:"sshUsername,omitempty" tf:"ssh_username,omitempty"`
@@ -702,7 +701,7 @@ type MgmtParameters struct {
 
 	// SSH password for device access. Sensitive — the controller stores only a hash, so this value is kept from configuration and not read back.
 	// +kubebuilder:validation:Optional
-	SSHPasswordSecretRef *v1.LocalSecretKeySelector `json:"sshPasswordSecretRef,omitempty" tf:"-"`
+	SSHPasswordSecretRef *v2.LocalSecretKeySelector `json:"sshPasswordSecretRef,omitempty" tf:"-"`
 
 	// SSH username for device access.
 	// +kubebuilder:validation:Optional
@@ -810,7 +809,7 @@ type RadiusInitParameters struct {
 	InterimUpdateInterval *string `json:"interimUpdateInterval,omitempty" tf:"interim_update_interval,omitempty"`
 
 	// RADIUS shared secret.
-	SecretSecretRef *v1.LocalSecretKeySelector `json:"secretSecretRef,omitempty" tf:"-"`
+	SecretSecretRef *v2.LocalSecretKeySelector `json:"secretSecretRef,omitempty" tf:"-"`
 }
 
 type RadiusObservation struct {
@@ -848,7 +847,7 @@ type RadiusParameters struct {
 
 	// RADIUS shared secret.
 	// +kubebuilder:validation:Optional
-	SecretSecretRef *v1.LocalSecretKeySelector `json:"secretSecretRef,omitempty" tf:"-"`
+	SecretSecretRef *v2.LocalSecretKeySelector `json:"secretSecretRef,omitempty" tf:"-"`
 }
 
 type SSHKeysInitParameters struct {
@@ -1738,8 +1737,8 @@ type SettingSpec struct {
 
 // SettingStatus defines the observed state of Setting.
 type SettingStatus struct {
-	v1.ResourceStatus `json:",inline"`
-	AtProvider        SettingObservation `json:"atProvider,omitempty"`
+	v2.ManagedResourceStatus `json:",inline"`
+	AtProvider               SettingObservation `json:"atProvider,omitempty"`
 }
 
 // +kubebuilder:object:root=true

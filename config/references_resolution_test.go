@@ -5,8 +5,8 @@ import (
 	"slices"
 	"testing"
 
-	xpv1 "github.com/crossplane/crossplane-runtime/v2/apis/common/v1"
 	"github.com/crossplane/crossplane-runtime/v2/pkg/meta"
+	xpv2 "github.com/crossplane/crossplane/apis/v2/core/v2"
 	"k8s.io/apimachinery/pkg/runtime"
 	"sigs.k8s.io/controller-runtime/pkg/client"
 	"sigs.k8s.io/controller-runtime/pkg/client/fake"
@@ -66,12 +66,12 @@ func resolve(t *testing.T, addToScheme func(*runtime.Scheme) error, networks []c
 	}
 }
 
-func ref(name string) *xpv1.Reference { return &xpv1.Reference{Name: name} }
+func ref(name string) *xpv2.Reference { return &xpv2.Reference{Name: name} }
 
-func refs(names ...string) []xpv1.Reference {
-	out := make([]xpv1.Reference, 0, len(names))
+func refs(names ...string) []xpv2.Reference {
+	out := make([]xpv2.Reference, 0, len(names))
 	for _, name := range names {
-		out = append(out, xpv1.Reference{Name: name})
+		out = append(out, xpv2.Reference{Name: name})
 	}
 	return out
 }
@@ -190,14 +190,14 @@ func namespacedNetworks() []client.Object {
 	return objects
 }
 
-func namespacedRef(name string) *xpv1.NamespacedReference {
-	return &xpv1.NamespacedReference{Name: name}
+func namespacedRef(name string) *xpv2.NamespacedReference {
+	return &xpv2.NamespacedReference{Name: name}
 }
 
-func namespacedRefs(names ...string) []xpv1.NamespacedReference {
-	out := make([]xpv1.NamespacedReference, 0, len(names))
+func namespacedRefs(names ...string) []xpv2.NamespacedReference {
+	out := make([]xpv2.NamespacedReference, 0, len(names))
 	for _, name := range names {
-		out = append(out, xpv1.NamespacedReference{Name: name})
+		out = append(out, xpv2.NamespacedReference{Name: name})
 	}
 	return out
 }
