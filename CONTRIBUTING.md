@@ -70,6 +70,13 @@ Example manifests are checked against the generated resource types by
 [`hack/validate-examples.sh`](hack/validate-examples.sh). It needs `kubectl` and a **disposable**
 cluster, never one you care about, and no UniFi controller.
 
+A maintainer can run the end-to-end test of some examples on a pull request by submitting a review
+whose body has a line such as `/test-examples="examples/cluster/network"`. Only reviewers with
+write access start a run, the paths must be under `examples/`, and the run tests the exact commit
+the review was submitted on. It runs with read-only access and no secrets: it builds the provider,
+installs it in a throwaway cluster and applies the examples, but it has no controller to reach, so
+the examples do not become ready.
+
 ## Keep development and operations separate
 
 Publishing a release and signing the package are maintainer operations, not onboarding steps.
