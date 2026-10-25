@@ -5,9 +5,18 @@
 
 name: End to End Testing
 
+# A reviewer starts a run by submitting a pull request review whose body has a line
+#
+#   /test-examples="examples/cluster/network,examples/namespaced/wlan"
+#
+# The run tests exactly the commit the review was submitted on. It runs in the pull request's own
+# context: a pull request from a fork gets a read-only token and no secrets, and caches stay scoped
+# to the pull request, so the code under test never runs with this repository's write access or
+# secrets. That event context is the trust boundary. The reviewer check below only decides who may
+# spend runner time on a run.
 "on":
-  issue_comment:
-    types: [created]
+  pull_request_review:
+    types: [submitted]
 
 # Deny by default; grant only what each job needs.
 permissions: {}
@@ -16,130 +25,87 @@ env:
   GO_VERSION: "1.26.10"
 
 jobs:
-  check-permissions:
-    # Only a real `/test-examples="<paths>"` command should start this workflow.
-    # Gating here (rather than only on the downstream jobs) means a comment that
-    # merely mentions the keyword never spawns a runner at all.
-    if: ${{ github.event.issue.pull_request != null && contains(github.event.comment.body, '/test-examples="')}}
+  select:
+    # A review that does not mention the command never starts a runner.
+    if: ${{ contains(github.event.review.body, '/test-examples="') }}
     runs-on: ubuntu-latest
-    # Only reads the commenter's repo permission via the GitHub API.
+    # Reads the reviewer's repository permission. Never checks out the code under test.
     permissions:
       contents: read
     outputs:
-      permission: ${{ steps.check-permissions.outputs.permission }}
+      paths: ${{ steps.select.outputs.paths }}
     steps:
-      - name: Get Commenter Permissions
-        id: check-permissions
+      - name: Check the reviewer, the command and the reviewed commit
+        id: select
         env:
-          # Pass untrusted/secret values through the environment rather than
-          # interpolating them into the shell (avoids template injection and
-          # keeps the token out of the process command line).
-          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          GH_TOKEN: ${{ github.token }}
           REPO: ${{ github.repository }}
-          COMMENTER: ${{ github.event.comment.user.login }}
+          REVIEWER: ${{ github.event.review.user.login }}
+          REVIEW_BODY: ${{ github.event.review.body }}
+          REVIEWED_SHA: ${{ github.event.review.commit_id }}
+          HEAD_SHA: ${{ github.event.pull_request.head.sha }}
         run: |
-          echo "Trigger command: '/test-examples=\"<paths>\"'"
-          echo "Go version: $GO_VERSION"
-
-          # Fetch the commenter's repo-level permission grant
-          GRANTED=$(gh api \
-            -H "Accept: application/vnd.github.v3+json" \
-            "/repos/$REPO/collaborators/$COMMENTER/permission" --jq .permission)
-
-          # Make it accessible in the workflow via a job output -- cannot use env
-          echo "User $COMMENTER has $GRANTED permissions"
-          echo "permission=$GRANTED" >> "$GITHUB_OUTPUT"
-
-  get-example-list:
-    needs: check-permissions
-    if: ${{ (needs.check-permissions.outputs.permission == 'admin' || needs.check-permissions.outputs.permission == 'write') && github.event.issue.pull_request != null && contains(github.event.comment.body, '/test-examples="')}}
-    runs-on: ubuntu-latest
-    # Checks out the PR (contents:read) and posts a pending commit status
-    # (statuses:write).
-    permissions:
-      contents: read
-      statuses: write
-    outputs:
-      example_list: ${{ steps.get-example-list-name.outputs.example-list }}
-      example_hash: ${{ steps.get-example-list-name.outputs.example-hash }}
-
-    steps:
-      - name: Checkout
-        uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6.0.2
-        with:
-          submodules: true
-
-      - name: Checkout PR
-        id: checkout-pr
-        env:
-          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        run: |
-          gh pr checkout ${{ github.event.issue.number }}
-          git submodule update --init --recursive
-          OUTPUT=$(git log -1 --format='%H')
-          echo "commit-sha=$OUTPUT" >> "$GITHUB_OUTPUT"
-
-      - name: Prepare The Example List
-        env:
-          COMMENT: ${{ github.event.comment.body }}
-        id: get-example-list-name
-        run: |
-          # Anchored to the start of a line, the usual slash-command convention. Unanchored, any
-          # comment that merely *quotes* the command — a review note, a table of evidence, a docs
-          # snippet — was extracted as an instruction, so writing *about* the command ran it.
-          COMMAND=$(printf '%s\n' "$COMMENT" | grep -oE '^/test-examples="[^"]+"' | head -n1 || true)
-          # A comment can satisfy the job gate (`/test-examples="`) and still carry no well-formed
-          # command — `/test-examples=""` and an unterminated quote both do. Treat that as nothing to
-          # test, not as a failure: exiting non-zero here turns comment prose into red CI that the
-          # runs report against `main`. Empty outputs make `uptest` skip.
-          if [ -z "$COMMAND" ]; then
-            echo 'No well-formed /test-examples="<paths>" command in this comment — nothing to test.'
-            echo "example-list=" >> "$GITHUB_OUTPUT"
-            echo "example-hash=" >> "$GITHUB_OUTPUT"
+          # Paths are read as words, never expanded as globs.
+          set -f
+          # Every refusal below is a no-op: it writes no paths, so nothing is checked out or run,
+          # and it explains itself instead of turning a review into a failed check.
+          refuse() {
+            echo "::warning::$1"
+            printf 'Nothing to test: %s\n' "$1" >> "$GITHUB_STEP_SUMMARY"
             exit 0
+          }
+
+          # A reviewer the lookup cannot place, such as a review bot, is refused like any other
+          # reviewer without write access.
+          GRANTED=$(gh api "repos/$REPO/collaborators/$REVIEWER/permission" --jq .permission 2>/dev/null) || GRANTED=unknown
+          case "$GRANTED" in
+            admin|write) ;;
+            *) refuse "$REVIEWER has $GRANTED permission here; only reviewers with write or admin permission start an end-to-end run." ;;
+          esac
+
+          # Anchored to the start of a line, the usual slash-command convention, so a review that
+          # merely quotes the command is not read as one.
+          COMMAND=$(printf '%s\n' "$REVIEW_BODY" | tr -d '\r' | grep -oE '^/test-examples="[^"]+"' | head -n1 || true)
+          if [ -z "$COMMAND" ]; then
+            refuse 'no well-formed /test-examples="<paths>" line in this review.'
           fi
-          PATHS=$(printf '%s\n' "$COMMAND" | cut -d '"' -f 2 | tr ',' ' ')
-          EXAMPLE_LIST=""
-          for P in $PATHS; do EXAMPLE_LIST="${EXAMPLE_LIST},$(find "$P" -name '*.yaml' | tr '\n' ',')"; done
 
-          sudo apt-get -y install coreutils
-          COUNT=$(echo "${EXAMPLE_LIST:1}" | grep -o ".yaml" | wc -l)
-          if [ "$COUNT" -gt 1 ]; then EXAMPLE_HASH=$(echo "${EXAMPLE_LIST}" | md5sum | cut -f1 -d" "); else EXAMPLE_HASH="${EXAMPLE_LIST:1}"; EXAMPLE_HASH="${EXAMPLE_HASH%?}"; fi
+          # Test only the commit the reviewer saw. A review left on an older commit does not cover
+          # what was pushed after it.
+          if [ "$REVIEWED_SHA" != "$HEAD_SHA" ]; then
+            refuse "the review is on $REVIEWED_SHA but the pull request head is $HEAD_SHA; review the current head to test it."
+          fi
 
-          echo "Examples: ${EXAMPLE_LIST:1}"
-          echo "Example Hash: ${EXAMPLE_HASH}"
+          # Only directories or files under examples/, named with plain characters and never
+          # stepping outside it.
+          PATHS=""
+          for P in $(printf '%s\n' "$COMMAND" | cut -d '"' -f 2 | tr ',' ' '); do
+            if ! printf '%s\n' "$P" | grep -qE '^examples(/[A-Za-z0-9_.-]+)*/?$' \
+              || printf '%s\n' "$P" | grep -qE '(^|/)\.{1,2}(/|$)'; then
+              refuse "'$P' is not a path under examples/."
+            fi
+            PATHS="${PATHS:+$PATHS }$P"
+          done
+          if [ -z "$PATHS" ]; then
+            refuse 'the command names no paths.'
+          fi
 
-          echo "example-list=${EXAMPLE_LIST:1}" >> "$GITHUB_OUTPUT"
-          echo "example-hash=${EXAMPLE_HASH}" >> "$GITHUB_OUTPUT"
-
-      - name: Create Pending Status Check
-        # Nothing was selected, so there is no uptest run for a status to describe.
-        if: ${{ steps.get-example-list-name.outputs.example-list != '' }}
-        env:
-          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        run: |
-          gh api \
-            --method POST \
-            -H "Accept: application/vnd.github+json" \
-            /repos/${{ github.repository }}/statuses/${{ steps.checkout-pr.outputs.commit-sha }} \
-            -f state='pending' \
-            -f target_url='https://github.com/${{ github.repository }}/actions/runs/${{ github.run_id }}' \
-            -f description='Running...' \
-            -f context="Uptest-${{ steps.get-example-list-name.outputs.example-hash }}"
+          echo "Testing $PATHS at $REVIEWED_SHA, requested by $REVIEWER."
+          echo "paths=$PATHS" >> "$GITHUB_OUTPUT"
 
   uptest:
-    needs:
-      - check-permissions
-      - get-example-list
-    # The last clause is what keeps an empty command (`/test-examples=""`) a no-op: the gate above
-    # matches the substring, so only the resolved example list proves something was actually selected.
-    if: ${{ (needs.check-permissions.outputs.permission == 'admin' || needs.check-permissions.outputs.permission == 'write') && github.event.issue.pull_request != null && contains(github.event.comment.body, '/test-examples="') && needs.get-example-list.outputs.example_list != ''}}
+    needs: select
+    if: ${{ needs.select.outputs.paths != '' }}
     runs-on: ubuntu-latest
-    # Checks out the PR (contents:read) and posts pending/success/failure
-    # commit statuses (statuses:write).
+    # A newer test request on the same pull request supersedes one still running. Set on this job,
+    # not the workflow, so a review that requests nothing cancels nothing.
+    concurrency:
+      group: e2e-${{ github.event.pull_request.number }}
+      cancel-in-progress: true
+    # Reads the code under test and nothing else: no write token, no persisted checkout
+    # credential and no secrets.
     permissions:
       contents: read
-      statuses: write
 
     steps:
       - name: Cleanup Disk
@@ -153,9 +119,11 @@ jobs:
         with:
           platforms: all
 
-      - name: Checkout
+      - name: Checkout the reviewed commit
         uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6.0.2
         with:
+          ref: ${{ github.event.review.commit_id }}
+          persist-credentials: false
           submodules: true
 
       - name: Setup Go
@@ -163,44 +131,49 @@ jobs:
         with:
           go-version: ${{ env.GO_VERSION }}
 
-      - name: Checkout PR
-        id: checkout-pr
+      - name: List the example manifests
+        id: examples
         env:
-          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          PATHS: ${{ needs.select.outputs.paths }}
+          REVIEWED_SHA: ${{ github.event.review.commit_id }}
         run: |
-          gh pr checkout ${{ github.event.issue.number }}
-          git submodule update --init --recursive
-          OUTPUT=$(git log -1 --format='%H')
-          echo "commit-sha=$OUTPUT" >> "$GITHUB_OUTPUT"
+          if [ "$(git rev-parse HEAD)" != "$REVIEWED_SHA" ]; then
+            echo "::error::Checked out $(git rev-parse HEAD), not the reviewed commit $REVIEWED_SHA."
+            exit 1
+          fi
+          LIST=""
+          for P in $PATHS; do
+            if [ ! -e "$P" ]; then
+              echo "::error::$P does not exist at $REVIEWED_SHA."
+              exit 1
+            fi
+            while IFS= read -r F; do
+              if ! printf '%s\n' "$F" | grep -qE '^examples/[A-Za-z0-9_./-]+\.yaml$'; then
+                echo "::error::Refusing the example file name '$F'."
+                exit 1
+              fi
+              LIST="${LIST:+$LIST,}$F"
+            done < <(find "$P" -type f -name '*.yaml' | sort)
+          done
+          if [ -z "$LIST" ]; then
+            echo "::error::$PATHS holds no example manifests at $REVIEWED_SHA."
+            exit 1
+          fi
+          echo "Examples: $LIST"
+          echo "list=$LIST" >> "$GITHUB_OUTPUT"
 
       - name: Vendor Dependencies
         run: make vendor vendor.check
 
       - name: Run Uptest
-        id: run-uptest
         env:
-          UPTEST_CLOUD_CREDENTIALS: ${{ secrets.UPTEST_CLOUD_CREDENTIALS }}
-          UPTEST_EXAMPLE_LIST: ${{ needs.get-example-list.outputs.example_list }}
+          # No controller credential reaches the code under test. cluster/test/setup.sh reads the
+          # variable, so it is set, and empty.
+          UPTEST_CLOUD_CREDENTIALS: ""
+          UPTEST_EXAMPLE_LIST: ${{ steps.examples.outputs.list }}
           UPTEST_TEST_DIR: ./_output/controlplane-dump
-          UPTEST_DATASOURCE_PATH: .work/uptest-datasource.yaml
           UPTEST_UPDATE_PARAMETER: ""
-        run: |
-          mkdir -p .work && echo "${{ secrets.UPTEST_DATASOURCE }}" > .work/uptest-datasource.yaml
-          make e2e
-
-      - name: Create Successful Status Check
-        env:
-          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-          EXAMPLE_HASH: ${{ needs.get-example-list.outputs.example_hash }}
-        run: |
-          gh api \
-            --method POST \
-            -H "Accept: application/vnd.github+json" \
-            /repos/${{ github.repository }}/statuses/${{ steps.checkout-pr.outputs.commit-sha }} \
-            -f state='success' \
-            -f target_url='https://github.com/${{ github.repository }}/actions/runs/${{ github.run_id }}' \
-            -f description='Passed' \
-            -f context="Uptest-${EXAMPLE_HASH}"
+        run: make e2e
 
       - name: Collect Cluster Dump
         if: always()
@@ -219,18 +192,3 @@ jobs:
         run: |
           eval "$(make --no-print-directory build.vars)"
           ${KUBECTL} delete managed --all || true
-
-      - name: Create Unsuccessful Status Check
-        if: failure()
-        env:
-          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-          EXAMPLE_HASH: ${{ needs.get-example-list.outputs.example_hash }}
-        run: |
-          gh api \
-            --method POST \
-            -H "Accept: application/vnd.github+json" \
-            /repos/${{ github.repository }}/statuses/${{ steps.checkout-pr.outputs.commit-sha }} \
-            -f state='failure' \
-            -f target_url='https://github.com/${{ github.repository }}/actions/runs/${{ github.run_id }}' \
-            -f description='Failed' \
-            -f context="Uptest-${EXAMPLE_HASH}"
