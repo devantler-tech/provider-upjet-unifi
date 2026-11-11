@@ -22,7 +22,7 @@ name: End to End Testing
 permissions: {}
 
 env:
-  GO_VERSION: "1.26.10"
+  GO_VERSION: "1.26.11"
 
 jobs:
   select:
